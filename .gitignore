@@ -1,4 +1,24 @@
-node_modules
+# @AngularClass
+
+# Logs
+logs
+*.log
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Node Files #
+/node_modules
 npm-debug.log
-src/app/**/*.js
-src/app/**/*.js.map
+
+# Coverage #
+/coverage/
+
+# Typing #
+/src/typings/tsd/
+/typings/
+/tsd_typings/
+
+# Dist #
+/dist/**
+.webpack.json
