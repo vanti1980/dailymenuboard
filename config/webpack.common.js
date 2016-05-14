@@ -4,6 +4,7 @@
 
 const webpack = require('webpack');
 const helpers = require('./helpers');
+const autoprefixer = require('autoprefixer');
 
 /*
  * Webpack Plugins
@@ -54,7 +55,9 @@ module.exports = {
 
     'polyfills': './src/polyfills.ts',
     'vendor': './src/vendor.ts',
-    'main': './src/main.browser.ts'
+    'main': './src/main.browser.ts',
+    'bootstrap-loader' : './node_modules/bootstrap-loader/loader.js',
+    'font-awesome-loader' : './node_modules/font-awesome-loader/index.loader.js',
 
   },
 
@@ -182,10 +185,30 @@ module.exports = {
         loaders: ['style', 'css', 'resolve-url', 'sass']
       },
       */
+
+      {
+             test: /\.css$/,
+              loaders: [
+                'style',
+                'css?modules&importLoaders=1&localIdentName=[name]__[local]__[hash:base64:5]',
+                'postcss',
+              ],
+            },
+            {
+              test: /\.scss$/,
+              loaders: [
+                'style',
+                'css?modules&importLoaders=2&localIdentName=[name]__[local]__[hash:base64:5]',
+                'postcss',
+                'sass',
+              ],
+            },
+      /*
       {
         test: /\.scss$/,
         loaders: ['raw', 'resolve-url', 'sass']
       },
+      */
 
       /* Load fonts.
        *
@@ -214,6 +237,7 @@ module.exports = {
 
   },
 
+  postcss: [autoprefixer],
   /*
    * Add additional plugins to the compiler.
    *

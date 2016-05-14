@@ -20,5 +20,6 @@ npm-debug.log
 /tsd_typings/
 
 # Dist #
+/dist
 /dist/**
 .webpack.json
