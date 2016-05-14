@@ -1,0 +1,37 @@
+{
+	"tags":
+	{
+		"allowUnknownTags" : true
+	},
+	"plugins":[
+		 "plugins/markdown"
+		,"/ent/NodeJSPortable/Data/node_modules/tsdoc/template/plugins/TSDoc.js"
+	],
+	"opts":
+	{
+		"template"	:"/ent/NodeJSPortable/Data/node_modules/tsdoc/template",
+		"recurse"	:"true"
+	},
+	"templates" : {
+		"cleverLinks"     : false,
+		"monospaceLinks"  : false
+	},
+	"source":
+	{
+		"includePattern": "(\\.d)?\\.ts$"
+	},
+	"markdown"  : {
+		"parser"   : "gfm",
+		"hardwrap" : true
+	},
+	"tsdoc":{
+		"source"		:"/ent/workspacesM/dmb/angularattack2016-dailymenuboard/src/",
+		"destination"	:"/ent/workspacesM/dmb/angularattack2016-dailymenuboard/docs",
+		"tutorials"		:"",
+		"systemName"	: "angularattack2016-dailymenuboard",
+		"footer"		: "",
+		"copyright"		: "angularattack2016-dailymenuboard Copyright © 2016 Data.",
+		"outputSourceFiles" : true,
+		"commentsOnly": true
+	}
+}
