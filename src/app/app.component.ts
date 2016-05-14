@@ -7,31 +7,36 @@ import {MealProviderDetailService} from './meal-provider-detail';
 
 
 @Component({
-  selector: 'app',
-  pipes: [],
-  providers: [MealProviderDetailService],
-  directives: [ROUTER_DIRECTIVES],
-  styles: [
-    require('normalize.css')
-  ],
-  template: require('./app.html')
+    selector: 'app',
+    pipes: [],
+    providers: [MealProviderDetailService],
+    directives: [ROUTER_DIRECTIVES],
+    styles: [
+        require('normalize.css')
+    ],
+    template: require('./app.html')
 })
 @RouteConfig([
 ])
 export class App {
 
-constructor(mealProviderDetail: MealProviderDetailService) {
-  mealProviderDetail.resolveXPath('', '');
-}
-/*
-  constructor(translate: TranslateService) {
-    var userLang = navigator.language.split('-')[0];
-    translate.setDefaultLang('en');
-    translate.use(userLang);
-  }
-*/
+    constructor(public mealProviderDetail: MealProviderDetailService) {
+console.log('constructor App');
+    }
+    /*
+      constructor(translate: TranslateService) {
+        var userLang = navigator.language.split('-')[0];
+        translate.setDefaultLang('en');
+        translate.use(userLang);
+      }
+    */
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+
+      console.log("lllllllllllddddddd");
+      console.log(this.mealProviderDetail);
+      this.mealProviderDetail.resolveXPath('aaaa', 'bbbbb');
+
+    }
 
 }

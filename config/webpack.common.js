@@ -220,6 +220,11 @@ module.exports = {
                 test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: "file-loader"
             },
+/*
+            { test: /vendor\/.+\.(jsx|js)$/,
+  loader: 'imports?jQuery=jquery,$=jquery,this=>window'
+},
+*/
 
             /* Raw loader support for *.html
              * Returns file content as string
@@ -287,10 +292,12 @@ module.exports = {
             to: 'assets'
         }]),
 
+
         new webpack.ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery',
-            jquery: 'jquery'
+            jquery: 'jquery',
+            "windows.jQuery": "jquery"
         }),
 
         /*

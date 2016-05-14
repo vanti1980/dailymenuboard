@@ -15,8 +15,6 @@ import '@angular/router-deprecated';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 
-import 'jquery';
-
 // look in platform/directives and platform/providers
 
 if ('production' === ENV) {
