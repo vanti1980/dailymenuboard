@@ -1,4 +1,10 @@
 import {Injectable} from '@angular/core';
+
+import {MealProviderJSON} from '../common/meal';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+
+
 var wgxpath = require('wgxpath');
 
 
@@ -6,21 +12,22 @@ var jquery = require('jquery');
 
 @Injectable()
 export class MealProviderDetailService {
-   public name: string = 'Injected Service';
+    public name: string = 'Injected Service';
 
-   constructor() {
-     console.log('MealProviderDetailService constructor');
-   }
+    constructor() {
+        console.log('MealProviderDetailService constructor');
+    }
 
-  resolveXPath(url: string, xpath: string) {
-    var expressionString = '//*[@id="content"]';
-    console.log("jquery:" + jquery);
-    var fragment = jquery.parseHTML("<html><body><div id='header'>header</div><div id='content'>content</div></body></html>");
-    console.log("wgxpath:" + wgxpath);
-     console.log("fragment:" + fragment);
+    resolveXPath(url: string, xpath: string) {
+        var expressionString = '//*[@id="content"]';
+        console.log("jquery:" + jquery);
+        var fragment = jquery.parseHTML("<html><body><div id='header'>header</div><div id='content'>content</div></body></html>");
+        console.log("wgxpath:" + wgxpath);
+        console.log("fragment:" + fragment);
 
-    wgxpath.install(window);
-    var result = window.document.evaluate(expressionString, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
-    console.log('The Word of the Day is "' + result.stringValue + '."');
-  }
+        wgxpath.install(window);
+        var result = window.document.evaluate(expressionString, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
+        console.log('The Word of the Day is "' + result.stringValue + '."');
+    }
+
 }
