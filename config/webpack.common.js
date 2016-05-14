@@ -177,13 +177,13 @@ module.exports = {
         test: /\.component\.scss$/,
         loaders: ['raw-loader', 'sass-loader']
       },
-      */
       {
         test: /^(?!.*component).*\.scss$/,
         loaders: ['style', 'css', 'resolve-url', 'sass']
       },
+      */
       {
-        test: /\.component\.scss$/,
+        test: /\.scss$/,
         loaders: ['raw', 'resolve-url', 'sass']
       },
 
