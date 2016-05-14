@@ -33,7 +33,7 @@ console.log('constructor App');
 
     ngOnInit() {
 
-      console.log("lllllllllllddddddd");
+      console.log('ngOnInit');
       console.log(this.mealProviderDetail);
       this.mealProviderDetail.resolveXPath('aaaa', 'bbbbb');
 
