@@ -3,6 +3,7 @@
  */
 
 const helpers = require('./helpers');
+const commonConfig = require('./webpack.common.js'); // the settings that are common to prod and dev
 
 /**
  * Webpack Plugins
@@ -14,6 +15,7 @@ const DefinePlugin = require('webpack/lib/DefinePlugin');
  * Webpack Constants
  */
 const ENV = process.env.ENV = process.env.NODE_ENV = 'test';
+const METADATA = commonConfig.metadata;
 
 /**
  * Webpack configuration
@@ -196,7 +198,7 @@ module.exports = {
       'process.env': {
         'ENV': JSON.stringify(ENV),
         'NODE_ENV': JSON.stringify(ENV),
-        'HMR': false
+        'HMR': false,
         'GEOCODE_SERVICE': JSON.stringify(METADATA.GEOCODE_SERVICE),
         'GMAPS_API_KEY': JSON.stringify(METADATA.GMAPS_API_KEY),
         'GCHARTS_ICON_SERVICE': JSON.stringify(METADATA.GCHARTS_ICON_SERVICE)
