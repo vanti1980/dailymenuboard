@@ -1,5 +1,7 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
+import {MealProviderDetailService} from './meal-provider-detail';
+
 //TODO put back if they confirm pull request for Angular2 RC compatibility
 // import {TranslateService} from 'ng2-translate/ng2-translate';
 
@@ -7,7 +9,7 @@ import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated
 @Component({
   selector: 'app',
   pipes: [],
-  providers: [],
+  providers: [MealProviderDetailService],
   directives: [ROUTER_DIRECTIVES],
   styles: [
     require('normalize.css')
@@ -18,6 +20,9 @@ import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated
 ])
 export class App {
 
+constructor(mealProviderDetail: MealProviderDetailService) {
+  mealProviderDetail.resolveXPath('', '');
+}
 /*
   constructor(translate: TranslateService) {
     var userLang = navigator.language.split('-')[0];
