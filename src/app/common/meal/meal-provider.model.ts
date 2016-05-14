@@ -17,30 +17,32 @@ export class MealProvider {
     mealSets: MealSet[] = [];
 
     constructor(
-        private name: string,
-        private homePage: string,
-        private contacts: { [key: string]: string },
-        private dailyMealUrl: string,
-        private dailyMealQueryXPath: string,
-        private location: Location,
-        private color: string
+        public name: string,
+        public homePage: string,
+        public contacts: { [key: string]: string },
+        public dailyMealUrl: string,
+        public mealSetQueryXPath: { [key: string]: string },
+        public dailyMealQueryXPathByMealSet: { [key: string]: string[] },
+        public mealSetPriceQueryXPathByMealSet: { [key: string]: string },
+        public location: Location,
+        public color: string
     ) { }
 
     toJSON(): MealProviderJSON {
-      return Object.assign({}, this);
+        return Object.assign({}, this);
     }
 
-    static fromJSON(json: MealProviderJSON|string): MealProvider {
-      if (typeof json === 'string') {
-        return JSON.parse(json, MealProvider.reviver);
-      } else {
-        let mealProvider = Object.create(MealProvider.prototype);
-        return Object.assign(mealProvider, json);
-      }
+    static fromJSON(json: MealProviderJSON | string): MealProvider {
+        if (typeof json === 'string') {
+            return JSON.parse(json, MealProvider.reviver);
+        } else {
+            let mealProvider = Object.create(MealProvider.prototype);
+            return Object.assign(mealProvider, json);
+        }
     }
 
     static reviver(key: string, value: any): any {
-      return key === "" ? MealProvider.fromJSON(value) : value;
+        return key === "" ? MealProvider.fromJSON(value) : value;
     }
 }
 
@@ -71,7 +73,7 @@ export interface MealProviderJSON {
     /**
      * XPath to query daily meal
      */
-    dailyMealQueryXPath: string;
+    dailyMealQueryXPathByMealSet: { [key: string]: string[] };
 
     /**
      * Location

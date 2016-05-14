@@ -38,10 +38,8 @@ export class App {
 
     ngOnInit() {
 
-        console.log("lllllllllllddddddd");
-        console.log(this.mealProviderDetail);
-        this.mealProviderDetail.resolveXPath('aaaa', 'bbbbb');
-
+      console.log(this.mealProviderDetail);
+console.log('ngOnInit');
     }
 
     isActive(instruction: any[]): boolean {
