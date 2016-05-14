@@ -57,7 +57,7 @@ module.exports = {
         'vendor': './src/vendor.ts',
         'main': './src/main.browser.ts',
         'bootstrap-loader': './node_modules/bootstrap-loader/loader.js',
-        'font-awesome-loader': './node_modules/font-awesome-loader/index.loader.js',
+        'font-awesome-loader': './node_modules/font-awesome-loader/index.js',
 
     },
 
