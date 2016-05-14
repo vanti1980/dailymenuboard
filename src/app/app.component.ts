@@ -4,24 +4,29 @@ import {MealProviderDetailService} from './meal-provider-detail';
 
 //TODO put back if they confirm pull request for Angular2 RC compatibility
 // import {TranslateService} from 'ng2-translate/ng2-translate';
-import { NgGrid, NgGridItem } from 'angular2-grid';
+
+import {BoxView} from './view/box';
+import {ListView} from './view/list';
 
 @Component({
     selector: 'app',
     pipes: [],
     providers: [MealProviderDetailService],
-    directives: [ROUTER_DIRECTIVES, NgGrid, NgGridItem],
+    directives: [ROUTER_DIRECTIVES],
     styles: [
-        require('normalize.css')
+        //require('normalize.css')
     ],
     template: require('./app.html')
 })
 @RouteConfig([
+    { path: '*', component: BoxView },
+    { path: '/box', name: 'Box', component: BoxView, useAsDefault: true },
+    { path: '/list', name: 'List', component: ListView }
 ])
 export class App {
 
-    constructor(public mealProviderDetail: MealProviderDetailService) {
-console.log('constructor App');
+    constructor(public mealProviderDetail: MealProviderDetailService, public router: Router) {
+        console.log('constructor App');
     }
     /*
       constructor(translate: TranslateService) {
@@ -33,10 +38,14 @@ console.log('constructor App');
 
     ngOnInit() {
 
-      console.log("lllllllllllddddddd");
-      console.log(this.mealProviderDetail);
-      this.mealProviderDetail.resolveXPath('aaaa', 'bbbbb');
+        console.log("lllllllllllddddddd");
+        console.log(this.mealProviderDetail);
+        this.mealProviderDetail.resolveXPath('aaaa', 'bbbbb');
 
+    }
+
+    isActive(instruction: any[]): boolean {
+        return this.router.isRouteActive(this.router.generate(instruction));
     }
 
 }
