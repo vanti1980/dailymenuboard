@@ -10,7 +10,8 @@ import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated
   providers: [],
   directives: [ROUTER_DIRECTIVES],
   styles: [
-    require('normalize.css')
+    require('normalize.css'),
+    require('./app.scss')
   ],
   template: require('./app.html')
 })
