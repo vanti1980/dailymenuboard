@@ -4,13 +4,13 @@ import {MealProviderDetailService} from './meal-provider-detail';
 
 //TODO put back if they confirm pull request for Angular2 RC compatibility
 // import {TranslateService} from 'ng2-translate/ng2-translate';
-
+import { NgGrid, NgGridItem } from 'angular2-grid';
 
 @Component({
     selector: 'app',
     pipes: [],
     providers: [MealProviderDetailService],
-    directives: [ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES, NgGrid, NgGridItem],
     styles: [
         require('normalize.css')
     ],

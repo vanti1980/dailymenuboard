@@ -56,9 +56,8 @@ module.exports = {
         'polyfills': './src/polyfills.ts',
         'vendor': './src/vendor.ts',
         'main': './src/main.browser.ts',
-        'bootstrap-loader': './node_modules/bootstrap-loader/loader.js',
-        'font-awesome-loader': './node_modules/font-awesome-loader/index.js',
-
+        'bootstrap-loader': 'bootstrap-loader',
+        'font-awesome-loader': 'font-awesome-loader'
     },
 
     /*
