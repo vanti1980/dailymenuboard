@@ -13,9 +13,27 @@
 	transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, right 0.25s, bottom 0.25s;
 	border: solid 1px;
 	border-radius: 10px;
+	-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
 }
 .mealProviderDiv{
 	border-radius: 10px;
+}
+
+.not-rounded {
+	border-radius: 0;
+}
+
+.no-shadow {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+
+.box-button-top-right {
+	margin-top: 5%;
+	margin-right: 5%;
 }
 
 .grid-item:active, .grid-item.moving {
