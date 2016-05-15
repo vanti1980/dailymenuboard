@@ -9,6 +9,9 @@ $schemes: (
   blue-red-red:(primary-color:#C23B22,secondary-color:#779ECB,box-border-color:#C23B22),
   purple-flirt:(primary-color:#A2006D,secondary-color:#B19CD9,box-border-color:#e5e5e5),
   blue-blue-blue:(primary-color:#AEC6CF,secondary-color:#AEC6CF,box-border-color:#AEC6CF),
+
+
+  white-blue: (primary-color:white,secondary-color:#CFCFC4,box-border-color:#e5e5e5),
   );
 
 @each $scheme, $map in $schemes {
