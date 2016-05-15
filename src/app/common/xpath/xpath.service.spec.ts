@@ -9,9 +9,9 @@ import {
 } from '@angular/http';
 import {MockBackend} from '@angular/http/testing';
 
-import {MealProviderDetailService} from './meal-provider-detail.service.ts';
+import {XpathService} from './xpath.service.ts';
 
-describe('Test MealProviderDetailService', () => {
+describe('Test XpathService', () => {
 
     beforeEachProviders(() => {
         return [
@@ -24,11 +24,11 @@ describe('Test MealProviderDetailService', () => {
                 },
                 deps: [MockBackend, BaseRequestOptions]
             }),
-            MealProviderDetailService
+            XpathService
         ];
     });
 
-    it(' should correctly resolve XPath', inject([MealProviderDetailService, MockBackend], (testService, mockBackend) => {
+    it(' should correctly resolve XPath', inject([XpathService, MockBackend], (testService, mockBackend) => {
         mockBackend.connections.subscribe((conn) => {
             expect(conn.request.url).toBe('http://somedomain.com');
             let response = new ResponseOptions({ body: "<html><body><div id='header'>header</div><div id='content'>content</div></body></html>" });

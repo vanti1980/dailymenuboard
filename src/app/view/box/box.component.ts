@@ -28,17 +28,20 @@ export class BoxView {
 
 
 
-        var array = this.mealProviderService.getCachedMealProviders();
-        for (var i = 0; i < array.length; i++) {
-            console.log(array[i]);
-            this.boxes.push(
-               new Box(
-                  array[i],
-                  (i % this.maxNumberOfColumn),
-                  parseInt('' + (i / this.maxNumberOfColumn))
-               )
-            );
-        }
+       this.mealProviderService.getDailyMealsByMealProviders().subscribe((array) => {
+
+          for (var i = 0; i < array.length; i++) {
+              console.log(array[i]);
+              this.boxes.push(
+                 new Box(
+                    array[i],
+                    (i % this.maxNumberOfColumn),
+                    parseInt('' + (i / this.maxNumberOfColumn))
+                 )
+              );
+          }  
+        });
+
     }
 
 }
