@@ -18,6 +18,8 @@ import {App, APP_PROVIDERS} from './app';
 import {XpathService} from './app/common/xpath';
 
 import {MealProviderService} from './app/common/meal-provider/meal-provider.service';
+
+import {MapService} from './app/common/map/map.service';
 /*
  * Bootstrap our Angular app with a top level component `App` and inject
  * our Services and Providers into Angular's dependency injection
@@ -27,6 +29,7 @@ export function main(initialHmrState?: any): Promise<any> {
   return bootstrap(App, [
      XpathService,
      MealProviderService,
+     MapService,
     ...PROVIDERS,
     ...ENV_PROVIDERS,
     ...DIRECTIVES,
