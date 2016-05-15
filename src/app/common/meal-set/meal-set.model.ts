@@ -12,4 +12,12 @@ export class MealSet {
         public price: Price,
         public mealProvider : MealProvider) {
         }
+  toJSON() {
+      return {
+        name: this.name,
+        meals: this.meals,
+        price: this.price
+      };
+  }
+
 }
