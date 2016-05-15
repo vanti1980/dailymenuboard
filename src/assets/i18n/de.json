@@ -1,5 +1,7 @@
 {
   "button.add": "Hinzufügen",
+  "button.close": "Schließen",
+  "button.submit": "Speichern",
   "dialog.addNewRestaurant": "Neues Restaurant",
   "dialog.name": "Name",
   "dialog.homePage": "Hauptseite",

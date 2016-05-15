@@ -1,5 +1,7 @@
 {
   "button.add": "Új",
+  "button.close": "Bezár",
+  "button.submit": "Elküld",
   "dialog.addNewRestaurant": "Új étterem hozzáadása",
   "dialog.name": "Név",
   "dialog.homePage": "Webcím",

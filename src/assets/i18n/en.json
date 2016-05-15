@@ -1,5 +1,7 @@
 {
   "button.add": "Add",
+  "button.close": "Close",
+  "button.submit": "Submit",
   "dialog.addNewRestaurant": "Add New Restaurant",
   "dialog.name": "Name",
   "dialog.homePage": "Home page",
