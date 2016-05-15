@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import { NgGrid, NgGridItem } from 'angular2-grid';
-import {MealProvderComponent} from '../../common/meal-provider';
+import {MealProviderComponent} from '../../common/meal-provider';
 import {MealProvider}        from '../../common/meal-provider/meal-provider.model';
 import {MealProviderService} from '../../common/meal-provider/meal-provider.service';
 import {Box}        from './box.model';
@@ -8,7 +8,7 @@ import {Box}        from './box.model';
 @Component({
     selector: 'box-view',
     providers: [MealProviderService],
-    directives: [NgGrid, NgGridItem, MealProvderComponent],
+    directives: [NgGrid, NgGridItem, MealProviderComponent],
     template: require('./box.html')
 })
 export class BoxView {

@@ -6,7 +6,7 @@ import {Price} from '../meal/price.model';
 export class MealSet {
 
  constructor(
-        name: string,
-        meals: Meal[],
-        price: Price) {    }
+        public name: string,
+        public meals: Meal[],
+        public price: Price) {    }
 }

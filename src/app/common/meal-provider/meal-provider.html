@@ -4,7 +4,12 @@
          <label>{{mealProvider.name}}</label>
          <div class="pull-right">
             <a
-
+               href="tel:{{mealProvider.contacts.phone}}"
+               class="btn btn-xs btn-default">
+               <i class="fa fa-globe" aria-hidden="true"></i>
+            </a>
+            <a
+               href="{{mealProvider.homePage}}"
                class="btn btn-xs btn-default">
                <i class="fa fa-phone" aria-hidden="true"></i>
             </a>
@@ -18,6 +23,6 @@
            </li>
       </ul>
 
-      
+
    </div>
 </div>
