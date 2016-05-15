@@ -3,7 +3,6 @@ import { NgGrid, NgGridItem, NgGridConfig } from 'angular2-grid';
 import {MealProviderComponent, MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MapComponent} from '../../common/map'; import {Box}        from './box.model';
 import {BoxConfig} from './box.config';
-
 @Component({
     selector: 'box-view',
     providers: [MealProviderService],
@@ -52,8 +51,7 @@ export class BoxView {
                     console.error('you have reach the maximum number of boxes! we can show in tthis version only ' + this.boxes.length + ' boxes');
                 }
 
-            }
-        });
+         });
 
     }
 

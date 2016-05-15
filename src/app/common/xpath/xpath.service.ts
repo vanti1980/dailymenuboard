@@ -38,7 +38,6 @@ export class XpathService {
             var fragment = jquery.parseHTML(data);
             wgxpath.install(window);
             var resultMap: { [key: string]: string } = {};
-            console.log("*****xpaths to resolve:" + xpaths);
             for (var xpath of xpaths) {
               if (xpath) {
                 var result = window.document.evaluate(xpath, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);

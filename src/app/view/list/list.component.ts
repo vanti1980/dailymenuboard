@@ -20,7 +20,7 @@ export class ListView {
         console.log('ngOnInit');
         //this.mealProviderService.ngOnInit();
 
-        this.mealProviderService.getDailyMeals().subscribe((array) => {
+        this.mealProviderService.getDailyMealsByMealSets().subscribe((array) => {
             this.list = array;
         });
 

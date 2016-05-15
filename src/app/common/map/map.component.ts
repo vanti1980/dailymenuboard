@@ -33,12 +33,10 @@ export class MapComponent {
   }
 
   ngOnInit() {
-    this.hq = {
-      location: this.mapService.getCachedHome(),
-      color: '55ee55'
-    };
+    this.hq = this.mapService.getCachedHome();
 
     this.markers.push(this.hq, ...this.mealProviders.map((provider)=> {return {
+      name: provider.name,
       location: provider.location,
       color: provider.color
     }}));
@@ -46,10 +44,11 @@ export class MapComponent {
   }
 
   public getIconUrl(mealProvider: MealProvider) : string {
-    return this.mapService.getIconUrl(IconType.PROVIDER, mealProvider.color);
-  }
-
-  public getHQIconUrl() : string {
-    return this.mapService.getIconUrl(IconType.HOME, "55e5e5");
+    if (mealProvider.name === 'home') {
+      return this.mapService.getIconUrl(IconType.HOME, "55e5e5");
+    }
+    else {
+      return this.mapService.getIconUrl(IconType.PROVIDER, mealProvider.color);
+    }
   }
 }
