@@ -25,7 +25,12 @@ export class MealProviderService {
 
   init() {
     // create mock data
-    //TODO remove if meal provider can be added
+    if (this.getCachedMealProviders().length == 0) {
+      this.prepareMockData();
+    }
+  }
+
+  private prepareMockData() {
     this.cacheMealProviders([
       new MealProvider(
         'Bonnie',
