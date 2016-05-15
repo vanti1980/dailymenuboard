@@ -44,13 +44,12 @@ export class App {
 
     public onSubmit() {
 
-        console.log(JSON.stringify(this.marker));
         this.mapService.getLocation(this.marker.address).subscribe((myLocation) => {
            this.marker.location = myLocation;
            this.mapService.cacheHome(this.marker);
         });
 
-         this.mapComponent.ngOnInit()
+         //this.mapComponent.ngOnInit()
 
    }
 
