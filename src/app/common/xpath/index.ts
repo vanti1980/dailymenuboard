@@ -1,1 +1,1 @@
-export * from './meal-provider-detail.service';
+export * from './xpath/xpath.service';
