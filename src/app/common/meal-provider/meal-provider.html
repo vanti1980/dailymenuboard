@@ -1,6 +1,9 @@
-<div [ngStyle]="{'background-color': '#' + mealProvider.color , 'height' : '100%'}">
+<div
+   [ngStyle]="{'background-color': '#' + mealProvider.color , 'height' : '100%'}"
+   class="mealProviderDiv"
+   >
 
-   <div class="well well-sm">
+   <div class="well well-sm" style="border-radius: 10px 10px 0px 0px;">
          <label class="h3" style="margin: 0px">{{mealProvider.name}}</label>
          <div class="pull-right">
             <a
