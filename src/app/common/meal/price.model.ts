@@ -4,7 +4,6 @@ export class Price {
   }
 
   public static fromString(value:string):Price {
-    console.log("****fromString:" + value);
     if (!value) {
       return null;
     }
@@ -12,7 +11,6 @@ export class Price {
     if (tokens.length == 1) {
       return new Price(Number(prepareAmount(tokens[0])),"");
     }
-    console.log("*****price:" + prepareAmount(tokens[0]));
     let amount = Number(prepareAmount(tokens[0]));
     if (Number.isNaN(amount)) {
         return new Price(Number(prepareAmount(tokens[1])), tokens[0]);

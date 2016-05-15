@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
+import {MapService} from './common/map';
 import {XpathService} from './common/xpath';
 
 //TODO put back if they confirm pull request for Angular2 RC compatibility
@@ -11,7 +12,7 @@ import {ListView} from './view/list';
 @Component({
     selector: 'app',
     pipes: [],
-    providers: [XpathService],
+    providers: [XpathService, MapService],
     directives: [ROUTER_DIRECTIVES],
     styles: [
         //require('normalize.css')

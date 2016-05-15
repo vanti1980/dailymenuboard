@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
-import {GeoCodeResponse, Location, IconType} from './map.model.ts';
+import {GeoCodeResponse, Location, Marker, IconType} from './map.model.ts';
 
 const KEY_HOME = 'home';
 
@@ -11,18 +11,18 @@ const KEY_HOME = 'home';
 export class MapService {
     constructor(private http: Http) {
         //TODO remove when it can be specified using UI
-        this.cacheHome({ lat: 47.4933, lng: 19.0578 });
+        this.cacheHome({ name:'home', location: {lat: 47.4933, lng: 19.0578}, color: '55ee55' });
     }
 
-    public cacheHome(location: Location) {
-        localStorage.setItem(KEY_HOME, JSON.stringify(location));
+    public cacheHome(marker: Marker) {
+        localStorage.setItem(KEY_HOME, JSON.stringify(marker));
     }
 
-    public getCachedHome(): Location {
+    public getCachedHome(): Marker {
         var homeString = localStorage.getItem(KEY_HOME);
         if (homeString) {
             try {
-                return <Location>JSON.parse(homeString);
+                return <Marker>JSON.parse(homeString);
             }
             catch (e) {
                 console.log(e);
@@ -50,4 +50,22 @@ export class MapService {
             .map((res) => <GeoCodeResponse>res.json())
             .map((geoResp) => geoResp.results[0].geometry.location);
     }
+
+    public calculateDistance(providerLocation: Location, homeLocation: Location):number {
+      // haversine formula, see http://www.movable-type.co.uk/scripts/latlong.html for details
+      var R = 6371000, // metres
+      fi1 = toRadians(providerLocation.lat),
+      fi2 = toRadians(homeLocation.lat),
+      deltaFi = toRadians(homeLocation.lat - providerLocation.lat),
+      deltaLambda = toRadians(homeLocation.lng - providerLocation.lng),
+      a = Math.sin(deltaFi/2) * Math.sin(deltaFi/2) +
+              Math.cos(fi1) * Math.cos(fi2) *
+              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2),
+      c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+}
+
+function toRadians(num: number):number {
+  return num * Math.PI / 180;
 }

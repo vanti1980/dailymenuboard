@@ -24,8 +24,8 @@ export interface Geometry {
 }
 
 export interface Location {
-  lat: Number;
-  lng: Number;
+  lat: number;
+  lng: number;
 }
 
 export interface Viewport {
@@ -34,6 +34,7 @@ export interface Viewport {
 }
 
 export interface Marker {
+  name: string;
   location: Location;
   color: string;
 }

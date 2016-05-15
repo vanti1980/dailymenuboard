@@ -12,12 +12,14 @@ import {MealProvider} from './meal-provider.model';
 
 import {XpathService} from '../xpath/xpath.service';
 
+import {MapService} from '../map/map.service';
+
 const KEY_MEAL_PROVIDERS = 'mealProviders';
 
 @Injectable()
 export class MealProviderService {
 
-  constructor(private xpathService: XpathService) {
+  constructor(private xpathService: XpathService, private mapService: MapService) {
     this.init();
   }
 
@@ -110,6 +112,7 @@ export class MealProviderService {
         }
         provider.mealSets = mealSets;
       });
+      provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);
       return provider;
     });
   }
@@ -123,10 +126,10 @@ export class MealProviderService {
   }
 
   public getDailyMealsByMealSets() : Observable<Array<MealSet>> {
-    return this.getDailyMealProviders().map((provider:MealProvider)=>provider.mealSets).reduce((ar:MealProvider[], provider:MealProvider[])=>{
-      ar.push(...provider);
+    return this.getDailyMealProviders().map((provider:MealProvider)=>provider.mealSets).reduce((ar:MealSet[], mealSet:MealSet[])=>{
+      ar.push(...mealSet);
       return ar;
-    }, new Array<MealProvider>());
+    }, new Array<MealSet>());
   }
 
 }
