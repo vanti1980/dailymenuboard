@@ -1,5 +1,16 @@
 {
+  "button.add": "Új",
   "dialog.addNewRestaurant": "Új étterem hozzáadása",
   "dialog.name": "Név",
-  "dialog.homePage": "Webcím"
+  "dialog.homePage": "Webcím",
+  "dialog.phone": "Telefonszám",
+  "dialog.address": "Cím",
+  "dialog.dailyMealUrl": "Napi menü URL",
+  "dialog.mealSetXpath": "XPath a menü eléréséhez",
+  "dialog.mealSetPriceXpath": "XPath amely a menü árát tartalmazza",
+  "dialog.mealXpath": "XPath amely a menü egy fogását meghatározza",
+  "dialog.color": "Étteremhez rendelt háttérszín",
+  "title": "Daily Menu Board",
+  "view.box": "Éttermek",
+  "view.list": "Menük"
 }

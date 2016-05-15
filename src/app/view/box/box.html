@@ -10,7 +10,7 @@
         <div class="vcenter" *ngIf="box.mealProvider === null || box.mealProvider == undefined">
 
             <button class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#addDialog">
-                <i class="fa fa-plus" aria-hidden="true"></i>Add
+                <i class="fa fa-plus" aria-hidden="true"></i>{{'button.add' | translate}}
             </button>
         </div>
     </div>
@@ -43,32 +43,41 @@
                 <h4 class="modal-title">{{'dialog.addNewRestaurant' | translate}}</h4>
             </div>
             <div class="modal-body">
-                <form role="form">
+                <form role="form" #regForm="ngForm" (ngSubmit)="onSubmit(regForm)">
                     <div class="form-group">
                         <label for="name">{{'dialog.name' | translate}}</label>
-                        <input class="form-control" id="name">
+                        <input type="text" class="form-control" id="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="name">{{'dialog.homePage' | translate}}:</label>
-                        <input class="form-control" id="homePage">
+                        <label for="homePage">{{'dialog.homePage' | translate}}:</label>
+                        <input type="url" class="form-control" id="homePage">
                     </div>
                     <div class="form-group">
-                        <input class="form-control" id="mealUrl">
+                      <label for="phone">{{'dialog.phone' | translate}}:</label>
+                      <input type="tel" class="form-control" id="phone">
                     </div>
                     <div class="form-group">
-                        <label for="mealSetXpath">Meal Set Xpath:</label>
-                        <input class="form-control" id="mealSetXpath">
+                      <label for="address">{{'dialog.address' | translate}}:</label>
+                      <input type="text" class="form-control" id="address">
                     </div>
                     <div class="form-group">
-                        <label for="mealXpath">Meal Xpath:</label>
-                        <input class="form-control" id="mealXpath">
+                        <label for="dailyMealUrl">{{'dialog.dailyMealUrl' | translate}}:</label>
+                        <input type="url" class="form-control" id="dailyMealUrl" required>
                     </div>
                     <div class="form-group">
-                        <label for="namepriceXpath">Price Xpath:</label>
-                        <input class="form-control" id="priceXpath">
+                        <label for="mealSetXpath">{{'dialog.mealSetXpath' | translate}}:</label>
+                        <input type="text" class="form-control" id="mealSetXpath">
                     </div>
                     <div class="form-group">
-                        <label for="backgroundColor">Background color:</label>
+                        <label for="mealSetPriceXpath">{{'dialog.mealSetPriceXpath' | translate}}:</label>
+                        <input type="text" class="form-control" id="mealSetPriceXpath">
+                    </div>
+                    <div class="form-group">
+                        <label for="mealXpath">{{'dialog.mealXpath' | translate}}:</label>
+                        <input type="text" class="form-control" id="mealXpath">
+                    </div>
+                    <div class="form-group">
+                        <label for="backgroundColor">{{'dialog.color' | translate}}:</label>
 
                     </div>
                 </form>

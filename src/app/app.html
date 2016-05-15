@@ -8,7 +8,7 @@
 
                 <a class="btn" href="#" style="color: white">
                     <i class="fa fa-2x fa-cutlery" title="Daily Menu Board" aria-hidden="true"></i>
-                    <label class="h4">Daily Menu Board</label>
+                    <label class="h4">{{'title' | translate}}</label>
                 </a>
 
 
@@ -20,10 +20,10 @@
 
             <ul class="nav navbar-nav">
                 <li [class.active]="isActive(['Box'])">
-                    <a [routerLink]="['Box']">Boxes</a>
+                    <a [routerLink]="['Box']">{{'view.box' | translate}}</a>
                 </li>
                 <li [class.active]="isActive(['List'])">
-                    <a [routerLink]="['List']">List</a>
+                    <a [routerLink]="['List']">{{'view.list' | translate}}</a>
                 </li>
             </ul>
 

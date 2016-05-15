@@ -1,5 +1,16 @@
 {
+  "button.add": "Add",
   "dialog.addNewRestaurant": "Add New Restaurant",
   "dialog.name": "Name",
-  "dialog.homePage": "Home page"
+  "dialog.homePage": "Home page",
+  "dialog.phone": "Phone",
+  "dialog.address": "Address",
+  "dialog.dailyMealUrl": "URL to access daily meal offered for today",
+  "dialog.mealSetXpath": "XPath that defines a menu",
+  "dialog.mealSetPriceXpath": "XPath that defines the price for the menu",
+  "dialog.mealXpath": "XPath for a dish of the menu",
+  "dialog.color": "Background color for restaurant",
+  "title": "Daily Menu Board",
+  "view.box": "Restaurants",
+  "view.list": "Menus"
 }
