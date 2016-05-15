@@ -9,32 +9,15 @@
             <!-- Icon on the timeline -->
             <div class="timeline-content" [ngStyle]="{'background-color': '#' + mealSet.mealProvider.color , 'height' : '100%'}">
 
+               <meal-provider
+                [mealProvider]="mealSet.mealProvider "
+                *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=u ndefined "
+                [showMealSet]="false"
+               ></meal-provider>
 
                   <meal-set [mealSet]="mealSet" *ngIf="mealSet !==null && mealSet !=undefined"></meal-set>
 
-                      <!-- popover ? -->
-                      <div style="height: 50px">
-                      <button class="btn btn-danger btn-lg pull-right" data-toggle="modal " data-target="#provider ">
-                          <i class="fa fa-cutlery " aria-hidden="true "></i> Restaurant
-                      </button>
-                   </div>
-
-
-
-
-                   <!-- Modal -->
-                   <div id="provider "  class="modal fade " role="dialog ">
-                     <div class="modal-dialog ">
-                         <meal-provider [mealProvider]="mealSet.mealProvider " *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=u ndefined "></meal-provider>
-
-                         <div class="modal-footer ">
-                           <button type="button " class="btn btn-default pull-right" data-dismiss="modal ">Close</button>
-                         </div>
-
-
-                     </div>
-                   </div>
-
+                  
 
                    <!-- Content -->
                    <div class="timeline-date ">

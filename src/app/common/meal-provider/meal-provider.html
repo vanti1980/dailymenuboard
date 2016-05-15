@@ -1,26 +1,26 @@
 <div [ngStyle]="{'background-color': '#' + mealProvider.color , 'height' : '100%'}">
 
    <div class="well well-sm">
-         <label>{{mealProvider.name}}</label>
+         <label class="h3" style="margin: 0px">{{mealProvider.name}}</label>
          <div class="pull-right">
             <a
                href="{{mealProvider.homePage}}"
                class="btn btn-xs btn-default"
                target="_blank"
                >
-               <i class="fa fa-home" aria-hidden="true"></i>
+               <i class="fa fa-home fa-2x" aria-hidden="true"></i>
             </a>
             <a
                href="tel:{{mealProvider.contacts.phone}}"
                class="btn btn-xs btn-default"
                target="_blank"
                >
-               <i class="fa fa-phone" aria-hidden="true"></i>
+               <i class="fa fa-phone fa-2x" aria-hidden="true"></i>
             </a>
          </div>
    </div>
 
-   <div class="container-fluid">
+   <div class="container-fluid" *ngIf="showMealSet===true">
         <meal-set [mealSet]="mealSet" *ngFor="let mealSet of mealProvider.mealSets"></meal-set>
    </div>
 </div>
