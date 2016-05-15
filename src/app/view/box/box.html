@@ -7,7 +7,6 @@
             [showMealSet]="true"
          ></meal-provider>
 
-
         <div class="vcenter" *ngIf="box.mealProvider === null || box.mealProvider == undefined">
 
             <button class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#addDialog">
@@ -50,22 +49,25 @@
                         <input class="form-control" id="name">
                     </div>
                     <div class="form-group">
-                        <label for="name">Meal Url:</label>
+                        <label for="mealUrl">Meal Url:</label>
                         <input class="form-control" id="mealUrl">
                     </div>
                     <div class="form-group">
-                        <label for="name">Meal Set Xpath:</label>
+                        <label for="mealSetXpath">Meal Set Xpath:</label>
                         <input class="form-control" id="mealSetXpath">
                     </div>
                     <div class="form-group">
-                        <label for="name">Meal Xpath:</label>
+                        <label for="mealXpath">Meal Xpath:</label>
                         <input class="form-control" id="mealXpath">
                     </div>
                     <div class="form-group">
-                        <label for="name">Price Xpath:</label>
+                        <label for="namepriceXpath">Price Xpath:</label>
                         <input class="form-control" id="priceXpath">
                     </div>
+                    <div class="form-group">
+                        <label for="backgroundColor">Background color:</label>
 
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
