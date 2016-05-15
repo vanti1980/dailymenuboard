@@ -1,46 +1,46 @@
-# This is your [AngularAttack](https://www.angularattack.com) 2016 Repo
-
-This repo is the start of your AngularAttack 2016 entry. It contains the simple [Angular2 starter](https://angular.io/docs/ts/latest/quickstart.html) files.
-
-**DO NOT MAKE ANY CODE CHECKINS TO THIS REPOSITORY BEFORE THE COMPETITION OFFICIALLY BEGINS.**
-
-**DOING SO COULD DISQUALIFY YOU.**
+# Daily Menu Board
 
 
-However, before the competition starts, there are some things we encourage you to do to get prepared for the competition.
+## Quick Intro
+
+Aggregates daily lunch offerings of nearby restaurants.
 
 
-## Step 1) Get Your Local Environment setup
+## Description
 
-Clone this repo locally, and make sure all your team members have access to it.
-
-* Install the latest [Node / NPM](https://nodejs.org).
-
-* `git clone git@github.com:rumblex/angularattack2016-dailymenuboard.git`
-
-* `cd angularattack2016-dailymenuboard`
-
-* `npm install`
-
-* `npm start` will start the server locally to test that everything is running correctly
+We often had the problem that we had to open 4-5 webpages to decide where to go to have a lunch.
+Every website publishes its daily menu offering in a unique format. Therefore this little application might be useful.
 
 
-## Step 2) Deploy Your App
+## Instructions
 
-While you can't make any checkins, what you **can** do is deploy this sample app to [Surge](https://surge.sh) (our competition hosting provider).
-
-* `npm install -g surge`
-
-* `surge .`
-
-Note: please do not remove the `CNAME` file, as that tells it where to deploy to.
-
-## Step 3) Add Your Team Members
-
-* `surge . --add vanti@freemail.hu,csini@gmx.com`
+Tested with Chrome and FF.
+2 restaurants are pre-filled. Another two can be added.
+We plan to implement more user friendly features in the near future.
 
 
-## Step 4) Wait til competition starts
+## Resources, technologies used
 
-It begins at exactly [May 14 at 00:00 UTC](https://www.wolframalpha.com/input/?i=May+14,+2016+0:00+UTC). Once the competition starts,   you can write over this project.
+Angular2-Webpack-Starter including
+  - angular 2.0 RC 1 (starting with) with TypeScript
+  - rxjs
+  - webpack
+  - karma
+  - istanbul
+  - protractor
+  etc.
 
+- bootstrap-sass
+- angular2-google-maps
+- angular2-bootstrap-confirm
+- jquery (with jquery.xdomainajax.js as custom plugin)
+- font-awesome
+- angular2-grid
+- ng2-translate
+- angular2-color-picker
+- wgxpath
+- timeline
+
+Tools:
+- Chrome
+- Atom + atom-typescript
