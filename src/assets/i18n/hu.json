@@ -16,6 +16,7 @@
   "dialog.mealXpath": "XPath amely a menü egy fogását meghatározza",
   "dialog.color": "Étteremhez rendelt háttérszín",
   "marker.home": "Az Ön pozíciója",
+  "message.validation.color": "A színt hexadecimális formátumban kell megadni, pl. ff11cc",
   "message.validation.required": "Kötelező mező",
   "title": "Daily Menu Board",
   "view.box": "Éttermek",

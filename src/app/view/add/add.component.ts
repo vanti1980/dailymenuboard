@@ -1,4 +1,4 @@
-import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators} from '@angular/common';
+import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
 import {Component} from '@angular/core';
 
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
@@ -6,7 +6,7 @@ import {MealProvider, MealProviderService} from '../../common/meal-provider';
 @Component({
     selector: 'add-view',
     providers: [MealProviderService],
-    directives: [],
+    directives: [NgClass],
     template: require('./add.html')
 })
 export class AddComponent {
@@ -17,25 +17,31 @@ export class AddComponent {
     constructor(private builder: FormBuilder, private mealProviderService: MealProviderService) {
         this.provider = new MealProvider(null, null, {}, null, {}, {}, {}, null, null);
         this.group = this.builder.group({
-            name: ['', Validators.compose([Validators.required, duplicatedFactory(mealProviderService, this.provider)])],
+            name: ['', Validators.compose([Validators.required, duplicatedValidatorFactory(mealProviderService, this.provider)])],
             homePage: new Control(),
             phone: new Control(),
             address: new Control(),
             dailyMealUrl: new Control(),
             mealSets: new ControlArray([new Control()]),
-            color: new Control()
+            color: ['', Validators.compose([Validators.required, colorValidator])]
         });
     }
 
-    onNgInit() {
+    ngOnInit() {
     }
 
     onSubmit() {
-        console.log("*****submitted:");
     }
 }
 
-function duplicatedFactory(mealProviderService: MealProviderService, currentProvider: MealProvider) {
+function colorValidator(control: Control) {
+  if (control.value && !control.value.match(/([0-9]|[a-f]|[A-F]){6}/)) {
+    return { 'color': true };
+  }
+  return null;
+}
+
+function duplicatedValidatorFactory(mealProviderService: MealProviderService, currentProvider: MealProvider) {
     return (control: Control) => {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.name == currentProvider.name) {

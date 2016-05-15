@@ -16,6 +16,7 @@
   "dialog.mealXpath": "XPath for a dish of the menu",
   "dialog.color": "Background color for restaurant",
   "marker.home": "Your position",
+  "message.validation.color": "Color should be given in hexadecimal format, e.g. ff11cc",
   "message.validation.required": "Field is required",
   "title": "Daily Menu Board",
   "view.box": "Restaurants",
