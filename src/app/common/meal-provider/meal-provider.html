@@ -1,0 +1,18 @@
+<div [ngStyle]="{'background-color': '#' + value.color , 'height' : '100%'}">
+
+   <div class="well well-sm">
+         <label>{{value.name}}</label>
+   </div>
+
+   <div class="container-fluid">
+      <ul class="list-group">
+           <li class="list-group-item" *ngFor="let mealSet of value.mealSets">
+              <meal-set [value]="mealSet"></meal-set>
+           </li>
+      </ul>
+
+      <p>
+         <label>{{value.contacts.phone}}</label>
+      <p>
+   </div>
+</div>

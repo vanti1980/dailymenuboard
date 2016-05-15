@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import { NgGrid, NgGridItem } from 'angular2-grid';
+import {MealProvderComponent} from '../../common/meal-provider';
 import {MealProvider}        from '../../common/meal-provider/meal-provider.model';
 import {MealProviderService} from '../../common/meal-provider/meal-provider.service';
 import {Box}        from './box.model';
@@ -7,7 +8,7 @@ import {Box}        from './box.model';
 @Component({
     selector: 'box-view',
     providers: [MealProviderService],
-    directives: [NgGrid, NgGridItem],
+    directives: [NgGrid, NgGridItem, MealProvderComponent],
     template: require('./box.html')
 })
 export class BoxView {
@@ -18,7 +19,7 @@ export class BoxView {
 
     constructor(public mealProviderService: MealProviderService) {
         console.log('hello from BoxView');
-        this.maxNumberOfColumn = 3;
+        this.maxNumberOfColumn = 5;
     }
 
 
@@ -39,7 +40,7 @@ export class BoxView {
                     parseInt('' + (i / this.maxNumberOfColumn))
                  )
               );
-          }  
+          }
         });
 
     }
