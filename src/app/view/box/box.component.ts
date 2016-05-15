@@ -14,7 +14,7 @@ import {BoxConfig} from './box.config';
 })
 export class BoxView {
 
-    public boxes: Box[];
+public boxes: Box[];
     public mealProviders: Observable<MealProvider[]>;
     public maxNumberOfColumn: number;
 
@@ -27,7 +27,6 @@ export class BoxView {
             new Box(new BoxConfig(4, 1)),
             new Box(new BoxConfig(4, 2))
         ];
-
     }
 
 
@@ -37,8 +36,8 @@ export class BoxView {
         this.mealProviders.subscribe((array) => {
             for (var i = 0; i < array.length; i++) {
 
-                var provider = array[i];
-
+               var provider = array[i];
+                console.log(provider);
                 if (i <= this.boxes.length) {
                     //TODO refactor, not too elegant -> map
                     this.boxes[i].mealProvider = provider;
@@ -46,8 +45,8 @@ export class BoxView {
                 } else {
                     console.error('you have reach the maximum number of boxes! we can show in tthis version only ' + this.boxes.length + ' boxes');
                 }
-            }
-        });
+              }
+         });
     }
 
 }
