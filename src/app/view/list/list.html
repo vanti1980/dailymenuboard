@@ -7,11 +7,14 @@
             <!-- Single block -->
             <div class="timeline-icon"></div>
             <!-- Icon on the timeline -->
-            <div class="timeline-content" [ngStyle]="{'background-color': '#' + mealSet.mealProvider.color , 'height' : '100%'}">
+            <div
+               *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=undefined "
+               class="timeline-content"
+               [ngStyle]="{'background-color': '#' + mealSet.mealProvider.color , 'height' : '100%'}">
 
                <meal-provider
                 [mealProvider]="mealSet.mealProvider "
-                *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=u ndefined "
+                *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=undefined "
                 [showMealSet]="false"
                ></meal-provider>
 
