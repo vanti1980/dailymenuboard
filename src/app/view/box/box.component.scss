@@ -1,9 +1,8 @@
 
 
 .grid {
-	background-color: #efefef;
+	background-color: white;
 	width: 100%;
-	min-height: 750px;
 }
 
 .grid-item {
@@ -13,6 +12,10 @@
 	-o-transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, right 0.25s, bottom 0.25s;
 	transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, right 0.25s, bottom 0.25s;
 	border: solid 1px;
+	border-radius: 10px;
+}
+.mealProviderDiv{
+	border-radius: 10px;
 }
 
 .grid-item:active, .grid-item.moving {
