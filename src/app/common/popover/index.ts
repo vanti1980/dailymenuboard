@@ -1,1 +1,1 @@
-export * from './popover.component.ts';
+export * from './popover.component';

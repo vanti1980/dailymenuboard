@@ -17,7 +17,7 @@ const KEY_MEAL_PROVIDERS = 'mealProviders';
 @Injectable()
 export class MealProviderService {
 
-  constructor(private mealProviderDetailService: XpathService) {
+  constructor(private xpathService: XpathService) {
 
   }
 
@@ -93,7 +93,7 @@ export class MealProviderService {
         xpaths.push(key);
         xpaths = [...xpaths, ...provider.dailyMealQueryXPathByMealSet[key]];
       }
-      this.mealProviderDetailService.resolveXPaths(provider.dailyMealUrl, ...xpaths).subscribe((res)=> {
+      this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths).subscribe((res)=> {
         var mealSets:MealSet[] = [];
         for (var mealSetKey in provider.mealSetQueryXPath) {
           var meals: Meal[] = [];

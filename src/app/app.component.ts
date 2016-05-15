@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
-import {MealProviderDetailService} from './common/meal-provider-detail';
+import {XpathService} from './common/xpath';
 
 //TODO put back if they confirm pull request for Angular2 RC compatibility
 // import {TranslateService} from 'ng2-translate/ng2-translate';
@@ -11,7 +11,7 @@ import {ListView} from './view/list';
 @Component({
     selector: 'app',
     pipes: [],
-    providers: [MealProviderDetailService],
+    providers: [XpathService],
     directives: [ROUTER_DIRECTIVES],
     styles: [
         //require('normalize.css')
@@ -25,7 +25,7 @@ import {ListView} from './view/list';
 ])
 export class App {
 
-    constructor(public mealProviderDetail: MealProviderDetailService, public router: Router) {
+    constructor(public xpathService: XpathService, public router: Router) {
         console.log('constructor App');
     }
     /*
@@ -38,7 +38,7 @@ export class App {
 
     ngOnInit() {
 
-      console.log(this.mealProviderDetail);
+      console.log(this.xpathService);
       console.log('ngOnInit');
     }
 
