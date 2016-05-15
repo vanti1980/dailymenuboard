@@ -13,7 +13,7 @@
           [iconUrl]="getIconUrl(m)">
 
         <sebm-google-map-info-window>
-          <strong>{{m.name == 'home' ? ('marker.' + m.name | translate) : m.name}}</strong>
+          <strong>{{m.name == 'home' ? (('marker.' + m.name) | translate) : m.name}}</strong>
         </sebm-google-map-info-window>
 
       </sebm-google-map-marker>
