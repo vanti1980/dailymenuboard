@@ -1,7 +1,12 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import { NgGrid, NgGridItem } from 'angular2-grid';
+import { NgGrid, NgGridItem, NgGridConfig } from 'angular2-grid';
+
+import {Observable} from 'rxjs/Rx';
+
 import {MealProviderComponent, MealProvider, MealProviderService} from '../../common/meal-provider';
-import {MapComponent} from '../../common/map'; import {Box}        from './box.model';
+import {MapComponent} from '../../common/map';
+import {Box}        from './box.model';
+import {BoxConfig} from './box.config';
 
 @Component({
     selector: 'box-view',
@@ -10,38 +15,41 @@ import {MapComponent} from '../../common/map'; import {Box}        from './box.m
 })
 export class BoxView {
 
-    public boxes: Box[] = [];
-    public mealProviders: MealProvider[] = [];
+    public boxes: Box[];
+    public mealProviders: Observable<MealProvider[]>;
 
     public maxNumberOfColumn: number;
 
     constructor(public mealProviderService: MealProviderService) {
-        console.log('hello from BoxView');
-        this.maxNumberOfColumn = 5;
+        this.maxNumberOfColumn = 4;
+
+        this.boxes = [
+            new Box(new BoxConfig(1, 1)),
+            new Box(new BoxConfig(1, 2)),
+            new Box(new BoxConfig(4, 1)),
+            new Box(new BoxConfig(4, 2))
+        ];
     }
 
 
     ngOnInit() {
-        console.log('ngOnInit');
         //this.mealProviderService.ngOnInit();
-
-
-
-        this.mealProviderService.getDailyMealsByMealProviders().subscribe((array) => {
-
+        this.mealProviders = this.mealProviderService.getDailyMealsByMealProviders();
+        this.mealProviders.subscribe((array) => {
             for (var i = 0; i < array.length; i++) {
-                console.log(array[i]);
-                //TODO refactor, not too elegant
-                this.mealProviders.push(array[i]);
-                this.boxes.push(
-                    new Box(
-                        array[i],
-                        (i % this.maxNumberOfColumn),
-                        parseInt('' + (i / this.maxNumberOfColumn))
-                    )
-                );
-            }
-        });
+
+               var provider = array[i];
+                console.log(provider);
+
+                if (i <= this.boxes.length) {
+                    //TODO refactor, not too elegant -> map
+                    this.boxes[i].mealProvider = provider;
+
+                } else {
+                    console.error('you have reach the maximum number of boxes! we can show in tthis version only ' + this.boxes.length + ' boxes');
+                }
+              }
+         });
 
     }
 

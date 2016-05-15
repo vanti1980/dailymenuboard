@@ -62,7 +62,7 @@ export class MapService {
               Math.cos(fi1) * Math.cos(fi2) *
               Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2),
       c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
+      return Math.round(R * c);
     }
 }
 

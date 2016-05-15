@@ -24,7 +24,7 @@ import {
   template: require('./map.component.html')
 })
 export class MapComponent {
-  mealProviders: MealProvider[];
+  mealProviders: Observable<MealProvider[]>;
   hq: Marker;
   markers: Marker[] = [];
 
@@ -35,11 +35,14 @@ export class MapComponent {
   ngOnInit() {
     this.hq = this.mapService.getCachedHome();
 
-    this.markers.push(this.hq, ...this.mealProviders.map((provider)=> {return {
-      name: provider.name,
-      location: provider.location,
-      color: provider.color
-    }}));
+    this.mealProviders.subscribe((array)=>{
+      this.markers = [];
+      this.markers.push(this.hq, ...array.map((provider)=> {return {
+        name: provider.name,
+        location: provider.location,
+        color: provider.color
+      }}));
+    })
 
   }
 
