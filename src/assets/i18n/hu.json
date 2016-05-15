@@ -15,6 +15,8 @@
   "dialog.mealSetPriceXpath": "XPath amely a menü árát tartalmazza",
   "dialog.mealXpath": "XPath amely a menü egy fogását meghatározza",
   "dialog.color": "Étteremhez rendelt háttérszín",
+  "marker.home": "Az Ön pozíciója",
+  "message.validation.required": "Kötelező mező",
   "title": "Daily Menu Board",
   "view.box": "Éttermek",
   "view.list": "Menük"
