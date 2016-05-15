@@ -1,6 +1,10 @@
 import {Component, provide} from '@angular/core';
 import {Confirm, ConfirmOptions, Position} from 'angular2-bootstrap-confirm';
 import {PositionService} from 'angular2-bootstrap-confirm/position/position';
+
+import {MealProvider} from '../meal-provider';
+import {MealProviderComponent} from '../meal-provider';
+
 // Or if you're already using the ng2-bootstrap module
 // import {PositionService} from 'ng2-bootstrap/components/position';
 
@@ -13,7 +17,10 @@ import {PositionService} from 'angular2-bootstrap-confirm/position/position';
     })
   ],
   directives: [
-    Confirm
+    Confirm, MealProviderComponent
+  ],
+  inputs: [
+     'provider'
   ],
   template: `
     <button
@@ -31,8 +38,12 @@ import {PositionService} from 'angular2-bootstrap-confirm/position/position';
 })
 export class Popover {
   public title: string = 'Popover title';
-  public message: string = '<span style="background-color: red;"> Popover</span> <br/><br/><b>description</b>';
+  public provider: MealProvider;
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
   public isOpen: boolean = false;
+
+  message(){
+     return '<meal-provider [mealProvider]="provider"></meal-provider>';
+ }
 }
