@@ -68,6 +68,7 @@
     "core-js": "^2.2.2",
     "font-awesome": "^4.6.1",
     "jquery": "^2.2.3",
+    "ng2-translate": "^2.1.0",
     "normalize.css": "^4.1.1",
     "rxjs": "5.0.0-beta.6",
     "wgxpath": "^1.2.0",

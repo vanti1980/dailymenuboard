@@ -5,7 +5,7 @@ import {
     Response,
     ResponseOptions,
     ConnectionBackend,
-    Jsonp
+    Http
 } from '@angular/http';
 import {MockBackend} from '@angular/http/testing';
 
@@ -17,10 +17,10 @@ describe('Test XpathService', () => {
         return [
             BaseRequestOptions,
             MockBackend,
-            provide(Jsonp, {
+            provide(Http, {
                 useFactory:
                 function(backend, defaultOptions) {
-                    return new Jsonp(backend, defaultOptions);
+                    return new Http(backend, defaultOptions);
                 },
                 deps: [MockBackend, BaseRequestOptions]
             }),
