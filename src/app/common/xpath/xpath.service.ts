@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
+import {Jsonp} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
 
@@ -12,7 +12,7 @@ var jquery = require('jquery');
 export class XpathService {
    public name: string = 'XpathService';
 
-   constructor(private http:Http) {
+   constructor(private jsonp:Jsonp) {
    }
 
 
@@ -22,6 +22,7 @@ export class XpathService {
 
 
      // Using YQL and JSONP
+     /*
      jquery.ajax({
          url: "http://www.bonnierestro.hu/hu/napimenu/",
 
@@ -37,20 +38,19 @@ export class XpathService {
              q: "select title,abstract,url from search.news where query=\"cat\"",
              format: "json"
          },
-         */
 
          // Work with the response
          success: function( response ) {
              console.log( response ); // server response
          }
      });
+     */
 
 
-
-    return this.http.get(url).map((resp)=>{
+    return this.jsonp.request(url, { method: 'Get' }).map((resp)=>{
         var fragment = jquery.parseHTML(resp.text());
         wgxpath.install(window);
-        var resultMap = {};
+        var resultMap:{[key:string]:string} = {};
         for (var xpath of xpaths) {
           var result = window.document.evaluate(xpath, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
           resultMap[xpath] = result.stringValue;
@@ -60,7 +60,7 @@ export class XpathService {
   }
 
   public generateXPath(url: string, textToSearch: string): Observable<string> {
-    return this.http.get(url).map((resp)=>{
+    return this.jsonp.request(url, { method: 'Get' }).map((resp)=>{
         var fragment = jquery.parseHTML(resp.text());
         wgxpath.install(window);
         var result = window.document.evaluate("//*[contains(text()," + textToSearch + ")]", fragment[0], null, wgxpath.XPathResultType.FIRST_ORDERED_NODE_TYPE, null);

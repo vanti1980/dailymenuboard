@@ -5,7 +5,7 @@ import {
     Response,
     ResponseOptions,
     ConnectionBackend,
-    Http
+    Jsonp
 } from '@angular/http';
 import {MockBackend} from '@angular/http/testing';
 
@@ -17,10 +17,10 @@ describe('Test XpathService', () => {
         return [
             BaseRequestOptions,
             MockBackend,
-            provide(Http, {
+            provide(Jsonp, {
                 useFactory:
                 function(backend, defaultOptions) {
-                    return new Http(backend, defaultOptions);
+                    return new Jsonp(backend, defaultOptions);
                 },
                 deps: [MockBackend, BaseRequestOptions]
             }),
@@ -34,9 +34,9 @@ describe('Test XpathService', () => {
             let response = new ResponseOptions({ body: "<html><body><div id='header'>header</div><div id='content'>content</div></body></html>" });
             conn.mockRespond(new Response(response));
         });
-        var obs = testService.resolveXPath('http://somedomain.com', '//div[@id="header"]/following-sibling::div');
+        var obs = testService.resolveXPaths('http://somedomain.com', '//div[@id="header"]/following-sibling::div');
         obs.subscribe((data) => {
-            expect(data).toBe('content');
+            expect(data).toEqual({'//div[@id="header"]/following-sibling::div':'content'});
         });
     }));
 

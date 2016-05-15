@@ -9,7 +9,7 @@ import {provide} from '@angular/core';
 import {FORM_PROVIDERS, LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 // Angular 2 Http
-import {HTTP_PROVIDERS} from '@angular/http';
+import {JSONP_PROVIDERS} from '@angular/http';
 // Angular 2 Router
 import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 
@@ -19,7 +19,7 @@ import {ROUTER_PROVIDERS} from '@angular/router-deprecated';
 */
 export const APPLICATION_PROVIDERS = [
   ...FORM_PROVIDERS,
-  ...HTTP_PROVIDERS,
+  ...JSONP_PROVIDERS,
   ...ROUTER_PROVIDERS,
   {provide: LocationStrategy, useClass: HashLocationStrategy }
 ];
