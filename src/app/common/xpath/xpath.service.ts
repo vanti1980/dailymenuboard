@@ -18,7 +18,7 @@ export class XpathService {
 
 
 
-    public resolveXPaths(url: string, ...xpaths: string[]): Observable<{ [key: string]: string }> {
+    public resolveXPaths(url: string, ...xpaths: string[]): Observable<XpathResolutionResult> {
 
         return Observable.create((observer) => jquery.ajax({
             url: url,
@@ -37,14 +37,17 @@ export class XpathService {
         .map((data) => {
             var fragment = jquery.parseHTML(data);
             wgxpath.install(window);
-            var resultMap: { [key: string]: string } = {};
+            var xpathResultMap: {[key: string]: string} = {};
             for (var xpath of xpaths) {
               if (xpath) {
                 var result = window.document.evaluate(xpath, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
-                resultMap[xpath] = result.stringValue;
+                xpathResultMap[xpath] = result.stringValue;
               }
             }
-            return resultMap;
+            return {
+              url: url,
+              xpathResult:xpathResultMap
+            };
         });
     }
 
@@ -59,4 +62,10 @@ export class XpathService {
         });
     }
 
+}
+
+export interface XpathResolutionResult
+{
+  url: string;
+  xpathResult: { [key: string]: string};
 }
