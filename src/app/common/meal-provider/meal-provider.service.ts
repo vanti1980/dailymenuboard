@@ -108,7 +108,7 @@ export class MealProviderService {
             price = Price.fromString(res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]);
             console.log("*****price:" + JSON.stringify(price));
           }
-          let mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price);
+          let mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price, provider);
           mealSets.push(mealSet);
         }
         console.log("*****" + JSON.stringify(mealSets));
@@ -122,5 +122,11 @@ export class MealProviderService {
     }, new Array<MealProvider>());
 
   }
+
+
+    public getDailyMeals() : Observable<Array<MealSet>> {
+      //TODO vanti1980
+      return Observable.of(new Array<MealSet>());
+    }
 
 }
