@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
-import {MealProviderDetailService} from './meal-provider-detail';
+import {MealProviderDetailService} from './common/meal-provider-detail';
 
 //TODO put back if they confirm pull request for Angular2 RC compatibility
 // import {TranslateService} from 'ng2-translate/ng2-translate';
@@ -39,7 +39,7 @@ export class App {
     ngOnInit() {
 
       console.log(this.mealProviderDetail);
-console.log('ngOnInit');
+      console.log('ngOnInit');
     }
 
     isActive(instruction: any[]): boolean {
