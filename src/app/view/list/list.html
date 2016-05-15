@@ -7,10 +7,18 @@
 
                <h2 class="list-group-item-heading clearfix">
 
-   	    			<meal-set [mealSet]="mealSet"></meal-set>
-                  
-                  <div class="pull-right">
-                     <popover [provider]="mealSet.provider"></popover>
+   	    			<meal-set
+                     [mealSet]="mealSet"
+                      *ngIf="mealSet !==null && mealSet != undefined"
+                  >
+                  </meal-set>
+
+                  <div class="pull-right" *ngIf="mealSet !==null && mealSet != undefined">
+                     <popover
+                        [provider]="mealSet.provider"
+                        *ngIf="mealSet.provider!=undefined && mealSet.provider!==null"
+                     >
+                     </popover>
 						</div>
 				   </h2>
 
