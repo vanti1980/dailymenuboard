@@ -10,7 +10,7 @@ import {MealSet} from '../meal-set/meal-set.model';
 
 import {MealProvider} from './meal-provider.model';
 
-import {XpathService} from '../xpath/xpath.service';
+import {XpathService, XpathResolutionResult} from '../xpath/xpath.service';
 
 import {MapService} from '../map/map.service';
 
@@ -87,31 +87,41 @@ export class MealProviderService {
   }
 
   private getDailyMealProviders(): Observable<MealProvider> {
-    return Observable.of(this.getCachedMealProviders())
-    .flatMap((mealProvider)=>mealProvider)
-    .map((provider:MealProvider)=>{
+    var providersByUrl:{[key:string]:MealProvider} = {};
+    var providerXPaths:Observable<XpathResolutionResult>[] = [];
+
+    this.getCachedMealProviders()
+    .forEach((provider:MealProvider)=>{
+      providersByUrl[provider.dailyMealUrl] = provider;
       var xpaths:string[] = [];
       for (var key in provider.dailyMealQueryXPathByMealSet) {
         xpaths.push(provider.mealSetQueryXPath[key]);
         xpaths = [...xpaths, ...provider.dailyMealQueryXPathByMealSet[key], provider.mealSetPriceQueryXPathByMealSet[key]];
       }
-      this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths).subscribe((res)=> {
-        let mealSets:MealSet[] = [];
+      providerXPaths.push(this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths));
+    });
 
-        for (var mealSetKey in provider.mealSetQueryXPath) {
-          let meals: Meal[] = [];
-          for (var mealXPath of provider.dailyMealQueryXPathByMealSet[mealSetKey]) {
-            meals.push(new Meal(res[mealXPath].trim()));
-          }
-          let price: Price = null;
-          if (provider.mealSetPriceQueryXPathByMealSet[mealSetKey]) {
-            price = Price.fromString(res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]);
-          }
-          let mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price, provider);
-          mealSets.push(mealSet);
+    return Observable.of(providerXPaths)
+    .flatMap((providerXPath)=>providerXPath)
+    .mergeAll()
+    .map((providerXPath:XpathResolutionResult)=>{
+      let provider = providersByUrl[providerXPath.url];
+      let xpaths = providerXPath.xpathResult;
+      let mealSets:MealSet[] = [];
+
+      for (var mealSetKey in provider.mealSetQueryXPath) {
+        let meals: Meal[] = [];
+        for (var mealXPath of provider.dailyMealQueryXPathByMealSet[mealSetKey]) {
+          meals.push(new Meal(xpaths[mealXPath].trim()));
         }
-        provider.mealSets = mealSets;
-      });
+        let price: Price = null;
+        if (provider.mealSetPriceQueryXPathByMealSet[mealSetKey]) {
+          price = Price.fromString(xpaths[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]);
+        }
+        let mealSet: MealSet = new MealSet(xpaths[provider.mealSetQueryXPath[mealSetKey]], meals, price, provider);
+        mealSets.push(mealSet);
+      }
+      provider.mealSets = mealSets;
       provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);
       return provider;
     });
