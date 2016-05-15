@@ -11,10 +11,20 @@
 
                <div class="pull-right">
 
-                     <button type="button" class="btn btn-danger btn-lg">
-                        <i class="fa fa-cutlery" aria-hidden="true"></i> Restaurant
-                     </button>
 
+<popover></popover>
+                     
+
+                     <div id="popover-content" class="hide">
+                       <form class="form-inline" role="form">
+                         <div class="form-group">
+                           <input class="headerSearch search-query" id="str" name="str" type="text" placeholder="Search..." />
+                           <span class="glyphicon glyphicon-search" style="margin:3px 8px 0 -20px;"></span>
+                           <input class="btn btn-primary btn-xs" id="phSearchButton" type="submit" value="Search" />
+                           <input class="btn btn-primary btn-xs" id="searchButton" type="submit" value="Dictionary" />
+                         </div>
+                       </form>
+                     </div>
 
 							<div class="popover left static-popover" id="testPopover" ng-show="application.test != null && application.test.zeit != null">
 								<div class="arrow"></div>

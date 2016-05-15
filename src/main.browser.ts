@@ -15,8 +15,9 @@ import {ENV_PROVIDERS} from './platform/environment';
 */
 import {App, APP_PROVIDERS} from './app';
 
-import {MealProviderDetailService} from './app/meal-provider-detail';
+import {MealProviderDetailService} from './app/common/meal-provider-detail';
 
+import {MealProviderService} from './app/common/meal-provider/meal-provider.service';
 /*
  * Bootstrap our Angular app with a top level component `App` and inject
  * our Services and Providers into Angular's dependency injection
@@ -25,6 +26,7 @@ export function main(initialHmrState?: any): Promise<any> {
 
   return bootstrap(App, [
      MealProviderDetailService,
+     MealProviderService,
     ...PROVIDERS,
     ...ENV_PROVIDERS,
     ...DIRECTIVES,

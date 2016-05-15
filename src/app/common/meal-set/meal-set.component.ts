@@ -7,7 +7,7 @@ import {Popover} from '../../common/popover';
   template: require('./list.html'),
   directives: [Popover]
 })
-export class ListView {
+export class MealSetComponent {
   constructor() {
 
   }
