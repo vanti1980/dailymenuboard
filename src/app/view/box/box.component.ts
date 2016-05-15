@@ -9,10 +9,13 @@ import {MapComponent} from '../../common/map';
 import {Box}        from './box.model';
 import {BoxConfig} from './box.config';
 
+import {AddComponent} from '../add/add.component';
+
 @Component({
     selector: 'box-view',
     providers: [MealProviderService],
-    directives: [NgGrid, NgGridItem, MealProviderComponent, MapComponent], template: require('./box.html')
+    directives: [NgGrid, NgGridItem, MealProviderComponent, MapComponent, AddComponent],
+    template: require('./box.html')
 })
 export class BoxView {
 
@@ -48,8 +51,5 @@ export class BoxView {
                 }
             }
         });
-    }
-
-    onSubmit(regForm: NgForm) {
     }
 }
