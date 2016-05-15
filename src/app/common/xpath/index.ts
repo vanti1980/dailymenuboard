@@ -1,1 +1,1 @@
-export * from './xpath/xpath.service';
+export * from './xpath.service';

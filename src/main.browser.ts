@@ -15,7 +15,7 @@ import {ENV_PROVIDERS} from './platform/environment';
 */
 import {App, APP_PROVIDERS} from './app';
 
-import {MealProviderDetailService} from './app/common/meal-provider-detail';
+import {XpathService} from './app/common/xpath';
 
 import {MealProviderService} from './app/common/meal-provider/meal-provider.service';
 /*
@@ -25,7 +25,7 @@ import {MealProviderService} from './app/common/meal-provider/meal-provider.serv
 export function main(initialHmrState?: any): Promise<any> {
 
   return bootstrap(App, [
-     MealProviderDetailService,
+     XpathService,
      MealProviderService,
     ...PROVIDERS,
     ...ENV_PROVIDERS,
