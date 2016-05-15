@@ -39,19 +39,17 @@ export class BoxView {
             for (var i = 0; i < array.length; i++) {
 
                 var provider = array[i];
-                console.log(provider);
                 if (i <= this.boxes.length) {
                     //TODO refactor, not too elegant -> map
                     this.boxes[i].mealProvider = provider;
 
                 } else {
-                    console.error('you have reach the maximum number of boxes! we can show in tthis version only ' + this.boxes.length + ' boxes');
+                    console.error('You have reached the maximal number of boxes! We can show in this version of the application only ' + this.boxes.length + ' boxes');
                 }
             }
         });
     }
 
     onSubmit(regForm: NgForm) {
-        console.log(regForm.value);
     }
 }

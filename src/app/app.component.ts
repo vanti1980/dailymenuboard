@@ -26,16 +26,12 @@ import {ListView} from './view/list';
 export class App {
 
     constructor(public xpathService: XpathService, public router: Router, translate: TranslateService) {
-        console.log('constructor App');
         var userLang = navigator.language.split('-')[0];
         translate.setDefaultLang('en');
         translate.use(userLang);
     }
 
     ngOnInit() {
-
-      console.log(this.xpathService);
-      console.log('ngOnInit');
     }
 
     isActive(instruction: any[]): boolean {

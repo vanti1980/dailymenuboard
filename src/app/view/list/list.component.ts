@@ -16,18 +16,13 @@ export class ListView {
     public list: MealSet[] = [];
 
     constructor(public mealProviderService: MealProviderService) {
-        console.log('hello from ListView');
     }
 
     ngOnInit() {
-        console.log('ngOnInit');
-        //this.mealProviderService.ngOnInit();
 
         this.mealProviderService.getDailyMealsByMealSets().subscribe((array) => {
             this.list = array;
         });
-
-        console.log(this.list);
 
         //moch some data
         let meals = new Array<Meal>();

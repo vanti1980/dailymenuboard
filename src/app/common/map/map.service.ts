@@ -25,7 +25,7 @@ export class MapService {
                 return <Marker>JSON.parse(homeString);
             }
             catch (e) {
-                console.log(e);
+                console.error(e);
             }
         }
         return null;

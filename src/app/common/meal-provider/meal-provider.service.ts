@@ -80,7 +80,7 @@ export class MealProviderService {
         return JSON.parse(mealProviderString);
       }
       catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
     return [];
