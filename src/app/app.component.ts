@@ -2,7 +2,6 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {NgForm} from '@angular/common';
 
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
-import {MapService, MapComponent} from './common/map';
 import {XpathService} from './common/xpath';
 
 import {TranslateService} from 'ng2-translate/ng2-translate';
@@ -10,13 +9,16 @@ import {TranslateService} from 'ng2-translate/ng2-translate';
 import {BoxView} from './view/box';
 import {ListView} from './view/list';
 
-import {GeoCodeResponse, Location, Marker, IconType} from './common/map/map.model.ts';
+import {MapService, MapComponent} from './common/map';
+
+
+import {SettingsComponent} from './view/settings';
 
 @Component({
     selector: 'app',
     pipes: [],
-    providers: [XpathService, MapService, MapComponent],
-    directives: [ROUTER_DIRECTIVES],
+    providers: [XpathService, MapService],
+    directives: [ROUTER_DIRECTIVES, SettingsComponent, MapComponent],
     styles: [
         //require('normalize.css')
     ],
@@ -29,34 +31,20 @@ import {GeoCodeResponse, Location, Marker, IconType} from './common/map/map.mode
 ])
 export class App {
 
-   public marker: Marker;
-
-    constructor(public xpathService: XpathService, public router: Router, translate: TranslateService, public mapService:  MapService, public mapComponent: MapComponent) {
+    constructor(public xpathService: XpathService, public router: Router, translate: TranslateService) {
         var userLang = navigator.language.split('-')[0];
         translate.setDefaultLang('en');
         translate.use(userLang);
-        this.marker = this.mapService.getCachedHome();
+
     }
 
     ngOnInit() {
 
     }
 
-    public onSubmit() {
-
-        this.mapService.getLocation(this.marker.address).subscribe((myLocation) => {
-           this.marker.location = myLocation;
-           this.mapService.cacheHome(this.marker);
-        });
-
-         //this.mapComponent.ngOnInit()
-
-   }
 
     isActive(instruction: any[]): boolean {
         return this.router.isRouteActive(this.router.generate(instruction));
     }
-
-
 
 }
