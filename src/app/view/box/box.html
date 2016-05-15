@@ -1,3 +1,4 @@
+
 <div class="grid" [ngGrid]="{'max_cols': maxNumberOfColumn, 'auto_resize': true}">
 
     <div
@@ -5,8 +6,18 @@
       [(ngGridItem)]="box.config"
       >
 
-            <meal-provider [mealProvider]="box.mealProvider"></meal-provider>
+            <meal-provider [mealProvider]="box.mealProvider" *ngIf="box.mealProvider !== null && box.mealProvider != undefined"></meal-provider>
     </div>
 
+
+
+   <div class="grid-item" [ngGridItem]="{'col': 2,
+            'row': 2,  'sizex': 2, 'sizey': 2,
+            'draggable': false, 'resizable': false
+         }">
+
+            <map [mealProviders]="mealProviders"></map>
+   </div>
+
+
 </div>
-<map [mealProviders]="mealProviders"></map>
