@@ -56,7 +56,7 @@ export class MealProviderService {
         {'1': [
           '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/div'
         ]},
-        {'': ''},
+        {'1': '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[3]'},
         {
           lat: 47.4918,
           lng: 19.0541
@@ -90,8 +90,8 @@ export class MealProviderService {
     .map((provider:MealProvider)=>{
       var xpaths:string[] = [];
       for (var key in provider.dailyMealQueryXPathByMealSet) {
-        xpaths.push(key);
-        xpaths = [...xpaths, ...provider.dailyMealQueryXPathByMealSet[key]];
+        xpaths.push(provider.mealSetQueryXPath[key]);
+        xpaths = [...xpaths, ...provider.dailyMealQueryXPathByMealSet[key], provider.mealSetPriceQueryXPathByMealSet[key]];
       }
       this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths).subscribe((res)=> {
         let mealSets:MealSet[] = [];
@@ -104,8 +104,9 @@ export class MealProviderService {
           console.log("*****" + JSON.stringify(meals));
           let price: Price = null;
           if (provider.mealSetPriceQueryXPathByMealSet[mealSetKey]) {
-            price = new Price(Number.parseInt(res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]), "HUF");
-            console.log("*****" + JSON.stringify(price));
+            console.log("******xpath:" + provider.mealSetPriceQueryXPathByMealSet[mealSetKey]);
+            price = Price.fromString(res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]);
+            console.log("*****price:" + JSON.stringify(price));
           }
           let mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price);
           mealSets.push(mealSet);
