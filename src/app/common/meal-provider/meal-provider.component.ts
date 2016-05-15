@@ -13,7 +13,7 @@ import {MealProvider} from './meal-provider.model';
       'mealProvider'
   ]
 })
-export class MealProvderComponent {
+export class MealProviderComponent {
    mealProvider: MealProvider;
 
 }
