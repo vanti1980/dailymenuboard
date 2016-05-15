@@ -25,13 +25,20 @@ export class XpathService {
             dataType: "text",
             type: "get",
             success: function(response) {
-                observer.next(response.responseText);
+              var doc = response.responseText;
+              doc = doc.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi,
+                function (match, capture) {
+                  return "<img no_load_src=\"" +capture+ "\" />";
+                }
+              );
+              observer.next(doc);
             }
         }))
         .map((data) => {
             var fragment = jquery.parseHTML(data);
             wgxpath.install(window);
             var resultMap: { [key: string]: string } = {};
+            console.log("*****xpaths to resolve:" + xpaths);
             for (var xpath of xpaths) {
               if (xpath) {
                 var result = window.document.evaluate(xpath, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
