@@ -22,10 +22,10 @@ export class BoxView {
         this.maxNumberOfColumn = 4;
 
         this.boxes = [
-            new Box(new BoxConfig(0, 0)),
-            new Box(new BoxConfig(1, 0)),
-            new Box(new BoxConfig(0, 3)),
-            new Box(new BoxConfig(1, 3))
+            new Box(new BoxConfig(1, 1)),
+            new Box(new BoxConfig(1, 2)),
+            new Box(new BoxConfig(4, 1)),
+            new Box(new BoxConfig(4, 2))
         ];
     }
 

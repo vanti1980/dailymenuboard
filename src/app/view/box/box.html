@@ -5,15 +5,35 @@
       *ngFor="let box of boxes"
       [(ngGridItem)]="box.config"
       >
+            <meal-provider
+               [mealProvider]="box.mealProvider"
+               *ngIf="box.mealProvider !== null && box.mealProvider != undefined"
+            ></meal-provider>
 
-            <meal-provider [mealProvider]="box.mealProvider" *ngIf="box.mealProvider !== null && box.mealProvider != undefined"></meal-provider>
+
+            <div
+               class="vcenter"
+               *ngIf="box.mealProvider === null || box.mealProvider == undefined"
+            >
+
+               <button
+                  type="button"
+                  class="btn btn-danger btn-lg pull-right"
+               >
+                  <i class="fa fa-plus" aria-hidden="true"></i>Add
+               </button>
+            </div>
     </div>
 
 
 
-   <div class="grid-item" [ngGridItem]="{'col': 2,
-            'row': 2,  'sizex': 2, 'sizey': 2,
-            'draggable': false, 'resizable': false
+   <div class="grid-item" [ngGridItem]="{
+            'col': 2,
+            'row': 1,
+            'sizex': 2,
+            'sizey': 2,
+            'draggable': false,
+            'resizable': false
          }">
 
             <map [mealProviders]="mealProviders"></map>
