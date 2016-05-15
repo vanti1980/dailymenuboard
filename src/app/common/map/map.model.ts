@@ -32,3 +32,12 @@ export interface Viewport {
   northeast: Location;
   southwest: Location;
 }
+
+export interface Marker {
+  location: Location;
+  color: string;
+}
+
+export enum IconType {
+  HOME, PROVIDER
+}

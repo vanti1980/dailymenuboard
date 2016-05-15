@@ -1,19 +1,19 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import { NgGrid, NgGridItem } from 'angular2-grid';
-import {MealProvderComponent} from '../../common/meal-provider';
-import {MealProvider}        from '../../common/meal-provider/meal-provider.model';
-import {MealProviderService} from '../../common/meal-provider/meal-provider.service';
+import {MealProvderComponent,MealProvider,MealProviderService} from '../../common/meal-provider';
+import {MapComponent} from '../../common/map';
 import {Box}        from './box.model';
 
 @Component({
     selector: 'box-view',
     providers: [MealProviderService],
-    directives: [NgGrid, NgGridItem, MealProvderComponent],
+    directives: [NgGrid, NgGridItem, MealProvderComponent, MapComponent],
     template: require('./box.html')
 })
 export class BoxView {
 
     public boxes: Box[] = [];
+    public mealProviders: MealProvider[] = [];
 
     public maxNumberOfColumn : number;
 
@@ -33,6 +33,8 @@ export class BoxView {
 
           for (var i = 0; i < array.length; i++) {
               console.log(array[i]);
+              //TODO refactor, not too elegant
+              this.mealProviders.push(array[i]);
               this.boxes.push(
                  new Box(
                     array[i],
