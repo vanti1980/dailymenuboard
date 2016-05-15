@@ -17,12 +17,6 @@
    </div>
 
    <div class="container-fluid">
-      <ul class="list-group">
-           <li class="list-group-item" *ngFor="let mealSet of mealProvider.mealSets">
-              <meal-set [mealSet]="mealSet"></meal-set>
-           </li>
-      </ul>
-
-
+        <meal-set [mealSet]="mealSet" *ngFor="let mealSet of mealProvider.mealSets"></meal-set>
    </div>
 </div>

@@ -1,10 +1,25 @@
-<ul class="list-group">
-     <li class="list-group-item" *ngFor="let meal of mealSet.meals">
-      <meal [meal]="meal"></meal>
-   </li>
-</ul>
-<div class="pull-right">
-    <label>
-        {{mealSet.price}}
-    </label>
+<div class="panel panel-default">
+<!--
+    <div class="panel-heading">
+        <label class="h4">{{mealSet.name}}</label>
+    </div>
+-->
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let meal of mealSet.meals">
+                <meal [meal]="meal"></meal>
+            </li>
+        </ul>
+        <div class="pull-right" *ngIf="mealSet.price !== null && mealSet.price.value !== null">
+
+            <span class="label label-primary">
+                <label>
+                    {{mealSet.price.value}}
+                </label>
+                <label>
+                    {{mealSet.price.currency}}
+                </label>
+            </span>
+        </div>
+    </div>
 </div>
