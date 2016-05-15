@@ -9,7 +9,7 @@
 
         <div class="vcenter" *ngIf="box.mealProvider === null || box.mealProvider == undefined">
 
-            <button class="btn btn-danger btn-lg pull-right" data-toggle="modal" data-target="#addDialog">
+            <button class="btn btn-danger btn-lg pull-right box-button-top-right" data-toggle="modal" data-target="#addDialog">
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <label>{{'button.add' | translate}}</label>
             </button>
@@ -18,7 +18,7 @@
 
 
 
-    <div class="grid-item" style="border-radius:0" [ngGridItem]="{
+    <div class="grid-item not-rounded no-shadow" [ngGridItem]="{
             'col': 2,
             'row': 1,
             'sizex': 2,
