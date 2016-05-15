@@ -10,10 +10,11 @@ import {MealProvider} from './meal-provider.model';
   template: require('./meal-provider.html'),
   directives: [Popover, MealSetComponent],
   inputs: [
-      'mealProvider'
+      'mealProvider',
+      'showMealSet'
   ]
 })
 export class MealProviderComponent {
-   mealProvider: MealProvider;
-
+   public mealProvider: MealProvider;
+   public showMealSet: boolean;
 }
