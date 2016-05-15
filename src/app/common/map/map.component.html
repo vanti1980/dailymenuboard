@@ -1,0 +1,21 @@
+<sebm-google-map
+      [latitude]="hq.location.lat"
+      [longitude]="hq.location.lng"
+      [zoom]="16"
+      [disableDefaultUI]="false"
+      [zoomControl]="true"
+      (mapClick)="mapClicked($event)">
+
+      <sebm-google-map-marker
+          *ngFor="let m of markers"
+          [latitude]="m.location.lat"
+          [longitude]="m.location.lng"
+          [iconUrl]="getIconUrl(m)">
+
+        <sebm-google-map-info-window>
+          <strong>{{m.name}}</strong>
+        </sebm-google-map-info-window>
+
+      </sebm-google-map-marker>
+
+    </sebm-google-map>
