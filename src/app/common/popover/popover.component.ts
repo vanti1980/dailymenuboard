@@ -39,11 +39,9 @@ import {MealProviderComponent} from '../meal-provider';
 export class Popover {
   public title: string = 'Popover title';
   public provider: MealProvider;
+  public message : string;
   public confirmClicked: boolean = false;
   public cancelClicked: boolean = false;
   public isOpen: boolean = false;
 
-  message(){
-     return '<meal-provider [mealProvider]="provider"></meal-provider>';
- }
 }
