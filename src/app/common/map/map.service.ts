@@ -11,7 +11,7 @@ const KEY_HOME = 'home';
 export class MapService {
     constructor(private http: Http) {
         //TODO remove when it can be specified using UI
-        this.cacheHome({ name:'home', location: {lat: 47.4933, lng: 19.0578}, color: '55ee55' });
+        this.cacheHome({ name:'home', address:'Budapest, Szép u. 2', location: {lat: 47.4933, lng: 19.0578}, color: '55ee55' });
     }
 
     public cacheHome(marker: Marker) {
