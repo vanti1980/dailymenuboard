@@ -1,29 +1,51 @@
 <div class="list">
 
-    <div class="container-fluid">
-        <ul class="list-group">
+    <div class="timeline timeline-left gray-blue">
+        <!-- Main element container -->
+        <div class="timeline-block" *ngFor="let mealSet of list ; let i = index">
 
-            <li class="list-group-item" *ngFor="let mealSet of list">
+            <!-- Single block -->
+            <div class="timeline-icon"></div>
+            <!-- Icon on the timeline -->
+            <div class="timeline-content" [ngStyle]="{'background-color': '#' + mealSet.mealProvider.color , 'height' : '100%'}">
 
-               <h2 class="list-group-item-heading clearfix">
 
-   	    			<meal-set
-                     [mealSet]="mealSet"
-                      *ngIf="mealSet !==null && mealSet != undefined"
-                  >
-                  </meal-set>
+                  <meal-set [mealSet]="mealSet" *ngIf="mealSet !==null && mealSet !=undefined"></meal-set>
 
-                  <div class="pull-right" *ngIf="mealSet !==null && mealSet != undefined">
-                     <popover
-                        [provider]="mealSet.provider"
-                        *ngIf="mealSet.provider!=undefined && mealSet.provider!==null"
-                     >
-                     </popover>
-						</div>
-				   </h2>
+                      <!-- popover ? -->
 
-            </li>
+                      <button class="btn btn-danger btn-lg " data-toggle="modal " data-target="#provider ">
+                          <i class="fa fa-cutlery " aria-hidden="true "></i> Restaurant
+                      </button>
 
-        </ul>
+
+
+
+                   <!-- Modal -->
+                   <div id="provider "  class="modal fade " role="dialog ">
+                     <div class="modal-dialog ">
+                         <meal-provider [mealProvider]="mealSet.mealProvider " *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=u ndefined "></meal-provider>
+
+                         <div class="modal-footer ">
+                           <button type="button " class="btn btn-default " data-dismiss="modal ">Close</button>
+                         </div>
+
+
+                     </div>
+                   </div>
+
+
+                   <!-- Content -->
+                   <div class="timeline-date ">
+                      <label class="h2" *ngIf="mealSet.mealProvider.distance !== null && mealSet.mealProvider.distance !== undefined">{{mealSet.mealProvider.distance}} m</label>
+                   </div>
+                   <!-- Date -->
+               </div>
+
+        </div>
+
     </div>
+
+
+
 </div>
