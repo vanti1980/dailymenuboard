@@ -39,6 +39,7 @@ export class MapComponent {
       this.markers = [];
       this.markers.push(this.hq, ...array.map((provider)=> {return {
         name: provider.name,
+        address: provider.contacts['address'],
         location: provider.location,
         color: provider.color
       }}));

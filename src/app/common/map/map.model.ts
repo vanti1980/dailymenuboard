@@ -35,6 +35,7 @@ export interface Viewport {
 
 export interface Marker {
   name: string;
+  address: string,
   location: Location;
   color: string;
 }
