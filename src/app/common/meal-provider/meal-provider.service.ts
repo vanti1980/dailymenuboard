@@ -10,14 +10,14 @@ import {MealSet} from '../meal-set/meal-set.model';
 
 import {MealProvider} from './meal-provider.model';
 
-import {MealProviderDetailService} from '../meal-provider-detail';
+import {XpathService} from '../xpath/xpath.service';
 
 const KEY_MEAL_PROVIDERS = 'mealProviders';
 
 @Injectable()
 export class MealProviderService {
 
-  constructor(private mealProviderDetailService: MealProviderDetailService) {
+  constructor(private mealProviderDetailService: XpathService) {
 
   }
 

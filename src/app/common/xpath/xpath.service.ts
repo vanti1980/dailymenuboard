@@ -9,8 +9,8 @@ var wgxpath = require('wgxpath');
 var jquery = require('jquery');
 
 @Injectable()
-export class MealProviderDetailService {
-   public name: string = 'MealProviderDetailService';
+export class XpathService {
+   public name: string = 'XpathService';
 
    constructor(private http:Http) {
    }
@@ -18,6 +18,35 @@ export class MealProviderDetailService {
 
 
   public resolveXPaths(url: string, ...xpaths: string[]):Observable<{[key:string]:string}> {
+
+
+
+     // Using YQL and JSONP
+     jquery.ajax({
+         url: "http://www.bonnierestro.hu/hu/napimenu/",
+
+         // The name of the callback parameter, as specified by the YQL service
+         jsonp: "callback",
+
+         // Tell jQuery we're expecting JSONP
+         dataType: "jsonp",
+
+         // Tell YQL what we want and that we want JSON
+         /*
+         data: {
+             q: "select title,abstract,url from search.news where query=\"cat\"",
+             format: "json"
+         },
+         */
+
+         // Work with the response
+         success: function( response ) {
+             console.log( response ); // server response
+         }
+     });
+
+
+
     return this.http.get(url).map((resp)=>{
         var fragment = jquery.parseHTML(resp.text());
         wgxpath.install(window);
