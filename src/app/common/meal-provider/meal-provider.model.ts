@@ -7,9 +7,9 @@ import {MealSet} from '../meal-set/meal-set.model';
 export class MealProvider {
 
     /**
-     * Distance from current location.
+     * Distance from current location in meters.
      */
-    public distance: number;
+    public distance: number = 0;
 
     /**
      * Meal sets available
