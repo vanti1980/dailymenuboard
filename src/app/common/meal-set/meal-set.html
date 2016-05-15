@@ -1,5 +1,8 @@
+
+{{mealSet.meals}}
+
 <p *ngFor="let meal of mealSet.meals">
-   <meal [value]=meal></meal>
+   <meal [meal]="meal"></meal>
 </p>
 <div class="pull-right">
     <label>

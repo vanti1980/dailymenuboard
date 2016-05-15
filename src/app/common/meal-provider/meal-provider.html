@@ -1,18 +1,23 @@
-<div [ngStyle]="{'background-color': '#' + value.color , 'height' : '100%'}">
+<div [ngStyle]="{'background-color': '#' + mealProvider.color , 'height' : '100%'}">
 
    <div class="well well-sm">
-         <label>{{value.name}}</label>
+         <label>{{mealProvider.name}}</label>
+         <div class="pull-right">
+            <a
+
+               class="btn btn-xs btn-default">
+               <i class="fa fa-phone" aria-hidden="true"></i>
+            </a>
+         </div>
    </div>
 
    <div class="container-fluid">
       <ul class="list-group">
-           <li class="list-group-item" *ngFor="let mealSet of value.mealSets">
-              <meal-set [value]="mealSet"></meal-set>
+           <li class="list-group-item" *ngFor="let mealSet of mealProvider.mealSets">
+              <meal-set [mealSet]="mealSet"></meal-set>
            </li>
       </ul>
 
-      <p>
-         <label>{{value.contacts.phone}}</label>
-      <p>
+      
    </div>
 </div>

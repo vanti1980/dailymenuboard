@@ -5,9 +5,9 @@ import {Meal} from '../meal';
     selector: 'meal',
     template: require('./meal.html'),
     inputs: [
-        'value'
+        'meal'
     ]
 })
 export class MealComponent {
-   value : Meal;
+   meal : Meal;
 }
