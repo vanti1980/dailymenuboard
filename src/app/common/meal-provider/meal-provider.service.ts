@@ -84,7 +84,7 @@ export class MealProviderService {
     return [];
   }
 
-  public getDailyMealsByMealProviders() : Observable<Array<MealProvider>> {
+  private getDailyMealProviders(): Observable<MealProvider> {
     return Observable.of(this.getCachedMealProviders())
     .flatMap((mealProvider)=>mealProvider)
     .map((provider:MealProvider)=>{
@@ -101,32 +101,32 @@ export class MealProviderService {
           for (var mealXPath of provider.dailyMealQueryXPathByMealSet[mealSetKey]) {
             meals.push(new Meal(res[mealXPath].trim()));
           }
-          console.log("*****" + JSON.stringify(meals));
           let price: Price = null;
           if (provider.mealSetPriceQueryXPathByMealSet[mealSetKey]) {
-            console.log("******xpath:" + provider.mealSetPriceQueryXPathByMealSet[mealSetKey]);
             price = Price.fromString(res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]);
-            console.log("*****price:" + JSON.stringify(price));
           }
           let mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price, provider);
           mealSets.push(mealSet);
         }
-        console.log("*****" + JSON.stringify(mealSets));
         provider.mealSets = mealSets;
       });
       return provider;
-    })
-    .reduce((ar:MealProvider[], provider:MealProvider)=>{
+    });
+  }
+
+  public getDailyMealsByMealProviders() : Observable<Array<MealProvider>> {
+    return this.getDailyMealProviders().reduce((ar:MealProvider[], provider:MealProvider)=>{
       ar.push(provider);
       return ar;
     }, new Array<MealProvider>());
 
   }
 
-
-    public getDailyMeals() : Observable<Array<MealSet>> {
-      //TODO vanti1980
-      return Observable.of(new Array<MealSet>());
-    }
+  public getDailyMealsByMealSets() : Observable<Array<MealSet>> {
+    return this.getDailyMealProviders().map((provider:MealProvider)=>provider.mealSets).reduce((ar:MealProvider[], provider:MealProvider[])=>{
+      ar.push(...provider);
+      return ar;
+    }, new Array<MealProvider>());
+  }
 
 }
