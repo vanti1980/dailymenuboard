@@ -13,10 +13,11 @@
                   <meal-set [mealSet]="mealSet" *ngIf="mealSet !==null && mealSet !=undefined"></meal-set>
 
                       <!-- popover ? -->
-
-                      <button class="btn btn-danger btn-lg " data-toggle="modal " data-target="#provider ">
+                      <div style="height: 50px">
+                      <button class="btn btn-danger btn-lg pull-right" data-toggle="modal " data-target="#provider ">
                           <i class="fa fa-cutlery " aria-hidden="true "></i> Restaurant
                       </button>
+                   </div>
 
 
 
@@ -27,7 +28,7 @@
                          <meal-provider [mealProvider]="mealSet.mealProvider " *ngIf="mealSet.mealProvider !==null && mealSet.mealProvider !=u ndefined "></meal-provider>
 
                          <div class="modal-footer ">
-                           <button type="button " class="btn btn-default " data-dismiss="modal ">Close</button>
+                           <button type="button " class="btn btn-default pull-right" data-dismiss="modal ">Close</button>
                          </div>
 
 
