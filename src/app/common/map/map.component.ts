@@ -49,7 +49,7 @@ export class MapComponent {
 
   public getIconUrl(mealProvider: MealProvider) : string {
     if (mealProvider.name === 'home') {
-      return this.mapService.getIconUrl(IconType.HOME, "55e5e5");
+      return this.mapService.getIconUrl(IconType.HOME, this.hq.color);
     }
     else {
       return this.mapService.getIconUrl(IconType.PROVIDER, mealProvider.color);
