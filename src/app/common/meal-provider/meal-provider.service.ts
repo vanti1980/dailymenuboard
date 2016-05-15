@@ -18,10 +18,10 @@ const KEY_MEAL_PROVIDERS = 'mealProviders';
 export class MealProviderService {
 
   constructor(private xpathService: XpathService) {
-
+    this.init();
   }
 
-  ngOnInit() {
+  init() {
     // create mock data
     //TODO remove if meal provider can be added
     this.cacheMealProviders([
@@ -94,16 +94,23 @@ export class MealProviderService {
         xpaths = [...xpaths, ...provider.dailyMealQueryXPathByMealSet[key]];
       }
       this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths).subscribe((res)=> {
-        var mealSets:MealSet[] = [];
+        let mealSets:MealSet[] = [];
+
         for (var mealSetKey in provider.mealSetQueryXPath) {
-          var meals: Meal[] = [];
+          let meals: Meal[] = [];
           for (var mealXPath of provider.dailyMealQueryXPathByMealSet[mealSetKey]) {
-            meals.push(new Meal(res[mealXPath]));
+            meals.push(new Meal(res[mealXPath].trim()));
           }
-          var price: Price = res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]];
-          var mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price);
+          console.log("*****" + JSON.stringify(meals));
+          let price: Price = null;
+          if (provider.mealSetPriceQueryXPathByMealSet[mealSetKey]) {
+            price = new Price(Number.parseInt(res[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]), "HUF");
+            console.log("*****" + JSON.stringify(price));
+          }
+          let mealSet: MealSet = new MealSet(res[provider.mealSetQueryXPath[mealSetKey]], meals, price);
           mealSets.push(mealSet);
         }
+        console.log("*****" + JSON.stringify(mealSets));
         provider.mealSets = mealSets;
       });
       return provider;

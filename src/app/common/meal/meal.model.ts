@@ -2,7 +2,7 @@
  * An individual meal
  */
 export class Meal {
-  constructor(name: string) {
-    
+  constructor(public name: string) {
+
   }
 }
