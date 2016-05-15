@@ -130,8 +130,10 @@ export class MealProviderService {
   public getDailyMealsByMealProviders() : Observable<Array<MealProvider>> {
     return this.getDailyMealProviders()
       .scan((ar:MealProvider[], provider:MealProvider)=>{
-        ar.push(provider);
-        console.log("******getDailyMealsByMealProviders():" + JSON.stringify(provider));
+        //TODO hack because reduce did not emit...
+        if (ar.length == 0 || ar[ar.length - 1].name != provider.name) {
+          ar.push(provider);
+        }
         return ar;
       }, new Array<MealProvider>());
 
@@ -141,8 +143,10 @@ export class MealProviderService {
     return this.getDailyMealProviders()
       .map((provider:MealProvider)=>provider.mealSets)
       .scan((ar:MealSet[], mealSet:MealSet[])=>{
-        ar.push(...mealSet);
-        console.log("******getDailyMealsByMealSets():" + JSON.stringify(mealSet));
+        //TODO hack because reduce did not emit...
+        if (ar.length == 0 || ar[ar.length - 1] != mealSet[mealSet.length - 1]) {
+          ar.push(...mealSet);
+        }
         return ar;
       }, new Array<MealSet>());
   }
