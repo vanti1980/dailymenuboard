@@ -9,12 +9,12 @@ export class MealProvider {
     /**
      * Distance from current location.
      */
-    distance: number;
+    public distance: number;
 
     /**
      * Meal sets available
      */
-    mealSets: MealSet[] = [];
+    public mealSets: MealSet[] = [];
 
     constructor(
         public name: string,

@@ -1,43 +1,11 @@
-<div class="grid" [ngGrid]="{'max_cols': 6, 'auto_resize': true}">
+<div class="grid" [ngGrid]="{'max_cols': maxNumberOfColumn, 'auto_resize': true}">
 
-    <div *ngFor="let box of boxes" [(ngGridItem)]="box.config" [ngStyle]="{'background-color': '#' + box.mealProvider.color}">
+    <div
+      *ngFor="let box of boxes"
+      [(ngGridItem)]="box.config"
+      >
 
-            <div class="well well-sm grid-title">
-
-                  <label>{{box.mealProvider.name}}</label>
-
-            </div>
-
-            <div class="container-fluid">
-                <ul class="list-group">
-
-                    <li class="list-group-item" *ngFor="let mealSet of box.mealProvider.mealSets">
-                       <p *ngFor="let meal of mealSet.meals">
-                          <label>{{meal.name}}</label>
-                       </p>
-                       <div class="pull-right">
-                          <label>
-                             {{mealSet.price}}
-                          </label>
-                       </div>
-                    </li>
-                </ul>
-
-                <p>
-                   {{box.mealProvider.contacts.phone}}
-               <p>
-            </div>
-
-
-
-
+            <meal-provider [mealProvider]="box.mealProvider"></meal-provider>
     </div>
 
-
-
-   <div class="grid-item" [ngGridItem]="{'col': 3,
-            'row': 2,  'sizex': 2, 'sizey': 2}">
-
-            <!-- bigmac -->
-   </div>
 </div>

@@ -1,0 +1,23 @@
+<div [ngStyle]="{'background-color': '#' + mealProvider.color , 'height' : '100%'}">
+
+   <div class="well well-sm">
+         <label>{{mealProvider.name}}</label>
+         <div class="pull-right">
+            <a
+
+               class="btn btn-xs btn-default">
+               <i class="fa fa-phone" aria-hidden="true"></i>
+            </a>
+         </div>
+   </div>
+
+   <div class="container-fluid">
+      <ul class="list-group">
+           <li class="list-group-item" *ngFor="let mealSet of mealProvider.mealSets">
+              <meal-set [mealSet]="mealSet"></meal-set>
+           </li>
+      </ul>
+
+      
+   </div>
+</div>

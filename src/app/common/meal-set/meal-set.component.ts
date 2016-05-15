@@ -1,15 +1,15 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-
-import {Popover} from '../../common/popover';
+import {MealComponent} from '../meal/meal.component';
+import {MealSet} from '../meal-set';
 
 @Component({
-  selector: 'list-view',
-  template: require('./list.html'),
-  directives: [Popover]
+    selector: 'meal-set',
+    template: require('./meal-set.html'),
+    directives: [MealComponent],
+    inputs: [
+        'mealSet'
+    ]
 })
 export class MealSetComponent {
-  constructor() {
-
-  }
-
+   mealSet : MealSet;
 }
