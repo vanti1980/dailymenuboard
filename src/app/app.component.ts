@@ -2,6 +2,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {NgForm} from '@angular/common';
 
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
+//TODO put back if they confirm pull request for Angular2 RC compatibility
+// import {TranslateService} from 'ng2-translate/ng2-translate';
 import {XpathService} from './common/xpath';
 
 import {TranslateService} from 'ng2-translate/ng2-translate';
@@ -15,6 +17,14 @@ import {MapService, MapComponent} from './common/map';
 import {SettingsComponent} from './view/settings';
 
 @Component({
+  selector: 'app',
+  pipes: [],
+  providers: [],
+  directives: [ROUTER_DIRECTIVES],
+  styles: [
+    require('normalize.css')
+  ],
+  template: require('./app.html')
     selector: 'app',
     pipes: [],
     providers: [XpathService, MapService],
@@ -23,6 +33,7 @@ import {SettingsComponent} from './view/settings';
         //require('normalize.css')
     ],
     template: require('./app.html')
+
 })
 @RouteConfig([
     { path: '*', component: BoxView },
@@ -35,7 +46,6 @@ export class App {
         var userLang = navigator.language.split('-')[0];
         translate.setDefaultLang('en');
         translate.use(userLang);
-
     }
 
     ngOnInit() {
