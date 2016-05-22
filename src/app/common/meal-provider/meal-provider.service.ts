@@ -6,7 +6,7 @@ import {Meal} from '../meal';
 
 import {Price} from '../meal/price.model';
 
-import {MealSet} from '../meal-set/meal-set.model';
+import {MealSet,MealSetXPath} from '../meal-set/meal-set.model';
 
 import {MealProvider} from './meal-provider.model';
 
@@ -39,12 +39,12 @@ export class MealProviderService {
           phone:'+36307443555'
         },
         'http://www.bonnierestro.hu/hu/napimenu/',
-        {'': ''},
-        {'': [
-          '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[2]/td[3]',
-          '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[3]/td[3]',
-        ]},
-        {'': ''},
+        [
+          new MealSetXPath(undefined, undefined, [
+            '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[2]/td[3]',
+            '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[3]/td[3]',
+          ])
+        ],
         {
           lat: 47.4921,
           lng: 19.0560
@@ -59,11 +59,15 @@ export class MealProviderService {
           phone:'+3612670331'
         },
         'http://www.chictochic.hu/?nav=daily',
-        {'1': '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/b'},
-        {'1': [
-          '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/div'
-        ]},
-        {'1': '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[3]'},
+        [
+          new MealSetXPath(
+            '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/b',
+            '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[3]',
+            [
+              '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/div'
+            ]
+          )
+        ],
         {
           lat: 47.4918,
           lng: 19.0541
@@ -99,9 +103,9 @@ export class MealProviderService {
     .forEach((provider:MealProvider)=>{
       providersByUrl[provider.dailyMealUrl] = provider;
       var xpaths:string[] = [];
-      for (var key in provider.dailyMealQueryXPathByMealSet) {
-        xpaths.push(provider.mealSetQueryXPath[key]);
-        xpaths = [...xpaths, ...provider.dailyMealQueryXPathByMealSet[key], provider.mealSetPriceQueryXPathByMealSet[key]];
+      for (let mealSetXPath of provider.mealSetXPaths) {
+        xpaths.push(mealSetXPath.name);
+        xpaths = [...xpaths, mealSetXPath.price, ...mealSetXPath.meals];
       }
       providerXPaths.push(this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths));
     });
@@ -114,16 +118,16 @@ export class MealProviderService {
       let xpaths = providerXPath.xpathResult;
       let mealSets:MealSet[] = [];
 
-      for (var mealSetKey in provider.mealSetQueryXPath) {
+      for (let mealSetXPath of provider.mealSetXPaths) {
         let meals: Meal[] = [];
-        for (var mealXPath of provider.dailyMealQueryXPathByMealSet[mealSetKey]) {
+        for (let mealXPath of mealSetXPath.meals) {
           meals.push(new Meal(xpaths[mealXPath].trim()));
         }
         let price: Price = null;
-        if (provider.mealSetPriceQueryXPathByMealSet[mealSetKey]) {
-          price = Price.fromString(xpaths[provider.mealSetPriceQueryXPathByMealSet[mealSetKey]]);
+        if (mealSetXPath.price) {
+          price = Price.fromString(xpaths[mealSetXPath.price]);
         }
-        let mealSet: MealSet = new MealSet(xpaths[provider.mealSetQueryXPath[mealSetKey]], meals, price, provider);
+        let mealSet: MealSet = new MealSet(xpaths[mealSetXPath.name], meals, price, provider);
         mealSets.push(mealSet);
       }
       provider.mealSets = mealSets;

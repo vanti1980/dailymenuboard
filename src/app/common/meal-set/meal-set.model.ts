@@ -21,3 +21,14 @@ export class MealSet {
   }
 
 }
+
+/**
+ * The class describes a structure to define XPaths for a meal set.
+ */
+export class MealSetXPath {
+  constructor(
+      public name: string,
+      public price: string,
+      public meals: string[]) {
+    }
+}

@@ -32,23 +32,33 @@
                         <input type="url" class="form-control" id="dailyMealUrl" [ngFormControl]="group.find('dailyMealUrl')" [(ngModel)]="provider.dailyMealUrl" required>
                         <span *ngIf="group.find('dailyMealUrl').dirty && !group.find('dailyMealUrl').valid" class="help-block">{{'message.validation.required' | translate}}</span>
                     </div>
-                    <!-- div class="form-group" *ngFor="let mealSetArray of group.find('mealSets').controls;let i = index">
-                      <div class="form-group">
-                          <label for="{{i}}_mealSetXpath">{{'dialog.mealSetXpath' | translate}}:</label>
-                          <input type="text" class="form-control" id="{{i}}_mealSetXpath">
+                    <div class="panel panel-success" *ngFor="let mealSet of group.find('mealSets').controls;let mealSetIndex = index">
+                      <div class="panel-body bg-success">
+                        <div class="form-group">
+                            <label attr.for="{{mealSetIndex}}_mealSetXpath">{{'dialog.mealSetXpath' | translate}}:</label>
+                            <input type="text" class="form-control" id="{{mealSetIndex}}_mealSetXpath"
+                              [ngFormControl]="mealSet.find('mealSetXpath')"
+                              [(ngModel)]="provider.mealSetXPaths[mealSetIndex].name">
+                        </div>
+                        <div class="form-group">
+                            <label attr.for="{{mealSetIndex}}_mealSetPriceXpath">{{'dialog.mealSetPriceXpath' | translate}}:</label>
+                            <input type="text" class="form-control" id="{{mealSetIndex}}_mealSetPriceXpath"
+                              [ngFormControl]="mealSet.find('mealSetPriceXpath')"
+                              [(ngModel)]="provider.mealSetXPaths[mealSetIndex].price">
+                        </div>
+                        <div class="form-group" *ngFor="let meal of mealSet.find('meals').controls; let mealIndex = index">
+                          <div class="form-group">
+                            <label attr.for="{{mealSetIndex}}_{{mealIndex}}_mealXpath">{{'dialog.mealXpath' | translate}}:</label>
+                            <input type="text" class="form-control" id="{{mealSetIndex}}_{{mealIndex}}_mealXpath"
+                              [ngFormControl]="meal"
+                              [(ngModel)]="provider.mealSetXPaths[mealSetIndex].meals[mealIndex]">
+                          </div>
+                        </div>
                       </div>
-                      <div class="form-group">
-                          <label for="mealSetPriceXpath">{{'dialog.mealSetPriceXpath' | translate}}:</label>
-                          <input type="text" class="form-control" id="mealSetPriceXpath">
-                      </div>
-                      <div class="form-group" *ngFor="let meal of meals">
-                          <label for="mealXpath">{{'dialog.mealXpath' | translate}}:</label>
-                          <input type="text" class="form-control" id="mealXpath">
-                      </div>
-                    </div -->
+                    </div>
                     <div class="form-group" [ngClass]="{'has-error': group.find('color').dirty && !group.find('color').valid}">
                         <label for="backgroundColor">{{'dialog.color' | translate}}:</label>
-                        <input type="text" class="form-control" id="color" [ngFormControl]="group.find('color')" [(ngModel)]="provider.contacts['color']">
+                        <input type="text" class="form-control" id="color" [ngFormControl]="group.find('color')" [(ngModel)]="provider.color">
                         <span *ngIf="group.find('color').dirty && !group.find('color').valid" class="help-block">{{'message.validation.color' | translate}}</span>
                     </div>
                 </div>

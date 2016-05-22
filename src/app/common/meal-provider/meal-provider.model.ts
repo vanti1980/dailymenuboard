@@ -1,5 +1,5 @@
 import {Location} from '../map';
-import {MealSet} from '../meal-set/meal-set.model';
+import {MealSet,MealSetXPath} from '../meal-set/meal-set.model';
 
 /**
  * Restaurant or something else that offers the meal.
@@ -21,9 +21,7 @@ export class MealProvider {
         public homePage: string,
         public contacts: { [key: string]: string },
         public dailyMealUrl: string,
-        public mealSetQueryXPath: { [key: string]: string },
-        public dailyMealQueryXPathByMealSet: { [key: string]: string[] },
-        public mealSetPriceQueryXPathByMealSet: { [key: string]: string },
+        public mealSetXPaths: MealSetXPath[],
         public location: Location,
         public color: string
     ) { }
