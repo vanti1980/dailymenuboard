@@ -1,6 +1,6 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component} from '@angular/core';
-import { MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {Component,ViewChild} from '@angular/core';
+import {ModalComponent,MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
@@ -16,7 +16,10 @@ export class AddComponent {
     group: ControlGroup;
     provider: MealProvider;
     public wizard: Wizard;
-    public dialogOpen: boolean = true;
+
+    @ViewChild(ModalComponent)
+    private modalComponent: ModalComponent;
+
 
     constructor(private builder: FormBuilder, private mealProviderService: MealProviderService) {
     }
@@ -102,14 +105,17 @@ export class AddComponent {
     }
 
     onClose() {
-        this.ngOnInit();
-        this.dialogOpen = false;
+        this.modalComponent.close();
     }
 
     onSubmit() {
         console.log(JSON.stringify(this.provider));
-        this.ngOnInit();
-        this.dialogOpen = false;
+        this.modalComponent.close();
+    }
+
+    public open():void {
+      this.ngOnInit();
+      this.modalComponent.open();
     }
 }
 

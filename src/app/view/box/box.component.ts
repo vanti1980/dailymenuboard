@@ -1,5 +1,5 @@
 import {NgForm} from '@angular/common';
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation, ViewChild} from '@angular/core';
 import { NgGrid, NgGridItem, NgGridConfig } from 'angular2-grid';
 
 import {Observable} from 'rxjs/Rx';
@@ -22,6 +22,9 @@ export class BoxView {
     public boxes: Box[];
     public mealProviders: Observable<MealProvider[]>;
     public maxNumberOfColumn: number;
+
+    @ViewChild(AddComponent)
+    private addComponent: AddComponent;
 
     constructor(public mealProviderService: MealProviderService) {
         this.maxNumberOfColumn = 4;
@@ -58,6 +61,6 @@ export class BoxView {
     }
 
     openAddDialog() {
-
+      this.addComponent.open();
     }
 }
