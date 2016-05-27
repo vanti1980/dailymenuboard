@@ -17,14 +17,6 @@ import {MapService, MapComponent} from './common/map';
 import {SettingsComponent} from './view/settings';
 
 @Component({
-  selector: 'app',
-  pipes: [],
-  providers: [],
-  directives: [ROUTER_DIRECTIVES],
-  styles: [
-    require('normalize.css')
-  ],
-  template: require('./app.html')
     selector: 'app',
     pipes: [],
     providers: [XpathService, MapService],

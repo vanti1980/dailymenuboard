@@ -56,4 +56,8 @@ export class BoxView {
         //Called after every change to input properties and before processing content or child views.
         console.log('ngOnChanges');
     }
+
+    openAddDialog() {
+
+    }
 }

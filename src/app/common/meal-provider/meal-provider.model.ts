@@ -1,5 +1,5 @@
 import {Location} from '../map';
-import {MealSet,MealSetXPath} from '../meal-set/meal-set.model';
+import {MealSet,MealSetXPath,MealSetXPathJSON} from '../meal-set/meal-set.model';
 
 /**
  * Restaurant or something else that offers the meal.
@@ -69,9 +69,9 @@ export interface MealProviderJSON {
     dailyMealUrl: string;
 
     /**
-     * XPath to query daily meal
+     * Array of XPath composite objects
      */
-    dailyMealQueryXPathByMealSet: { [key: string]: string[] };
+    mealSetXPaths: MealSetXPathJSON[];
 
     /**
      * Location

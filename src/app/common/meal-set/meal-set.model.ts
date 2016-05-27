@@ -31,4 +31,42 @@ export class MealSetXPath {
       public price: string,
       public meals: string[]) {
     }
+
+    toJSON(): MealSetXPathJSON {
+        return Object.assign({}, this);
+    }
+
+    static fromJSON(json: MealSetXPathJSON | string): MealSetXPath {
+        if (typeof json === 'string') {
+            return JSON.parse(json, MealSetXPath.reviver);
+        } else {
+            let mealSetXPath = Object.create(MealSetXPath.prototype);
+            return Object.assign(mealSetXPath, json);
+        }
+    }
+
+    static reviver(key: string, value: any): any {
+        return key === "" ? MealSetXPath.fromJSON(value) : value;
+    }
+
+}
+
+/**
+ * Interface for JSON representation of MealSetXPath.
+ */
+export interface MealSetXPathJSON {
+  /**
+   * XPath to get name of MealSet
+   */
+  name: string;
+
+  /**
+   * XPath to get price of MealSet
+   */
+  price: string;
+
+  /**
+   * XPaths to get meals
+   */
+  meals: string[];
 }
