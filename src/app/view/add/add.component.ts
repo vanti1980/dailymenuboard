@@ -2,12 +2,13 @@ import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, Ng
 import {Component,ViewChild} from '@angular/core';
 import {ModalComponent,MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
+import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
 
 @Component({
     selector: 'add-view',
-    providers: [MealProviderService],
+    providers: [MealProviderService, MapService],
     directives: [NgClass, MODAL_DIRECTIVES],
     template: require('./add.html')
 })
@@ -21,7 +22,7 @@ export class AddComponent {
     private modalComponent: ModalComponent;
 
 
-    constructor(private builder: FormBuilder, private mealProviderService: MealProviderService) {
+    constructor(private builder: FormBuilder, private mealProviderService: MealProviderService, private mapService: MapService) {
     }
 
     private createMealSetControlGroup(): ControlGroup {
@@ -53,7 +54,7 @@ export class AddComponent {
                 name: ['', Validators.compose([Validators.required, duplicatedValidatorFactory(this.mealProviderService, this.provider)])],
                 homePage: new Control(),
                 phone: new Control(),
-                address: new Control(),
+                address: ['', Validators.required, addressValidatorFactory(this.mapService)],
                 dailyMealUrl: new Control(),
                 color: ['', Validators.compose([Validators.required, colorValidator])]
             }),
@@ -110,6 +111,7 @@ export class AddComponent {
 
     onSubmit() {
         console.log(JSON.stringify(this.provider));
+        this.mealProviderService.addMealProvider(this.provider);
         this.modalComponent.close();
     }
 
@@ -187,5 +189,24 @@ function duplicatedValidatorFactory(mealProviderService: MealProviderService, cu
             }
         }
 
-    }
+    };
+}
+
+function addressValidatorFactory(mapService: MapService) {
+  return (control: Control) => {
+    return new Promise((resolve, reject) => {
+      mapService.getLocation(control.value).subscribe(
+        location => {
+          if (location) {
+            resolve(null);
+          } else {
+            resolve({address: true});
+          }
+        },
+        err => {
+          resolve({address: true});
+        }
+      );
+    });
+  };
 }

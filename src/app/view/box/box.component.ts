@@ -44,7 +44,7 @@ export class BoxView {
             for (var i = 0; i < array.length; i++) {
 
                 var provider = array[i];
-                if (i <= this.boxes.length) {
+                if (i < this.boxes.length) {
                     //TODO refactor, not too elegant -> map
                     this.boxes[i].mealProvider = provider;
 
@@ -61,6 +61,6 @@ export class BoxView {
     }
 
     openAddDialog() {
-      this.addComponent.open();
+        this.addComponent.open();
     }
 }

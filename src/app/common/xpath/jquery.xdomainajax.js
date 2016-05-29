@@ -2,6 +2,7 @@
  * jQuery.ajax mid - CROSS DOMAIN AJAX
  * ---
  * @author James Padolsey (http://james.padolsey.com)
+ * @author vanti1980 Error handling
  * @version 0.11
  * @updated 12-JAN-10
  * ---
@@ -66,6 +67,11 @@ jquery.ajax = (function(_ajax){
                 };
             })(o.success);
 
+            o.error = (function(_error){
+              return function(jqXHR, textStatus, errorThrown) {
+                _error.call(this, jqXHR, textStatus, errorThrown);
+              };
+            })(o.error);
         }
 
         return _ajax.apply(this, arguments);

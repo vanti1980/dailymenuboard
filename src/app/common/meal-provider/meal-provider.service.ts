@@ -6,7 +6,7 @@ import {Meal} from '../meal';
 
 import {Price} from '../meal/price.model';
 
-import {MealSet,MealSetXPath} from '../meal-set/meal-set.model';
+import {MealSet, MealSetXPath} from '../meal-set/meal-set.model';
 
 import {MealProvider} from './meal-provider.model';
 
@@ -19,145 +19,166 @@ const KEY_MEAL_PROVIDERS = 'mealProviders';
 @Injectable()
 export class MealProviderService {
 
-  constructor(private xpathService: XpathService, private mapService: MapService) {
-    this.init();
-  }
-
-  init() {
-    // create mock data
-    if (this.getCachedMealProviders().length == 0) {
-      this.prepareMockData();
+    constructor(private xpathService: XpathService, private mapService: MapService) {
+        this.init();
     }
-  }
 
-  private prepareMockData() {
-    this.cacheMealProviders([
-      new MealProvider(
-        'Bonnie',
-        'http://www.bonnierestro.hu',
-        {
-          phone:'+36307443555'
-        },
-        'http://www.bonnierestro.hu/hu/napimenu/',
-        [
-          new MealSetXPath(undefined, undefined, [
-            '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[2]/td[3]',
-            '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[3]/td[3]',
-          ])
-        ],
-        {
-          lat: 47.4921,
-          lng: 19.0560
-        },
-        '55e5e5'
-      ),
-      new MealProvider(
-        'Chic-to-Chic',
-        'http://www.chictochic.hu',
-        {
-          address: '1056 Budapest, Irányi u. 27.',
-          phone:'+3612670331'
-        },
-        'http://www.chictochic.hu/?nav=daily',
-        [
-          new MealSetXPath(
-            '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/b',
-            '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[3]',
-            [
-              '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/div'
-            ]
-          )
-        ],
-        {
-          lat: 47.4918,
-          lng: 19.0541
-        },
-        'ff5b9c'
-      )
-    ]);
-  }
-
-
-  public cacheMealProviders(mealProviders:MealProvider[]) {
-    localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
-  }
-
-  public getCachedMealProviders():MealProvider[] {
-    var mealProviderString = localStorage.getItem(KEY_MEAL_PROVIDERS);
-    if (mealProviderString) {
-      try {
-        return JSON.parse(mealProviderString);
-      }
-      catch (e) {
-        console.error(e);
-      }
+    init() {
+        // create mock data
+        if (this.getCachedMealProviders().length == 0) {
+            this.prepareMockData();
+        }
     }
-    return [];
-  }
 
-  private getDailyMealProviders(): Observable<MealProvider> {
-    var providersByUrl:{[key:string]:MealProvider} = {};
-    var providerXPaths:Observable<XpathResolutionResult>[] = [];
+    private prepareMockData() {
+        this.cacheMealProviders([
+            new MealProvider(
+                'Bonnie',
+                'http://www.bonnierestro.hu',
+                {
+                    phone: '+36307443555'
+                },
+                'http://www.bonnierestro.hu/hu/napimenu/',
+                [
+                    new MealSetXPath(undefined, undefined, [
+                        '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[2]/td[3]',
+                        '//div[@id="content"]//h4[text()[contains(.,"09")]]/following-sibling::table[4]//tr[3]/td[3]',
+                    ])
+                ],
+                {
+                    lat: 47.4921,
+                    lng: 19.0560
+                },
+                '55e5e5'
+            ),
+            new MealProvider(
+                'Chic-to-Chic',
+                'http://www.chictochic.hu',
+                {
+                    address: '1056 Budapest, Irányi u. 27.',
+                    phone: '+3612670331'
+                },
+                'http://www.chictochic.hu/?nav=daily',
+                [
+                    new MealSetXPath(
+                        '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/b',
+                        '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[3]',
+                        [
+                            '//*[@id="content-text"]/table[2]//td[contains(text(),"Csütörtök")]/../following-sibling::tr[1]/td[2]/div'
+                        ]
+                    )
+                ],
+                {
+                    lat: 47.4918,
+                    lng: 19.0541
+                },
+                'ff5b9c'
+            )
+        ]);
+    }
 
-    this.getCachedMealProviders()
-    .forEach((provider:MealProvider)=>{
-      providersByUrl[provider.dailyMealUrl] = provider;
-      var xpaths:string[] = [];
-      for (let mealSetXPath of provider.mealSetXPaths) {
-        xpaths.push(mealSetXPath.name);
-        xpaths = [...xpaths, mealSetXPath.price, ...mealSetXPath.meals];
-      }
-      providerXPaths.push(this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths));
+    public addMealProvider(mealProvider: MealProvider) {
+        let mealProviders: Array<MealProvider> = this.getCachedMealProviders().filter((existingProvider) => existingProvider.name != mealProvider.name);
+        mealProviders.push(mealProvider);
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
+        console.log("addMealProvider:" + JSON.stringify(mealProvider));
+        console.log("addMealProvider cached providers:" + JSON.stringify(mealProviders));
+    }
+
+    public removeMealProvider(mealProvider: MealProvider) {
+        let mealProviders: Array<MealProvider> = this.getCachedMealProviders().filter((existingProvider) => existingProvider.name != mealProvider.name);
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
+        console.log("removeMealProvider:" + JSON.stringify(mealProvider));
+        console.log("removeMealProvider cached providers:" + JSON.stringify(mealProviders));
+    }
+
+    public cacheMealProviders(mealProviders: MealProvider[]) {
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
+    }
+
+    public getCachedMealProviders(): MealProvider[] {
+        var mealProviderString = localStorage.getItem(KEY_MEAL_PROVIDERS);
+        if (mealProviderString) {
+            try {
+                return JSON.parse(mealProviderString);
+            }
+            catch (e) {
+                console.error(e);
+            }
+        }
+        return [];
+    }
+
+    private getDailyMealProviders(): Observable<MealProvider> {
+        var providersByUrl: { [key: string]: MealProvider } = {};
+        var providerXPaths: Observable<XpathResolutionResult>[] = [];
+
+        this.getCachedMealProviders()
+            .forEach((provider: MealProvider) => {
+                providersByUrl[provider.dailyMealUrl] = provider;
+                var xpaths: string[] = [];
+                for (let mealSetXPath of provider.mealSetXPaths) {
+                    xpaths.push(mealSetXPath.name);
+                    xpaths = [...xpaths, mealSetXPath.price, ...mealSetXPath.meals];
+                }
+                providerXPaths.push(
+                  this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths)
+                  .catch(()=>Observable.of(<XpathResolutionResult>{ url: provider.dailyMealUrl, xpathResult: {} }))
+                );
     });
 
-    return Observable.of(providerXPaths)
-    .flatMap((providerXPath)=>providerXPath)
+        return Observable.of(providerXPaths)
+    .flatMap((providerXPath) => providerXPath)
     .mergeAll()
-    .map((providerXPath:XpathResolutionResult)=>{
-      let provider = providersByUrl[providerXPath.url];
-      let xpaths = providerXPath.xpathResult;
-      let mealSets:MealSet[] = [];
+    .map((providerXPath: XpathResolutionResult) => {
+        let provider = providersByUrl[providerXPath.url];
+        let xpaths = providerXPath.xpathResult;
+        let mealSets: MealSet[] = [];
 
-      for (let mealSetXPath of provider.mealSetXPaths) {
-        let meals: Meal[] = [];
-        for (let mealXPath of mealSetXPath.meals) {
-          meals.push(new Meal(xpaths[mealXPath].trim()));
+        for (let mealSetXPath of provider.mealSetXPaths) {
+            let meals: Meal[] = [];
+            for (let mealXPath of mealSetXPath.meals) {
+                if (xpaths[mealXPath]) {
+                  meals.push(new Meal(xpaths[mealXPath].trim()));
+                }
+            }
+            let price: Price = null;
+            if (mealSetXPath.price) {
+                price = Price.fromString(xpaths[mealSetXPath.price]);
+            }
+            let mealSet: MealSet = new MealSet(xpaths[mealSetXPath.name], meals, price, provider);
+            mealSets.push(mealSet);
         }
-        let price: Price = null;
-        if (mealSetXPath.price) {
-          price = Price.fromString(xpaths[mealSetXPath.price]);
+        provider.mealSets = mealSets;
+        if (provider.location) {
+          provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);
         }
-        let mealSet: MealSet = new MealSet(xpaths[mealSetXPath.name], meals, price, provider);
-        mealSets.push(mealSet);
-      }
-      provider.mealSets = mealSets;
-      provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);
-      return provider;
+        return provider;
     });
-  }
+    }
 
-  public getDailyMealsByMealProviders() : Observable<Array<MealProvider>> {
+    public getDailyMealsByMealProviders(): Observable < Array < MealProvider >> {
     return this.getDailyMealProviders()
-      .scan((ar:MealProvider[], provider:MealProvider)=>{
-        //TODO hack because reduce did not emit...
-        if (ar.length == 0 || ar[ar.length - 1].name != provider.name) {
-          ar.push(provider);
-        }
-        return ar;
-      }, new Array<MealProvider>());
+        .scan((ar: MealProvider[], provider: MealProvider) => {
+            //TODO hack because reduce did not emit...
+            if (ar.length == 0 || ar[ar.length - 1].name != provider.name) {
+                ar.push(provider);
+            }
+            return ar;
+        }, new Array<MealProvider>());
 
-  }
+}
 
-  public getDailyMealsByMealSets() : Observable<Array<MealSet>> {
+    public getDailyMealsByMealSets(): Observable < Array < MealSet >> {
     return this.getDailyMealProviders()
-      .map((provider:MealProvider)=>provider.mealSets)
-      .scan((ar:MealSet[], mealSet:MealSet[])=>{
-        //TODO hack because reduce did not emit...
-        if (ar.length == 0 || ar[ar.length - 1] != mealSet[mealSet.length - 1]) {
-          ar.push(...mealSet);
-        }
-        return ar;
-      }, new Array<MealSet>());
-  }
+        .map((provider: MealProvider) => provider.mealSets)
+        .scan((ar: MealSet[], mealSet: MealSet[]) => {
+            //TODO hack because reduce did not emit...
+            if (ar.length == 0 || ar[ar.length - 1] != mealSet[mealSet.length - 1]) {
+                ar.push(...mealSet);
+            }
+            return ar;
+        }, new Array<MealSet>());
+}
 
 }

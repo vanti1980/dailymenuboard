@@ -1,0 +1,7 @@
+<!-- modal #confirm (onClose)="onConfirmClose()" (onDismiss)="onConfirmDismiss()" -->
+  <modal #confirm (onClose)="onConfirmClose()">
+    <modal-header [show-close]="true">
+        <h4 class="modal-title">{{msg}}</h4>
+    </modal-header>
+    <modal-footer [show-default-buttons]="true"></modal-footer>
+</modal>

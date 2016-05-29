@@ -22,7 +22,7 @@
             </a>
             <button
                type="button"
-               (click)="removeMealProvider(mealProvider)"
+               (click)="openRemoveDialog(mealProvider)"
                class="btn btn-xs btn-default"
                >
                <i class="fa fa-times fa-2x" aria-hidden="true"></i>
@@ -34,3 +34,4 @@
         <meal-set [mealSet]="mealSet" *ngFor="let mealSet of mealProvider.mealSets"></meal-set>
    </div>
 </div>
+<confirm msg="{{'message.confirm.deleteMealProvider' | translate}}" (onClose)="confirmRemoveMealProvider(data)"></confirm>

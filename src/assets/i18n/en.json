@@ -23,6 +23,7 @@
   "dialog.mealXpath": "XPath for a dish of the menu",
   "dialog.color": "Background color for restaurant",
   "marker.home": "Your position",
+  "message.confirm.deleteMealProvider": "Are you sure to remove the restaurant entry?",
   "message.validation.color": "Color should be given in hexadecimal format, e.g. ff11cc",
   "message.validation.required": "Field is required",
   "title": "Daily Menu Board",

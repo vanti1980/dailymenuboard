@@ -37,7 +37,9 @@ export class MapComponent {
 
     this.mealProviders.subscribe((array)=>{
       this.markers = [];
-      this.markers.push(this.hq, ...array.map((provider)=> {return {
+      this.markers.push(this.hq, ...array
+        .filter((provider)=>provider.location != null)
+        .map((provider)=> {return {
         name: provider.name,
         address: provider.contacts['address'],
         location: provider.location,
