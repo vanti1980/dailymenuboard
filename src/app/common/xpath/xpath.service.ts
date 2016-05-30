@@ -29,6 +29,7 @@ export class XpathService {
               }
             );
             observer.next(doc);
+            observer.complete();
           },
           error: function(jqXHR, textStatus, errorThrown) {
             observer.error(errorThrown);

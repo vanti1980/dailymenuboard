@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnChanges, SimpleChange} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
@@ -23,8 +23,8 @@ import {
   styles: [/*require('./map.component.scss')*/],
   template: require('./map.component.html')
 })
-export class MapComponent {
-  mealProviders: Observable<MealProvider[]>;
+export class MapComponent implements OnChanges {
+  mealProviders: MealProvider[];
   hq: Marker;
   markers: Marker[] = [];
 
@@ -34,19 +34,21 @@ export class MapComponent {
 
   ngOnInit() {
     this.hq = this.mapService.getCachedHome();
+    this.markers = [this.hq];
+  }
 
-    this.mealProviders.subscribe((array)=>{
+  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+    if (changes['mealProviders']) {
       this.markers = [];
-      this.markers.push(this.hq, ...array
-        .filter((provider)=>provider.location != null)
+      this.markers.push(this.hq, ...changes['mealProviders'].currentValue
+        .filter((provider)=>provider && provider.location != null)
         .map((provider)=> {return {
         name: provider.name,
         address: provider.contacts['address'],
         location: provider.location,
         color: provider.color
       }}));
-    })
-
+    }
   }
 
   public getIconUrl(mealProvider: MealProvider) : string {

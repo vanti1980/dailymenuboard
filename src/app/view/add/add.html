@@ -65,23 +65,23 @@
       </form>
     </modal-body>
     <modal-footer>
-      <button type="button" class="btn btn-danger" [disabled]="wizard.step == 1" (click)="onPreviousStep()">
+      <button type="button" class="btn btn-default" [disabled]="wizard.step == 1" (click)="onPreviousStep()">
           <i class="fa fa-caret-left" aria-hidden="true"></i>
           <label>{{'button.previous' | translate}}</label>
       </button>
-      <button type="button" class="btn btn-danger" [ngClass]="{invisible : wizard.step == 1}" [disabled]="group.find('mealSets').controls.length == 1" (click)="onRemoveMealSet()">
+      <button type="button" class="btn btn-default" [ngClass]="{invisible : wizard.step == 1}" [disabled]="group.find('mealSets').controls.length == 1" (click)="onRemoveMealSet()">
           <i class="fa fa-minus" aria-hidden="true"></i>
           <label>{{'dialog.button.menuSet.remove' | translate}}</label>
       </button>
-      <button type="button" class="btn btn-danger" [ngClass]="{invisible: wizard.step == 1}" [disabled]="!wizard.currentControl.valid" (click)="onAddMealSet()">
+      <button type="button" class="btn btn-default" [ngClass]="{invisible: wizard.step == 1}" [disabled]="!wizard.currentControl.valid" (click)="onAddMealSet()">
           <i class="fa fa-plus" aria-hidden="true"></i>
           <label>{{'dialog.button.menuSet.add' | translate}}</label>
       </button>
-      <button type="button" class="btn btn-danger" [hidden]="wizard.step == wizard.lastStep" [disabled]="!wizard.currentControl.valid" (click)="onNextStep()">
+      <button type="button" class="btn btn-primary" [hidden]="wizard.step == wizard.lastStep" [disabled]="!wizard.currentControl.valid" (click)="onNextStep()">
           <i class="fa fa-caret-right" aria-hidden="true"></i>
           <label>{{'button.next' | translate}}</label>
       </button>
-      <button type="button" class="btn btn-danger" [hidden]="wizard.step != wizard.lastStep" [disabled]="!group.valid" (click)='onSubmit()'>
+      <button type="button" class="btn btn-primary" [hidden]="wizard.step != wizard.lastStep" [disabled]="!group.valid" (click)='onSubmit()'>
           <i class="fa fa-check" aria-hidden="true"></i>
           <label>{{'button.submit' | translate}}</label>
       </button>

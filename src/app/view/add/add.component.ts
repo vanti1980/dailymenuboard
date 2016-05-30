@@ -1,7 +1,8 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component,ViewChild} from '@angular/core';
+import {Component,Input, ViewChild} from '@angular/core';
 import {ModalComponent,MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
+import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
@@ -13,7 +14,7 @@ import {MealSetXPath} from '../../common/meal-set';
     template: require('./add.html')
 })
 export class AddComponent {
-
+    @Input() mealProviders: MealProvider[];
     group: ControlGroup;
     provider: MealProvider;
     public wizard: Wizard;
@@ -22,7 +23,11 @@ export class AddComponent {
     private modalComponent: ModalComponent;
 
 
-    constructor(private builder: FormBuilder, private mealProviderService: MealProviderService, private mapService: MapService) {
+    constructor(
+      private emitterService: EmitterService,
+      private builder: FormBuilder,
+      private mealProviderService: MealProviderService,
+      private mapService: MapService) {
     }
 
     private createMealSetControlGroup(): ControlGroup {
@@ -54,7 +59,7 @@ export class AddComponent {
                 name: ['', Validators.compose([Validators.required, duplicatedValidatorFactory(this.mealProviderService, this.provider)])],
                 homePage: new Control(),
                 phone: new Control(),
-                address: ['', Validators.required, addressValidatorFactory(this.mapService)],
+                address: ['', Validators.required, addressValidatorFactory(this.mapService, this.provider)],
                 dailyMealUrl: new Control(),
                 color: ['', Validators.compose([Validators.required, colorValidator])]
             }),
@@ -78,18 +83,14 @@ export class AddComponent {
     }
 
     onNextStep() {
-        console.log('before: valid=' + this.group.valid + ', currentStep=' + this.wizard.step + ', lastStep=' + this.wizard.lastStep + ', mealSetIndex=' + this.wizard.mealSetIndex + ', currentControl=' + this.wizard.currentControl);
         if (/*this.group.valid && */this.wizard.step < this.wizard.lastStep) {
             this.wizard.step++;
-            console.log('after: valid=' + this.group.valid + ', currentStep=' + this.wizard.step + ', lastStep=' + this.wizard.lastStep + ', mealSetIndex=' + this.wizard.mealSetIndex + ', currentControl=' + this.wizard.currentControl);
         }
     }
 
     onPreviousStep() {
-        console.log('before: valid=' + this.group.valid + ', currentStep=' + this.wizard.step + ', lastStep=' + this.wizard.lastStep + ', mealSetIndex=' + this.wizard.mealSetIndex + ', currentControl=' + this.wizard.currentControl);
         if (/*this.group.valid && */this.wizard.step > 1) {
             this.wizard.step--;
-            console.log('after: valid=' + this.group.valid + ', currentStep=' + this.wizard.step + ', lastStep=' + this.wizard.lastStep + ', mealSetIndex=' + this.wizard.mealSetIndex + ', currentControl=' + this.wizard.currentControl);
         }
     }
 
@@ -110,9 +111,9 @@ export class AddComponent {
     }
 
     onSubmit() {
-        console.log(JSON.stringify(this.provider));
         this.mealProviderService.addMealProvider(this.provider);
         this.modalComponent.close();
+        this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
     }
 
     public open():void {
@@ -192,12 +193,14 @@ function duplicatedValidatorFactory(mealProviderService: MealProviderService, cu
     };
 }
 
-function addressValidatorFactory(mapService: MapService) {
+function addressValidatorFactory(mapService: MapService, mealProvider: MealProvider) {
   return (control: Control) => {
     return new Promise((resolve, reject) => {
       mapService.getLocation(control.value).subscribe(
         location => {
           if (location) {
+            mealProvider.location = location;
+            console.log("Meal provider location:" + JSON.stringify(location));
             resolve(null);
           } else {
             resolve({address: true});

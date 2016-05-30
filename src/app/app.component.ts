@@ -2,8 +2,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {NgForm} from '@angular/common';
 
 import {RouteConfig, Router, ROUTER_DIRECTIVES} from '@angular/router-deprecated';
-//TODO put back if they confirm pull request for Angular2 RC compatibility
-// import {TranslateService} from 'ng2-translate/ng2-translate';
+
+import {EmitterService} from './common/event';
 import {XpathService} from './common/xpath';
 
 import {TranslateService} from 'ng2-translate/ng2-translate';
@@ -19,7 +19,7 @@ import {SettingsComponent} from './view/settings';
 @Component({
     selector: 'app',
     pipes: [],
-    providers: [XpathService, MapService],
+    providers: [XpathService, MapService, EmitterService],
     directives: [ROUTER_DIRECTIVES, SettingsComponent, MapComponent],
     styles: [
         //require('normalize.css')

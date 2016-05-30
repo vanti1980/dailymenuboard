@@ -11,12 +11,16 @@
 	-moz-transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, right 0.25s, bottom 0.25s;
 	-o-transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, right 0.25s, bottom 0.25s;
 	transition: width 0.25s, height 0.25s, left 0.25s, top 0.25s, right 0.25s, bottom 0.25s;
-	border: solid 1px;
 	border-radius: 10px;
-	-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
-	box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 5px 5px 3px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 5px 5px 3px 0px rgba(0,0,0,0.75);
+	box-shadow: 5px 5px 3px 0px rgba(0,0,0,0.75);
 }
+
+.empty-grid-item {
+  border: 1px solid grey;
+}
+
 .mealProviderDiv{
 	border-radius: 10px;
 }

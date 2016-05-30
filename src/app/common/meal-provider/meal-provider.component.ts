@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation, ViewChild} from '@angular/core';
 import {ConfirmComponent} from '../../common/confirm';
+import {EmitterService, Events} from '../../common/event';
 
 import {Popover} from '../../common/popover';
 
@@ -27,8 +28,9 @@ export class MealProviderComponent {
    private confirmDialog: ConfirmComponent;
 
 
-   constructor(public mealProviderService: MealProviderService){
-
+   constructor(
+     private emitterService: EmitterService,
+     public mealProviderService: MealProviderService){
    }
 
    openRemoveDialog(mealProvider: MealProvider) {
@@ -37,6 +39,6 @@ export class MealProviderComponent {
 
    confirmRemoveMealProvider(mealProvider: MealProvider) {
      this.mealProviderService.removeMealProvider(mealProvider);
+     this.emitterService.get(Events.MEAL_PROVIDER_REMOVED).emit(mealProvider);
    }
-
 }

@@ -34,4 +34,4 @@
         <meal-set [mealSet]="mealSet" *ngFor="let mealSet of mealProvider.mealSets"></meal-set>
    </div>
 </div>
-<confirm msg="{{'message.confirm.deleteMealProvider' | translate}}" (onClose)="confirmRemoveMealProvider(data)"></confirm>
+<confirm msg="{{'message.confirm.deleteMealProvider' | translate}}" (onClose)="confirmRemoveMealProvider($event)"></confirm>
