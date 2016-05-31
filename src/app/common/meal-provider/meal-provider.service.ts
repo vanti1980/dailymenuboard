@@ -128,7 +128,7 @@ export class MealProviderService {
                     xpaths = [...xpaths, mealSetXPath.price, ...mealSetXPath.meals];
                 }
                 providerXPaths.push(
-                    this.xpathService.resolveXPaths(provider.dailyMealUrl, ...xpaths)
+                    this.xpathService.loadAndResolveXPaths(provider.dailyMealUrl, ...xpaths)
                         .catch(() => Observable.of(<XpathResolutionResult>{ url: provider.dailyMealUrl, xpathResult: {} }))
                 );
             });

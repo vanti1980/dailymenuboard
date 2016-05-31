@@ -24,6 +24,7 @@ export class AddComponent {
     @ViewChild(ModalComponent)
     private modalComponent: ModalComponent;
 
+    //TODO cached daily meal data to be used to validate XPath expression on each change
 
     constructor(
         private emitterService: EmitterService,
@@ -46,12 +47,6 @@ export class AddComponent {
 
     private createMealControl(): Control {
         return new Control();
-    }
-
-    public log(obj: any) {
-        for (var key in obj) {
-            console.log(key + "=" + obj[key]);
-        }
     }
 
     ngOnInit() {

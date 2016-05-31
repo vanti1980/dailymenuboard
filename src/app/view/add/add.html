@@ -61,7 +61,8 @@
             </div>
             <div class="form-group">
                 <label attr.for="{{wizard.mealSetIndex}}_0_mealXpath">{{'dialog.mealXpath' | translate}}:</label>
-                <div class="form-group" *ngFor="let meal of wizard.currentControl.find('meals').controls; let mealIndex = index">
+                <div class="form-group" *ngFor="let meal of wizard.currentControl.find('meals').controls; let mealIndex = index"
+                  [ngClass]="{'has-error': meal.dirty && !meal.valid}">
                     <input type="text" class="form-control dmb-with-icon" id="{{wizard.mealSetIndex}}_{{mealIndex}}_mealXpath" [ngFormControl]="meal" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex]" required="true">
                     <button type="button" class="btn btn-default" [hidden]="wizard.currentControl.find('meals').controls.length == 1" (click)="onRemoveMeal(mealIndex)" title="{{'dialog.button.menu.remove' | translate}}">
                         <i class="fa fa-minus" aria-hidden="true"></i>
