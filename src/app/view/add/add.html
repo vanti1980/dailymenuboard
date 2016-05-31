@@ -9,9 +9,12 @@
       <form role="form" [ngFormModel]="group" (ngSubmit)="onSubmit()" novalidate>
         <div *ngIf="wizard.step == 1">
             <div class="form-group" [ngClass]="{'has-error': wizard.base.find('name').dirty && !wizard.base.find('name').valid}">
-                <label for="name">{{'dialog.name' | translate}}</label>
+                <label for="name" class="required">{{'dialog.name' | translate}}:</label>
                 <input type="text" class="form-control" id="name" [ngFormControl]="wizard.base.find('name')" [(ngModel)]="provider.name" required="true">
-                <div *ngIf="wizard.base.find('name').dirty && !wizard.base.find('name').valid" class="help-block">{{'message.validation.required' | translate}}</div>
+                <div *ngIf="wizard.base.find('name').dirty">
+                  <div *ngIf="wizard.base.find('name').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+                  <div *ngIf="wizard.base.find('name').hasError('duplicated')" class="help-block">{{'message.validation.duplicated' | translate}}</div>
+                </div>
             </div>
             <div class="form-group">
                 <label for="homePage">{{'dialog.homePage' | translate}}:</label>
@@ -22,18 +25,29 @@
                 <input type="tel" class="form-control" id="phone" [ngFormControl]="wizard.base.find('phone')" [(ngModel)]="provider.contacts['phone']">
             </div>
             <div class="form-group">
-                <label for="address">{{'dialog.address' | translate}}:</label>
-                <input type="text" class="form-control" id="address" [ngFormControl]="wizard.base.find('address')" [(ngModel)]="provider.contacts['address']">
+                <label for="address" class="required">{{'dialog.address' | translate}}:</label>
+                <input type="text" class="form-control" id="address" [ngFormControl]="wizard.base.find('address')" [(ngModel)]="provider.contacts['address']" required>
+                <div *ngIf="wizard.base.find('address').dirty">
+                  <div *ngIf="wizard.base.find('address').pending">{{'message.validation.pending' | translate}}</div>
+                  <div *ngIf="wizard.base.find('address').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+                  <div *ngIf="wizard.base.find('address').hasError('address')" class="help-block">{{'message.validation.invalidAddress' | translate}}</div>
+                </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': wizard.base.find('dailyMealUrl').dirty && !wizard.base.find('dailyMealUrl').valid}">
-                <label for="dailyMealUrl">{{'dialog.dailyMealUrl' | translate}}:</label>
+                <label for="dailyMealUrl" class="required">{{'dialog.dailyMealUrl' | translate}}:</label>
                 <input type="url" class="form-control" id="dailyMealUrl" [ngFormControl]="wizard.base.find('dailyMealUrl')" [(ngModel)]="provider.dailyMealUrl" required>
-                <div *ngIf="wizard.base.find('dailyMealUrl').dirty && !wizard.base.find('dailyMealUrl').valid" class="help-block">{{'message.validation.required' | translate}}</div>
+                <div *ngIf="wizard.base.find('dailyMealUrl').dirty">
+                  <div *ngIf="wizard.base.find('dailyMealUrl').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+                  <div *ngIf="wizard.base.find('dailyMealUrl').hasError('duplicated')" class="help-block">{{'message.validation.duplicated' | translate}}</div>
+                </div>
             </div>
             <div class="form-group" [ngClass]="{'has-error': wizard.base.find('color').dirty && !wizard.base.find('color').valid}">
-                <label for="backgroundColor">{{'dialog.color' | translate}}:</label>
-                <input type="text" class="form-control" id="color" [ngFormControl]="wizard.base.find('color')" [(ngModel)]="provider.color">
-                <div *ngIf="wizard.base.find('color').dirty && !wizard.base.find('color').valid" class="help-block">{{'message.validation.color' | translate}}</div>
+                <label for="backgroundColor" class="required">{{'dialog.color' | translate}}:</label>
+                <input type="text" class="form-control" id="color" [ngFormControl]="wizard.base.find('color')" [(ngModel)]="provider.color" required>
+                <div *ngIf="wizard.base.find('color').dirty">
+                  <div *ngIf="wizard.base.find('color').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+                  <div *ngIf="wizard.base.find('color').hasError('color')" class="help-block">{{'message.validation.color' | translate}}</div>
+                </div>
             </div>
         </div>
         <div *ngIf="wizard.step > 1">
@@ -49,14 +63,26 @@
                 <label attr.for="{{wizard.mealSetIndex}}_0_mealXpath">{{'dialog.mealXpath' | translate}}:</label>
                 <div class="form-group" *ngFor="let meal of wizard.currentControl.find('meals').controls; let mealIndex = index">
                     <input type="text" class="form-control dmb-with-icon" id="{{wizard.mealSetIndex}}_{{mealIndex}}_mealXpath" [ngFormControl]="meal" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex]" required="true">
-                    <button type="button" class="btn btn-danger" [hidden]="wizard.currentControl.find('meals').controls.length == 1" (click)="onRemoveMeal(mealIndex)" title="{{'dialog.button.menu.remove' | translate}}">
+                    <button type="button" class="btn btn-default" [hidden]="wizard.currentControl.find('meals').controls.length == 1" (click)="onRemoveMeal(mealIndex)" title="{{'dialog.button.menu.remove' | translate}}">
                         <i class="fa fa-minus" aria-hidden="true"></i>
                     </button>
                     <div *ngIf="meal.dirty && !meal.valid" class="help-block">{{'message.validation.required' | translate}}</div>
                 </div>
             </div>
+            <div class="align-left">
+              <div class="btn-group" dropdown>
+                <button id="single-button" type="button" class="btn btn-default" tooltip="{{'dialog.button.xpath.tooltip' | translate}}" dropdownToggle>
+                    {{'dialog.button.xpath' | translate}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
+                    <li *ngFor="let xpathFragment of xpathFragments" role="menuitem" tooltip="{{'dialog.button.xpath.' + xpathFragment + '.tooltip' | translate}}">
+                      <a class="dropdown-item" href="#" (click)="addXPathFragment(xpathFragment)">{{'dialog.button.xpath.' + xpathFragment | translate}}</a>
+                    </li>
+                </ul>
+              </div>
+            </div>
             <div class="align-right">
-                <button type="button" class="btn btn-danger" (click)="onAddMeal()">
+                <button type="button" class="btn btn-default" (click)="onAddMeal()">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     <label>{{'dialog.button.menu.add' | translate}}</label>
                 </button>

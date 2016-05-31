@@ -1,16 +1,18 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component,Input, ViewChild} from '@angular/core';
-import {ModalComponent,MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {Component, Input, ViewChild} from '@angular/core';
+import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
+import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
+import {XpathTokens} from '../../common/xpath';
 
 @Component({
     selector: 'add-view',
     providers: [MealProviderService, MapService],
-    directives: [NgClass, MODAL_DIRECTIVES],
+    directives: [NgClass, MODAL_DIRECTIVES, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES],
     template: require('./add.html')
 })
 export class AddComponent {
@@ -24,10 +26,10 @@ export class AddComponent {
 
 
     constructor(
-      private emitterService: EmitterService,
-      private builder: FormBuilder,
-      private mealProviderService: MealProviderService,
-      private mapService: MapService) {
+        private emitterService: EmitterService,
+        private builder: FormBuilder,
+        private mealProviderService: MealProviderService,
+        private mapService: MapService) {
     }
 
     private createMealSetControlGroup(): ControlGroup {
@@ -56,11 +58,11 @@ export class AddComponent {
         this.provider = new MealProvider(null, null, {}, null, [this.createMealSetXPath()], null, null);
         this.group = this.builder.group({
             base: this.builder.group({
-                name: ['', Validators.compose([Validators.required, duplicatedValidatorFactory(this.mealProviderService, this.provider)])],
+                name: ['', Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService)])],
                 homePage: new Control(),
                 phone: new Control(),
                 address: ['', Validators.required, addressValidatorFactory(this.mapService, this.provider)],
-                dailyMealUrl: new Control(),
+                dailyMealUrl: ['', Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService)])],
                 color: ['', Validators.compose([Validators.required, colorValidator])]
             }),
             mealSets: new ControlArray([this.createMealSetControlGroup()])
@@ -116,9 +118,18 @@ export class AddComponent {
         this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
     }
 
-    public open():void {
-      this.ngOnInit();
-      this.modalComponent.open();
+    public open(): void {
+        this.ngOnInit();
+        this.modalComponent.open();
+    }
+
+    addXPathFragment(val:string):void {
+      let meals:string[] = this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals;
+      meals[meals.length - 1] += '$' + val;
+    }
+
+    get xpathFragments():string[] {
+      return XpathTokens.values();
     }
 }
 
@@ -182,10 +193,21 @@ function colorValidator(control: Control) {
     return null;
 }
 
-function duplicatedValidatorFactory(mealProviderService: MealProviderService, currentProvider: MealProvider) {
+function duplicatedNameValidatorFactory(mealProviderService: MealProviderService) {
     return (control: Control) => {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
-            if (mealProvider.name == currentProvider.name) {
+            if (mealProvider.name == control.value) {
+                return { 'duplicated': true };
+            }
+        }
+
+    };
+}
+
+function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService) {
+    return (control: Control) => {
+        for (let mealProvider of mealProviderService.getCachedMealProviders()) {
+            if (mealProvider.dailyMealUrl == control.value) {
                 return { 'duplicated': true };
             }
         }
@@ -194,22 +216,22 @@ function duplicatedValidatorFactory(mealProviderService: MealProviderService, cu
 }
 
 function addressValidatorFactory(mapService: MapService, mealProvider: MealProvider) {
-  return (control: Control) => {
-    return new Promise((resolve, reject) => {
-      mapService.getLocation(control.value).subscribe(
-        location => {
-          if (location) {
-            mealProvider.location = location;
-            console.log("Meal provider location:" + JSON.stringify(location));
-            resolve(null);
-          } else {
-            resolve({address: true});
-          }
-        },
-        err => {
-          resolve({address: true});
-        }
-      );
-    });
-  };
+    return (control: Control) => {
+        return new Promise((resolve, reject) => {
+            mapService.getLocation(control.value).subscribe(
+                location => {
+                    if (location) {
+                        mealProvider.location = location;
+                        console.log("Meal provider location:" + JSON.stringify(location));
+                        resolve(null);
+                    } else {
+                        resolve({ address: true });
+                    }
+                },
+                err => {
+                    resolve({ address: true });
+                }
+            );
+        });
+    };
 }

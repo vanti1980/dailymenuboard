@@ -78,8 +78,7 @@ export class BoxView {
               console.error('You have reached the maximal number of boxes! We can show in this version of the application only ' + this.boxes.length + ' boxes');
           }
         },
-        (err)=>{console.log("Error:" + err)},
-        ()=>{console.log("Completed")}
+        (err)=>{console.log("Error:" + err)}
       );
     }
 

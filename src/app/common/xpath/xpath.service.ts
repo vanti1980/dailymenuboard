@@ -2,12 +2,15 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
+import {XpathTokens} from './xpath-tokens.enum';
+
 
 var wgxpath = require('wgxpath');
 
 
 var jquery = require('jquery');
 var jqueryXDomainAjax = require('./jquery.xdomainajax.js');
+
 
 @Injectable()
 export class XpathService {
@@ -46,7 +49,8 @@ export class XpathService {
             var xpathResultMap: {[key: string]: string} = {};
             for (var xpath of xpaths) {
               if (xpath) {
-                var result = window.document.evaluate(xpath, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
+                let resolvedXPath = this.processXPathTokens(xpath);
+                var result = window.document.evaluate(resolvedXPath, fragment[0], null, wgxpath.XPathResultType.STRING_TYPE, null);
                 xpathResultMap[xpath] = result.stringValue;
               }
             }
@@ -55,6 +59,13 @@ export class XpathService {
               xpathResult:xpathResultMap
             };
         });
+    }
+
+    private processXPathTokens(xpath:string):string {
+      for (let token of XpathTokens.values()) {
+        xpath = xpath.replace(new RegExp('\\$' + token, 'g'), XpathTokens.resolve(token));
+      }
+      return xpath;
     }
 
     public generateXPath(url: string, textToSearch: string): Observable<string> {

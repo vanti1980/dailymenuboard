@@ -2,8 +2,9 @@
   display:none;
 }
 
-input[required] {
-  /*background-color: #ff0; */
+label.required::after {
+  content: ' *';
+  color: #a94442;
 }
 
 input:-webkit-autofill {
