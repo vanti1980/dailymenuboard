@@ -18,6 +18,8 @@
   "dialog.button.xpath.dayAbbrOfWeek.tooltip": "Abkürzung des Namen des Tages basierend auf die lokalen Einstellungen des Users",
   "dialog.button.xpath.dayOfWeek": "Name des Tages",
   "dialog.button.xpath.dayOfWeek.tooltip": "Name des Tages basierend auf die lokalen Einstellungen des Users",
+  "dialog.button.xpath.numberOfWeekDay": "Nummer des Tages der Woche",
+  "dialog.button.xpath.numberOfWeekDay.tooltip": "Nummer des Tages der Woche",
   "dialog.button.xpath.dayOfMonth": "Tag des Monats",
   "dialog.button.xpath.dayOfMonth.tooltip": "Tag des Monats",
   "dialog.button.xpath.nameOfMonth": "Name des Monats",

@@ -18,6 +18,8 @@
   "dialog.button.xpath.dayAbbrOfWeek.tooltip": "Abbreviation of current day of week according to the locale of the user",
   "dialog.button.xpath.dayOfWeek": "Current day of week",
   "dialog.button.xpath.dayOfWeek.tooltip": "Current day of week according to the locale of the user",
+  "dialog.button.xpath.numberOfWeekDay": "Number of current day of week",
+  "dialog.button.xpath.numberOfWeekDay.tooltip": "Number of current day of week",
   "dialog.button.xpath.dayOfMonth": "Current day of month",
   "dialog.button.xpath.dayOfMonth.tooltip": "Current day of month",
   "dialog.button.xpath.nameOfMonth": "Name of current month",

@@ -18,6 +18,8 @@
   "dialog.button.xpath.dayAbbrOfWeek.tooltip": "A hét napja rövidítve a felhasználó nyelvi beállításainak megfelelően",
   "dialog.button.xpath.dayOfWeek": "A hét napja",
   "dialog.button.xpath.dayOfWeek.tooltip": "A hét napja a felhasználó nyelvi beállításainak megfelelően",
+  "dialog.button.xpath.numberOfWeekDay": "A hét napjának sorszáma",
+  "dialog.button.xpath.numberOfWeekDay.tooltip": "A hét napjának sorszáma",
   "dialog.button.xpath.dayOfMonth": "A hónap napja",
   "dialog.button.xpath.dayOfMonth.tooltip": "A hónap napjának sorszáma",
   "dialog.button.xpath.nameOfMonth": "A hónap neve",

@@ -11,6 +11,10 @@ export class XpathTokens {
       return getNow().format("dddd");
     };
 
+    static numberOfWeekDay = function():string {
+      return getNow().format("E");
+    };
+
     static dayOfMonth = function():string {
       return getNow().format("D");
     };
@@ -28,16 +32,15 @@ export class XpathTokens {
     };
 
     static firstDayOfWeek = function():string {
-      return getNow().day(-1).format("D");
+      return getNow().day(1).format("D");
     };
 
 
     public static values():string[] {
-      return ['dayAbbrOfWeek', 'dayOfWeek', 'dayOfMonth', 'nameOfMonth', 'abbrOfMonth', 'numberOfMonth', 'firstDayOfWeek'];
+      return ['dayAbbrOfWeek', 'dayOfWeek', 'numberOfWeekDay', 'dayOfMonth', 'nameOfMonth', 'abbrOfMonth', 'numberOfMonth', 'firstDayOfWeek'];
     }
 
     public static resolve(val:string):string {
-      console.log("****" + XpathTokens[val]);
       return XpathTokens[val]();
     }
 

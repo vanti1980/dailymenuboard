@@ -40,9 +40,12 @@ export class MealProviderService {
                 },
                 'http://www.bonnierestro.hu/hu/napimenu/',
                 [
-                    new MealSetXPath(undefined, undefined, [
-                        '//div[@id="content"]//h4[text()[contains(.,"$dayOfMonth")]]/following-sibling::table[4]//tr[2]/td[3]',
-                        '//div[@id="content"]//h4[text()[contains(.,"$dayOfMonth")]]/following-sibling::table[4]//tr[3]/td[3]',
+                    new MealSetXPath(
+                        'substring(normalize-space(//div[@id="content"]//h2/text()), 1, 10)',
+                        'substring(normalize-space(//div[@id="content"]//h2/text()), 12, 7)',
+                    [
+                        '//div[@id="content"]//h4[text()[contains(.,"$firstDayOfWeek")]]/following-sibling::table[$numberOfWeekDay]//tr[2]/td[3]',
+                        '//div[@id="content"]//h4[text()[contains(.,"$firstDayOfWeek")]]/following-sibling::table[$numberOfWeekDay]//tr[3]/td[3]',
                     ])
                 ],
                 {
@@ -65,6 +68,13 @@ export class MealProviderService {
                         '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[1]/td[3]',
                         [
                             '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[1]/td[2]/div'
+                        ]
+                    ),
+                    new MealSetXPath(
+                        '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[2]/td[2]/b',
+                        '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[2]/td[3]',
+                        [
+                            '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[2]/td[2]/div'
                         ]
                     )
                 ],
