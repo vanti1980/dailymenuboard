@@ -1,5 +1,8 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
 import {Component, Input, ViewChild} from '@angular/core';
+
+import {Observable} from 'rxjs/Rx';
+
 import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
@@ -7,7 +10,10 @@ import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
-import {XpathTokens} from '../../common/xpath';
+import {XpathTokens, XpathService} from '../../common/xpath';
+
+
+const BASE_DATA_STEP = 1;
 
 @Component({
     selector: 'add-view',
@@ -21,6 +27,8 @@ export class AddComponent {
     provider: MealProvider;
     public wizard: Wizard;
 
+    dailyMealContents: Holder<string> = {data: undefined};
+
     @ViewChild(ModalComponent)
     private modalComponent: ModalComponent;
 
@@ -30,13 +38,14 @@ export class AddComponent {
         private emitterService: EmitterService,
         private builder: FormBuilder,
         private mealProviderService: MealProviderService,
-        private mapService: MapService) {
+        private mapService: MapService,
+        private xpathService: XpathService) {
     }
 
     private createMealSetControlGroup(): ControlGroup {
         return this.builder.group({
-            mealSetXpath: new Control(),
-            mealSetPriceXpath: new Control(),
+            mealSetXpath: ['', xpathResolverFactory(this.xpathService, this.dailyMealContents)],
+            mealSetPriceXpath: ['', xpathResolverFactory(this.xpathService, this.dailyMealContents)],
             meals: new ControlArray([this.createMealControl()])
         });
     }
@@ -46,7 +55,7 @@ export class AddComponent {
     }
 
     private createMealControl(): Control {
-        return new Control();
+        return new Control('', xpathResolverFactory(this.xpathService, this.dailyMealContents));
     }
 
     ngOnInit() {
@@ -81,12 +90,21 @@ export class AddComponent {
 
     onNextStep() {
         if (/*this.group.valid && */this.wizard.step < this.wizard.lastStep) {
+            if (this.wizard.step == BASE_DATA_STEP) {
+                this.xpathService.getXDomainContent(this.provider.dailyMealUrl).subscribe(
+                    (data) => {
+                      this.dailyMealContents.data = data;
+                      console.log("****** Data:" + data);
+                    },
+                    (err) => { console.log("***** Error:" + err);}
+                );
+            }
             this.wizard.step++;
         }
     }
 
     onPreviousStep() {
-        if (/*this.group.valid && */this.wizard.step > 1) {
+        if (/*this.group.valid && */this.wizard.step > BASE_DATA_STEP) {
             this.wizard.step--;
         }
     }
@@ -118,13 +136,13 @@ export class AddComponent {
         this.modalComponent.open();
     }
 
-    addXPathFragment(val:string):void {
-      let meals:string[] = this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals;
-      meals[meals.length - 1] += '$' + val;
+    addXPathFragment(val: string): void {
+        let meals: string[] = this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals;
+        meals[meals.length - 1] += '$' + val;
     }
 
-    get xpathFragments():string[] {
-      return XpathTokens.values();
+    get xpathFragments(): string[] {
+        return XpathTokens.values();
     }
 }
 
@@ -136,9 +154,9 @@ class Wizard {
 
     constructor(private base: ControlGroup, private mealSets: ControlArray) {
         this._mealSetIndex = 0;
-        this.step = 1;
+        this.step = BASE_DATA_STEP;
         this._currentControl = this.base;
-        this._lastStep = 1 + mealSets.controls.length;
+        this._lastStep = BASE_DATA_STEP + mealSets.controls.length;
     }
 
     public get step(): number {
@@ -181,6 +199,10 @@ class Wizard {
 
 }
 
+interface Holder<T> {
+    data: T;
+}
+
 function colorValidator(control: Control) {
     if (control.value && !control.value.match(/([0-9]|[a-f]|[A-F]){6}/)) {
         return { 'color': true };
@@ -195,7 +217,6 @@ function duplicatedNameValidatorFactory(mealProviderService: MealProviderService
                 return { 'duplicated': true };
             }
         }
-
     };
 }
 
@@ -206,7 +227,6 @@ function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProvide
                 return { 'duplicated': true };
             }
         }
-
     };
 }
 
@@ -230,3 +250,21 @@ function addressValidatorFactory(mapService: MapService, mealProvider: MealProvi
         });
     };
 }
+
+function xpathResolverFactory(xpathService: XpathService, dailyMealContents: Holder<string>) {
+    return (control: Control) => {
+        //TODO not sure if helper message may be put among errors
+        if (dailyMealContents.data) {
+          try {
+            let xpathMap = xpathService.resolveXPaths(dailyMealContents.data, control.value);
+            return { 'xpath': xpathMap[control.value] };
+          }
+          catch (err) {
+            // XPath is invalid, do nothing
+          }
+        }
+        else {
+          return null;
+        }
+    }
+};
