@@ -2,6 +2,7 @@ import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, Ng
 import {Component, Input, ViewChild} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
+import 'rxjs/add/operator/debounceTime';
 
 import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -10,6 +11,7 @@ import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
+import {DebounceInputControlValueAccessor} from '../../common/util';
 import {XpathTokens, XpathService} from '../../common/xpath';
 
 
@@ -18,7 +20,7 @@ const BASE_DATA_STEP = 1;
 @Component({
     selector: 'add-view',
     providers: [MealProviderService, MapService],
-    directives: [NgClass, MODAL_DIRECTIVES, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES],
+    directives: [NgClass, MODAL_DIRECTIVES, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES, DebounceInputControlValueAccessor],
     template: require('./add.html')
 })
 export class AddComponent {
@@ -26,13 +28,11 @@ export class AddComponent {
     group: ControlGroup;
     provider: MealProvider;
     public wizard: Wizard;
-
-    dailyMealContents: Holder<string> = {data: undefined};
+    xpathAssistCache: { [key: string]: string } = {};
+    dailyMealContents: Holder<string> = { data: undefined };
 
     @ViewChild(ModalComponent)
     private modalComponent: ModalComponent;
-
-    //TODO cached daily meal data to be used to validate XPath expression on each change
 
     constructor(
         private emitterService: EmitterService,
@@ -44,8 +44,8 @@ export class AddComponent {
 
     private createMealSetControlGroup(): ControlGroup {
         return this.builder.group({
-            mealSetXpath: ['', xpathResolverFactory(this.xpathService, this.dailyMealContents)],
-            mealSetPriceXpath: ['', xpathResolverFactory(this.xpathService, this.dailyMealContents)],
+            mealSetXpath: [''],
+            mealSetPriceXpath: [''],
             meals: new ControlArray([this.createMealControl()])
         });
     }
@@ -55,7 +55,7 @@ export class AddComponent {
     }
 
     private createMealControl(): Control {
-        return new Control('', xpathResolverFactory(this.xpathService, this.dailyMealContents));
+        return new Control('');
     }
 
     ngOnInit() {
@@ -65,13 +65,25 @@ export class AddComponent {
                 name: ['', Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService)])],
                 homePage: new Control(),
                 phone: new Control(),
-                address: ['', Validators.required, addressValidatorFactory(this.mapService, this.provider)],
+                address: new Control('', Validators.required, addressValidatorFactory(this.mapService, this.provider)),
                 dailyMealUrl: ['', Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService)])],
                 color: ['', Validators.compose([Validators.required, colorValidator])]
             }),
             mealSets: new ControlArray([this.createMealSetControlGroup()])
         });
         this.wizard = new Wizard(<ControlGroup>this.group.find('base'), <ControlArray>this.group.find('mealSets'));
+    }
+
+    xpathAssist(xpath: string) {
+      if (this.dailyMealContents.data) {
+          try {
+              let xpathMap = this.xpathService.resolveXPaths(this.dailyMealContents.data, xpath);
+              return xpathMap[xpath];
+          }
+          catch (err) {
+              // XPath is invalid, do nothing
+          }
+      }
     }
 
     public onAddMealSet() {
@@ -93,10 +105,9 @@ export class AddComponent {
             if (this.wizard.step == BASE_DATA_STEP) {
                 this.xpathService.getXDomainContent(this.provider.dailyMealUrl).subscribe(
                     (data) => {
-                      this.dailyMealContents.data = data;
-                      console.log("****** Data:" + data);
+                        this.dailyMealContents.data = data;
                     },
-                    (err) => { console.log("***** Error:" + err);}
+                    (err) => { console.log("***** Error:" + err); }
                 );
             }
             this.wizard.step++;
@@ -233,7 +244,8 @@ function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProvide
 function addressValidatorFactory(mapService: MapService, mealProvider: MealProvider) {
     return (control: Control) => {
         return new Promise((resolve, reject) => {
-            mapService.getLocation(control.value).subscribe(
+            mapService.getLocation(control.value)
+            .subscribe(
                 location => {
                     if (location) {
                         mealProvider.location = location;
@@ -251,20 +263,17 @@ function addressValidatorFactory(mapService: MapService, mealProvider: MealProvi
     };
 }
 
-function xpathResolverFactory(xpathService: XpathService, dailyMealContents: Holder<string>) {
+function xpathResolverFactory(xpathService: XpathService, dailyMealContents: Holder<string>, resolvedXPaths: { [key: string]: string }) {
     return (control: Control) => {
-        //TODO not sure if helper message may be put among errors
         if (dailyMealContents.data) {
-          try {
-            let xpathMap = xpathService.resolveXPaths(dailyMealContents.data, control.value);
-            return { 'xpath': xpathMap[control.value] };
-          }
-          catch (err) {
-            // XPath is invalid, do nothing
-          }
+            try {
+                let xpathMap = xpathService.resolveXPaths(dailyMealContents.data, control.value);
+                resolvedXPaths[control.value] = xpathMap[control.value];
+            }
+            catch (err) {
+                // XPath is invalid, do nothing
+            }
         }
-        else {
-          return null;
-        }
+        return null;
     }
 };

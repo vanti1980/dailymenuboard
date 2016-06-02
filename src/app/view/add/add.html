@@ -26,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label for="address" class="required">{{'dialog.address' | translate}}:</label>
-                <input type="text" class="form-control" id="address" [ngFormControl]="wizard.base.find('address')" [(ngModel)]="provider.contacts['address']" required>
+                <input type="text" class="form-control" id="address" [ngFormControl]="wizard.base.find('address')" [ngModel]="provider.contacts['address']" [debounceTime]="1000" required>
                 <div *ngIf="wizard.base.find('address').dirty">
                   <div *ngIf="wizard.base.find('address').pending">{{'message.validation.pending' | translate}}</div>
                   <div *ngIf="wizard.base.find('address').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
@@ -70,7 +70,7 @@
                         <i class="fa fa-minus" aria-hidden="true"></i>
                     </button>
                     <div *ngIf="meal.dirty && meal.hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
-                    <div *ngIf="meal.dirty && meal.hasError('xpath')" class="help-block">{{meal.getError('xpath')}}</div>
+                    <div *ngIf="provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex]" class="help-block">{{xpathAssist(provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex])}}</div>
                 </div>
             </div>
             <div class="align-left">
