@@ -49,7 +49,7 @@ export class MapService {
     public getLocation(address: string): Observable<Location> {
         return this.http.get(`${process.env.GEOCODE_SERVICE}?address=${encodeURI(address)}&sensor=false`)
             .map((res) => <GeoCodeResponse>res.json())
-            .map((geoResp) => geoResp.results[0].geometry.location);
+            .map((geoResp) => geoResp.results.length > 0 ? geoResp.results[0].geometry.location : null);
     }
 
     public calculateDistance(providerLocation: Location, homeLocation: Location):number {

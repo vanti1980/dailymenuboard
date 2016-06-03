@@ -1,14 +1,22 @@
-<div class="panel panel-default">
+<div class="panel panel-default mealset-panel">
 <!--
     <div class="panel-heading">
         <label class="h4">{{mealSet.name}}</label>
     </div>
 -->
-    <div class="panel-body">
+    <div class="panel-body mealset-body">
 
 
       <div class="row">
          <div class="col-sm-12">
+
+           <span
+             class="h4"
+             *ngIf="mealSet.name">
+              <label class="label label-default" >
+                 {{mealSet.name}}
+              </label>
+           </span>
 
           <span
             class="h3"
@@ -20,9 +28,9 @@
 
         </div>
         <div class="col-sm-12">
-           <ul class="list-group">
+           <ul class="list-group meals-group">
               <li
-                  class="list-group-item"
+                  class="list-group-item meals-group-item"
                   *ngFor="let meal of mealSet.meals"
                >
                   <meal [meal]="meal"></meal>

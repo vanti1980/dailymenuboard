@@ -1,4 +1,6 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation, ViewChild} from '@angular/core';
+import {ConfirmComponent} from '../../common/confirm';
+import {EmitterService, Events} from '../../common/event';
 
 import {Popover} from '../../common/popover';
 
@@ -12,7 +14,7 @@ import {MealProviderService} from './meal-provider.service';
   selector: 'meal-provider',
   template: require('./meal-provider.html'),
   providers: [MealProviderService],
-  directives: [Popover, MealSetComponent],
+  directives: [Popover, MealSetComponent, ConfirmComponent],
   inputs: [
       'mealProvider',
       'showMealSet'
@@ -22,20 +24,21 @@ export class MealProviderComponent {
    public mealProvider: MealProvider;
    public showMealSet: boolean;
 
-   constructor(public mealProviderService: MealProviderService){
+   @ViewChild(ConfirmComponent)
+   private confirmDialog: ConfirmComponent;
 
+
+   constructor(
+     private emitterService: EmitterService,
+     public mealProviderService: MealProviderService){
    }
 
-   public removeMealProvider(providerToDelete:MealProvider){
+   openRemoveDialog(mealProvider: MealProvider) {
+     this.confirmDialog.open(mealProvider);
+   }
 
-      let array = this.mealProviderService.getCachedMealProviders();
-
-      for(var i = array.length; i--;){
-	       if (array[i].name === providerToDelete.name) {
-             array.splice(i, 1);
-          }
-      }
-
-      this.mealProviderService.cacheMealProviders(array);
+   confirmRemoveMealProvider(mealProvider: MealProvider) {
+     this.mealProviderService.removeMealProvider(mealProvider);
+     this.emitterService.get(Events.MEAL_PROVIDER_REMOVED).emit(mealProvider);
    }
 }

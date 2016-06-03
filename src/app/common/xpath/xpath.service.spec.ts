@@ -34,7 +34,7 @@ describe('Test XpathService', () => {
             let response = new ResponseOptions({ body: "<html><body><div id='header'>header</div><div id='content'>content</div></body></html>" });
             conn.mockRespond(new Response(response));
         });
-        var obs = testService.resolveXPaths('http://somedomain.com', '//div[@id="header"]/following-sibling::div');
+        var obs = testService.loadAndResolveXPaths('http://somedomain.com', '//div[@id="header"]/following-sibling::div');
         obs.subscribe((data) => {
             expect(data).toEqual({'//div[@id="header"]/following-sibling::div':'content'});
         });
