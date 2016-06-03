@@ -1,5 +1,5 @@
 <!-- Modal -->
-<modal id="addDialog" #modal>
+<modal id="addDialog" [backdrop]="false" #modal>
     <modal-header [show-close]="true">
       <h4 class="modal-title">{{'dialog.addNewRestaurant' | translate}}</h4>
       <h6>{{wizardStep}}</h6>
