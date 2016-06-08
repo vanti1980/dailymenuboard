@@ -55,11 +55,13 @@
                 <label for="mealSetXpath">{{'dialog.mealSetXpath' | translate}}:</label>
                 <input type="text" class="form-control" id="mealSetXpath" [ngFormControl]="wizard.currentControl.find('mealSetXpath')" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].name">
                 <div *ngIf="wizard.currentControl.find('mealSetXpath').dirty && wizard.currentControl.find('mealSetXpath').hasError('xpath')" class="help-block">{{wizard.currentControl.find('mealSetXpath').getError('xpath')}}</div>
+                <div *ngIf="provider.mealSetXPaths[wizard.mealSetIndex].name" class="help-block">{{xpathAssist(provider.mealSetXPaths[wizard.mealSetIndex].name)}}</div>
             </div>
             <div class="form-group">
                 <label for="mealSetPriceXpath">{{'dialog.mealSetPriceXpath' | translate}}:</label>
                 <input type="text" class="form-control" id="mealSetPriceXpath" [ngFormControl]="wizard.currentControl.find('mealSetPriceXpath')" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].price">
                 <div *ngIf="wizard.currentControl.find('mealSetPriceXpath').dirty && wizard.currentControl.find('mealSetPriceXpath').hasError('xpath')" class="help-block">{{wizard.currentControl.find('mealSetPriceXpath').getError('xpath')}}</div>
+                <div *ngIf="provider.mealSetXPaths[wizard.mealSetIndex].price" class="help-block">{{xpathAssist(provider.mealSetXPaths[wizard.mealSetIndex].price)}}</div>
             </div>
             <div class="form-group">
                 <label attr.for="{{wizard.mealSetIndex}}_0_mealXpath">{{'dialog.mealXpath' | translate}}:</label>
