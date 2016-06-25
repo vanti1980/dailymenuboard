@@ -3,7 +3,7 @@
    class="mealProviderDiv"
    >
 
-   <div class="well well-sm" style="border-radius: 10px 10px 0px 0px;">
+   <div class="well well-sm mealprovider-well" style="border-radius: 10px 10px 0px 0px;">
          <label class="h3" style="margin: 0px">{{mealProvider.name}}</label>
          <div class="pull-right">
             <a
@@ -22,7 +22,7 @@
             </a>
             <button
                type="button"
-               (click)="removeMealProvider(mealProvider)"
+               (click)="openRemoveDialog(mealProvider)"
                class="btn btn-xs btn-default"
                >
                <i class="fa fa-times fa-2x" aria-hidden="true"></i>
@@ -34,3 +34,4 @@
         <meal-set [mealSet]="mealSet" *ngFor="let mealSet of mealProvider.mealSets"></meal-set>
    </div>
 </div>
+<confirm msg="{{'message.confirm.deleteMealProvider' | translate}}" (onClose)="confirmRemoveMealProvider($event)"></confirm>

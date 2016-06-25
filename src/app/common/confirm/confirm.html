@@ -1,0 +1,15 @@
+<modal #confirm (onClose)="onConfirmClose()" (onDismiss)="onConfirmDismiss()">
+    <modal-header [show-close]="true">
+        <h4 class="modal-title">{{msg}}</h4>
+    </modal-header>
+    <modal-footer>
+      <button type="button" class="btn btn-primary" (click)="onNo()">
+          <i class="fa fa-caret-times" aria-hidden="true"></i>
+          <label>{{'button.no' | translate}}</label>
+      </button>
+      <button type="button" class="btn btn-default" (click)="onYes()">
+          <i class="fa fa-caret-check" aria-hidden="true"></i>
+          <label>{{'button.yes' | translate}}</label>
+      </button>
+    </modal-footer>
+</modal>

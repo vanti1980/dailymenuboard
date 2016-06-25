@@ -1,15 +1,14 @@
 <div class="grid" [ngGrid]="{'max_cols': maxNumberOfColumn, 'auto_resize': true}">
 
-    <div *ngFor="let box of boxes" [(ngGridItem)]="box.config">
+    <div *ngFor="let box of boxes" [(ngGridItem)]="box.config" [ngClass]="{'empty-grid-item' : !box.mealProvider}">
         <meal-provider
             [mealProvider]="box.mealProvider"
-            *ngIf="box.mealProvider !== null && box.mealProvider != undefined"
+            *ngIf="box.mealProvider"
             [showMealSet]="true"
          ></meal-provider>
 
-        <div class="vcenter" *ngIf="box.mealProvider === null || box.mealProvider == undefined">
-
-            <button class="btn btn-danger btn-lg pull-right box-button-top-right" data-toggle="modal" data-target="#addDialog">
+        <div class="vcenter">
+            <button *ngIf="!box.mealProvider" class="btn btn-default pull-right box-button-top-right" (click)="openAddDialog()">
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <label>{{'button.add' | translate}}</label>
             </button>
@@ -32,4 +31,4 @@
 
 
 </div>
-<add-view></add-view>
+<add-view [mealProviders]="mealProviders"></add-view>
