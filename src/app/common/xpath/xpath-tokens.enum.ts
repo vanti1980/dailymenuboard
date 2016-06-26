@@ -1,4 +1,3 @@
-///<reference path="../../../../typings/modules/moment/index.d.ts" />
 
 import moment = require("moment");
 

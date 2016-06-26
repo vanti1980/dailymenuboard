@@ -8,10 +8,7 @@
     "noEmitHelpers": true
   },
   "exclude": [
-    "node_modules",
-    "typings/main.d.ts",
-    "typings/browser",
-    "typings/main"
+    "node_modules"
   ],
   "filesGlob": [
     "./src/**/*.ts",
