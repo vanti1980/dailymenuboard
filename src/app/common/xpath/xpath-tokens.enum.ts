@@ -72,7 +72,7 @@ export class XpathTokens {
 
 
     public static values():string[] {
-      return ['dayAbbrOfWeek', 'dayAbbrOfWeekCap', 'dayAbbrOfWeekCapFirst', 'dayOfWeek', 'dayOfWeekCap', 'dayOfWeekCapFirst', 'numberOfWeekDay', 'dayOfMonth', 'nameOfMonth', 'nameOfMonthCap', 'nameOfMonthCapFirst', 'abbrOfMonth', 'abbrOfMonthCap', 'abbrOfMonthCapFirst', 'numberOfMonth', 'firstDayOfWeek'];
+      return ['dayAbbrOfWeekCapFirst', 'dayAbbrOfWeekCap', 'dayAbbrOfWeek', 'dayOfWeekCapFirst', 'dayOfWeekCap', 'dayOfWeek', 'numberOfWeekDay', 'dayOfMonth', 'nameOfMonthCapFirst', 'nameOfMonthCap', 'nameOfMonth', 'abbrOfMonthCapFirst', 'abbrOfMonthCap', 'abbrOfMonth', 'numberOfMonth', 'firstDayOfWeek'];
     }
 
     public static resolve(val:string):string {

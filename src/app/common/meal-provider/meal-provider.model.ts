@@ -5,7 +5,7 @@ import {MealSet,MealSetXPath,MealSetXPathJSON} from '../meal-set/meal-set.model'
  * Restaurant or something else that offers the meal.
  */
 export class MealProvider {
-
+  private key:number = Math.random();
     /**
      * Distance from current location in meters.
      */

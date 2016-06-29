@@ -11,6 +11,7 @@ import {Box}        from './box.model';
 import {BoxConfig} from './box.config';
 
 import {AddComponent} from '../add/add.component';
+import {StepMealSetComponent} from '../add/step-mealset';
 
 @Component({
     selector: 'box-view',
@@ -88,6 +89,6 @@ export class BoxView {
     }
 
     openAddDialog() {
-        this.addComponent.open();
+      this.addComponent.open(new MealProvider(null, null, {}, null, [StepMealSetComponent.createMealSetXPath()], null, null));
     }
 }

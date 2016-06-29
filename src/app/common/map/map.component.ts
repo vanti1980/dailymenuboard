@@ -1,4 +1,4 @@
-import {Component, OnChanges, SimpleChange} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChange} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
@@ -18,13 +18,12 @@ import {
   selector: 'map',
   providers: [ANGULAR2_GOOGLE_MAPS_PROVIDERS, MapService],
   directives: [ANGULAR2_GOOGLE_MAPS_DIRECTIVES],
-  inputs: ['mealProviders'],
   pipes: [],
   styles: [/*require('./map.component.scss')*/],
   template: require('./map.component.html')
 })
 export class MapComponent implements OnChanges {
-  mealProviders: MealProvider[];
+  @Input() mealProviders: MealProvider[];
   hq: Marker;
   markers: Marker[] = [];
 
