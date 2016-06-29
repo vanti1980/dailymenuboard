@@ -1,11 +1,15 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, QueryList, ViewChild, ViewChildren} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
 
 import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+
+import {Wizard} from './wizard';
+import {StepMainComponent} from './step-main';
+import {StepMealSetComponent} from './step-mealset';
 
 import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
@@ -15,121 +19,103 @@ import {DebounceInputControlValueAccessor} from '../../common/util';
 import {XpathTokens, XpathService} from '../../common/xpath';
 
 
-const BASE_DATA_STEP = 1;
+export const BASE_DATA_STEP = 1;
 
 @Component({
-    selector: 'add-view',
+    selector: 'dmb-add-view',
     providers: [MealProviderService, MapService],
-    directives: [NgClass, MODAL_DIRECTIVES, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES, DebounceInputControlValueAccessor],
+    directives: [NgClass, NgForm, MODAL_DIRECTIVES, StepMainComponent, StepMealSetComponent, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES, DebounceInputControlValueAccessor],
     template: require('./add.html')
 })
 export class AddComponent {
-    @Input() mealProviders: MealProvider[];
-    group: ControlGroup;
-    provider: MealProvider;
-    public wizard: Wizard;
-    xpathAssistCache: { [key: string]: string } = {};
-    dailyMealContents: Holder<string> = { data: undefined };
+    provider: MealProvider = new MealProvider(null, null, {}, null, [], null, null);
+    wizard: Wizard;
+    BASE_DATA_STEP = BASE_DATA_STEP;
 
     @ViewChild(ModalComponent)
     private modalComponent: ModalComponent;
 
+    @ViewChild(StepMainComponent)
+    private stepMainComponent: StepMainComponent;
+
+    @ViewChildren(StepMealSetComponent)
+    private stepMealSetComponents: QueryList<StepMealSetComponent>;
+
     constructor(
         private emitterService: EmitterService,
-        private builder: FormBuilder,
         private mealProviderService: MealProviderService,
         private mapService: MapService,
         private xpathService: XpathService) {
     }
 
-    private createMealSetControlGroup(): ControlGroup {
-        return this.builder.group({
-            mealSetXpath: [''],
-            mealSetPriceXpath: [''],
-            meals: new ControlArray([this.createMealControl()])
-        });
-    }
-
-    private createMealSetXPath(): MealSetXPath {
-        return new MealSetXPath(null, null, []);
-    }
-
-    private createMealControl(): Control {
-        return new Control('');
-    }
-
     ngOnInit() {
-        this.provider = new MealProvider(null, null, {}, null, [this.createMealSetXPath()], null, null);
-        this.group = this.builder.group({
-            base: this.builder.group({
-                name: ['', Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService)])],
-                homePage: new Control(),
-                phone: new Control(),
-                address: new Control('', Validators.required, addressValidatorFactory(this.mapService, this.provider)),
-                dailyMealUrl: ['', Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService)])],
-                color: ['', Validators.compose([Validators.required, colorValidator])]
-            }),
-            mealSets: new ControlArray([this.createMealSetControlGroup()])
-        });
-        this.wizard = new Wizard(<ControlGroup>this.group.find('base'), <ControlArray>this.group.find('mealSets'));
+        this.wizard = new Wizard(this.provider.mealSets.length);
+        if (this.stepMainComponent) {
+          // force changing provider on sub-component because otherwise changes from dummy will not be tracked
+          this.stepMainComponent.provider = this.provider;
+          this.stepMainComponent.ngOnInit();
+        }
+        if (this.stepMealSetComponents) {
+          this.stepMealSetComponents.forEach((c)=>{
+            // force changing provider on sub-component because otherwise changes from dummy will not be tracked
+            c.provider = this.provider;
+            c.ngOnInit();
+          });
+        }
     }
 
-    xpathAssist(xpath: string) {
-      if (this.dailyMealContents.data) {
-          try {
-              let xpathMap = this.xpathService.resolveXPaths(this.dailyMealContents.data, xpath);
-              return xpathMap[xpath];
-          }
-          catch (err) {
-              // XPath is invalid, do nothing
-          }
-      }
+    public getCurrentStepMealSet(): StepMealSetComponent {
+        return this.wizard.step != BASE_DATA_STEP ? this.stepMealSetComponents.toArray()[this.wizard.step - 2] : null;
     }
 
     public onAddMealSet() {
         this.wizard.addStep();
-        this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex + 1, 0, this.createMealSetXPath());
-        (<ControlArray>this.group.find('mealSets')).insert(this.wizard.mealSetIndex + 1, this.createMealSetControlGroup());
-        this.onNextStep();
+        this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex + 1, 0, StepMealSetComponent.createMealSetXPath());
+        this.stepMealSetComponents.changes.subscribe((components)=>{
+          this.onNextStep();
+        });
     }
 
     public onRemoveMealSet() {
+      if (this.provider.mealSetXPaths.length > 1) {
         this.wizard.removeCurrentStep();
         this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex, 1);
-        (<ControlArray>this.group.find('mealSets')).removeAt(this.wizard.mealSetIndex);
         this.onPreviousStep();
+      }
     }
 
     onNextStep() {
-        if (/*this.group.valid && */this.wizard.step < this.wizard.lastStep) {
-            if (this.wizard.step == BASE_DATA_STEP) {
-                this.xpathService.getXDomainContent(this.provider.dailyMealUrl).subscribe(
-                    (data) => {
-                        this.dailyMealContents.data = data;
-                    },
-                    (err) => { console.log("***** Error:" + err); }
-                );
-            }
+        if (this.isCurrentStepValid() && this.wizard.step < this.wizard.lastStep) {
             this.wizard.step++;
+            if (this.wizard.step == BASE_DATA_STEP) {
+              this.stepMainComponent.onEnterStep();
+            }
+            else {
+              this.getCurrentStepMealSet().onEnterStep();
+            }
         }
     }
 
     onPreviousStep() {
-        if (/*this.group.valid && */this.wizard.step > BASE_DATA_STEP) {
+        if (this.wizard.step > BASE_DATA_STEP) {
             this.wizard.step--;
+            if (this.wizard.step == BASE_DATA_STEP) {
+              this.stepMainComponent.onEnterStep();
+            }
+            else {
+                this.getCurrentStepMealSet().onEnterStep();
+            }
         }
     }
 
-    public onAddMeal() {
-        this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.push('');
-        (<ControlArray>(<ControlGroup>this.wizard.currentControl).find('meals')).push(this.createMealControl());
+    isCurrentStepValid(): boolean {
+        return this.wizard.step == BASE_DATA_STEP
+            ? (this.stepMainComponent && this.stepMainComponent.isValid())
+            : (this.getCurrentStepMealSet() && this.getCurrentStepMealSet().isValid());
     }
 
-    public onRemoveMeal(mealIndex: number) {
-        if (this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length > 1) {
-            this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.splice(mealIndex, 1);
-            (<ControlArray>(<ControlGroup>this.wizard.currentControl).find('meals')).removeAt(mealIndex);
-        }
+    isCurrentMealSetStepValid(): boolean {
+        return this.wizard.step != BASE_DATA_STEP && this.isCurrentStepValid();
     }
 
     onClose() {
@@ -142,138 +128,9 @@ export class AddComponent {
         this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
     }
 
-    public open(): void {
+    public open(mealProvider: MealProvider): void {
+        this.provider = mealProvider;
         this.ngOnInit();
         this.modalComponent.open();
     }
-
-    addXPathFragment(val: string): void {
-        let meals: string[] = this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals;
-        meals[meals.length - 1] += '$' + val;
-    }
-
-    get xpathFragments(): string[] {
-        return XpathTokens.values();
-    }
 }
-
-class Wizard {
-    private _step: number;
-    private _lastStep: number;
-    private _mealSetIndex: number;
-    private _currentControl: ControlGroup;
-
-    constructor(private base: ControlGroup, private mealSets: ControlArray) {
-        this._mealSetIndex = 0;
-        this.step = BASE_DATA_STEP;
-        this._currentControl = this.base;
-        this._lastStep = BASE_DATA_STEP + mealSets.controls.length;
-    }
-
-    public get step(): number {
-        return this._step;
-    }
-    public set step(step: number) {
-        this._step = step;
-        if (step < 2) {
-            this._mealSetIndex = 0;
-            this._currentControl = this.base;
-        }
-        else {
-            this._mealSetIndex = step - 2;
-            this._currentControl = <ControlGroup>this.mealSets.controls[this._mealSetIndex];
-        }
-    }
-
-    public get mealSetIndex(): number {
-        return this._mealSetIndex;
-    }
-
-    public get currentControl(): ControlGroup {
-        return this._currentControl;
-    }
-
-    public addStep(): void {
-        this._lastStep++;
-    }
-
-    public removeCurrentStep(): void {
-        this._lastStep--;
-        if (this._lastStep < this._step) {
-            this._step--;
-        }
-    }
-
-    public get lastStep(): number {
-        return this._lastStep;
-    }
-
-}
-
-interface Holder<T> {
-    data: T;
-}
-
-function colorValidator(control: Control) {
-    if (control.value && !control.value.match(/([0-9]|[a-f]|[A-F]){6}/)) {
-        return { 'color': true };
-    }
-    return null;
-}
-
-function duplicatedNameValidatorFactory(mealProviderService: MealProviderService) {
-    return (control: Control) => {
-        for (let mealProvider of mealProviderService.getCachedMealProviders()) {
-            if (mealProvider.name == control.value) {
-                return { 'duplicated': true };
-            }
-        }
-    };
-}
-
-function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService) {
-    return (control: Control) => {
-        for (let mealProvider of mealProviderService.getCachedMealProviders()) {
-            if (mealProvider.dailyMealUrl == control.value) {
-                return { 'duplicated': true };
-            }
-        }
-    };
-}
-
-function addressValidatorFactory(mapService: MapService, mealProvider: MealProvider) {
-    return (control: Control) => {
-        return new Promise((resolve, reject) => {
-            mapService.getLocation(control.value)
-            .subscribe(
-                location => {
-                    if (location) {
-                        mealProvider.location = location;
-                        console.log("Meal provider location:" + JSON.stringify(location));
-                        resolve(null);
-                    } else {
-                        resolve({ address: true });
-                    }
-                },
-                err => {
-                    resolve({ address: true });
-                }
-            );
-        });
-    };
-}
-
-function xpathResolverFactory(xpathService: XpathService, dailyMealContents: Holder<string>, resolvedXPaths: { [key: string]: string }) {
-    return (control: Control) => {
-        if (dailyMealContents.data) {
-            try {
-                let xpathMap = xpathService.resolveXPaths(dailyMealContents.data, control.value);
-                resolvedXPaths[control.value] = xpathMap[control.value];
-            }
-            catch (err) {
-                // XPath is invalid, do nothing
-            }
-        }
-        return null;
-    }
-};

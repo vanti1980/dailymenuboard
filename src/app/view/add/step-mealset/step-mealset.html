@@ -1,0 +1,35 @@
+<form role="form" [ngFormModel]="group" (ngSubmit)="onSubmit()" novalidate>
+  <div class="form-group">
+      <label for="mealSetXpath">{{'dialog.mealSetXpath' | translate}}:</label>
+      <input type="text" class="form-control" id="mealSetXpath" [ngFormControl]="group.find('mealSetXpath')" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].name" [debounceTime]="1000">
+      <dmb-xpath-fragment (callback)="addMealSetFragment($event)"></dmb-xpath-fragment>
+      <div *ngIf="group.find('mealSetXpath').dirty && group.find('mealSetXpath').hasError('xpath')" class="help-block">{{group.find('mealSetXpath').getError('xpath')}}</div>
+      <div *ngIf="provider.mealSetXPaths[wizard.mealSetIndex].name" class="help-block">{{xpathAssist(provider.mealSetXPaths[wizard.mealSetIndex].name)}}</div>
+  </div>
+  <div class="form-group">
+      <label for="mealSetPriceXpath">{{'dialog.mealSetPriceXpath' | translate}}:</label>
+      <input type="text" class="form-control" id="mealSetPriceXpath" [ngFormControl]="group.find('mealSetPriceXpath')" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].price" [debounceTime]="1000">
+      <dmb-xpath-fragment (callback)="addMealSetPriceFragment($event)"></dmb-xpath-fragment>
+      <div *ngIf="group.find('mealSetPriceXpath').dirty && group.find('mealSetPriceXpath').hasError('xpath')" class="help-block">{{group.find('mealSetPriceXpath').getError('xpath')}}</div>
+      <div *ngIf="provider.mealSetXPaths[wizard.mealSetIndex].price" class="help-block">{{xpathAssist(provider.mealSetXPaths[wizard.mealSetIndex].price)}}</div>
+  </div>
+  <div class="form-group">
+      <label attr.for="{{wizard.mealSetIndex}}_0_mealXpath">{{'dialog.mealXpath' | translate}}:</label>
+      <div class="form-group" *ngFor="let meal of group.find('meals').controls; let mealIndex = index"
+        [ngClass]="{'has-error': meal.dirty && meal.hasError('required')}">
+          <input type="text" class="form-control dmb-with-icon" id="{{wizard.mealSetIndex}}_{{mealIndex}}_mealXpath" [ngFormControl]="meal" [(ngModel)]="provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex]" required="true" [debounceTime]="1000">
+          <dmb-xpath-fragment (callback)="addMealFragment(mealIndex, $event)"></dmb-xpath-fragment>
+          <button type="button" class="btn btn-default" [hidden]="group.find('meals').controls.length == 1" (click)="onRemoveMeal(mealIndex)" title="{{'dialog.button.menu.remove' | translate}}">
+              <i class="fa fa-minus" aria-hidden="true"></i>
+          </button>
+          <div *ngIf="meal.dirty && meal.hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+          <div *ngIf="provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex]" class="help-block">{{xpathAssist(provider.mealSetXPaths[wizard.mealSetIndex].meals[mealIndex])}}</div>
+      </div>
+  </div>
+  <div class="align-right">
+      <button type="button" class="btn btn-default" (click)="onAddMeal()">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+          <label>{{'dialog.button.menu.add' | translate}}</label>
+      </button>
+  </div>
+</form>

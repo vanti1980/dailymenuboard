@@ -1,0 +1,43 @@
+<form role="form" [ngFormModel]="group" (ngSubmit)="onSubmit()" novalidate>
+  <div class="form-group" [ngClass]="{'has-error': group.find('name').dirty && !group.find('name').valid}">
+      <label for="name" class="required">{{'dialog.name' | translate}}:</label>
+      <input type="text" class="form-control" id="name" [ngFormControl]="group.find('name')" [(ngModel)]="provider.name" required="true">
+      <div *ngIf="group.find('name').dirty">
+        <div *ngIf="group.find('name').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+        <div *ngIf="group.find('name').hasError('duplicated')" class="help-block">{{'message.validation.duplicated' | translate}}</div>
+      </div>
+  </div>
+  <div class="form-group">
+      <label for="homePage">{{'dialog.homePage' | translate}}:</label>
+      <input type="url" class="form-control" id="homePage" [ngFormControl]="group.find('homePage')" [(ngModel)]="provider.homePage">
+  </div>
+  <div class="form-group">
+      <label for="phone">{{'dialog.phone' | translate}}:</label>
+      <input type="tel" class="form-control" id="phone" [ngFormControl]="group.find('phone')" [(ngModel)]="provider.contacts['phone']">
+  </div>
+  <div class="form-group">
+      <label for="address" class="required">{{'dialog.address' | translate}}:</label>
+      <input type="text" class="form-control" id="address" [ngFormControl]="group.find('address')" [ngModel]="provider.contacts['address']" [debounceTime]="1000" required>
+      <div *ngIf="group.find('address').dirty">
+        <div *ngIf="group.find('address').pending">{{'message.validation.pending' | translate}}</div>
+        <div *ngIf="group.find('address').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+        <div *ngIf="group.find('address').hasError('address')" class="help-block">{{'message.validation.invalidAddress' | translate}}</div>
+      </div>
+  </div>
+  <div class="form-group" [ngClass]="{'has-error': group.find('dailyMealUrl').dirty && !group.find('dailyMealUrl').valid}">
+      <label for="dailyMealUrl" class="required">{{'dialog.dailyMealUrl' | translate}}:</label>
+      <input type="url" class="form-control" id="dailyMealUrl" [ngFormControl]="group.find('dailyMealUrl')" [(ngModel)]="provider.dailyMealUrl" required>
+      <div *ngIf="group.find('dailyMealUrl').dirty">
+        <div *ngIf="group.find('dailyMealUrl').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+        <div *ngIf="group.find('dailyMealUrl').hasError('duplicated')" class="help-block">{{'message.validation.duplicated' | translate}}</div>
+      </div>
+  </div>
+  <div class="form-group" [ngClass]="{'has-error': group.find('color').dirty && !group.find('color').valid}">
+      <label for="backgroundColor" class="required">{{'dialog.color' | translate}}:</label>
+      <input type="text" class="form-control" id="color" [ngFormControl]="group.find('color')" [(ngModel)]="provider.color" required>
+      <div *ngIf="group.find('color').dirty">
+        <div *ngIf="group.find('color').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
+        <div *ngIf="group.find('color').hasError('color')" class="help-block">{{'message.validation.color' | translate}}</div>
+      </div>
+  </div>
+</form>
