@@ -5,6 +5,9 @@
 
 Aggregates daily lunch offerings of nearby restaurants.
 
+## Demo 
+
+http://dailymenuboard.surge.sh
 
 ## Description
 
