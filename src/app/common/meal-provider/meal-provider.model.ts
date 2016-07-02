@@ -6,6 +6,7 @@ import {MealSet,MealSetXPath,MealSetXPathJSON} from '../meal-set/meal-set.model'
  */
 export class MealProvider {
   private key:number = Math.random();
+  private _isNew: boolean = false;
     /**
      * Distance from current location in meters.
      */
@@ -24,7 +25,15 @@ export class MealProvider {
         public mealSetXPaths: MealSetXPath[],
         public location: Location,
         public color: string
-    ) { }
+    ) {
+      if (!name) {
+        this._isNew = true;
+      }
+    }
+
+    public get isNew():boolean {
+      return this._isNew;
+    }
 
     toJSON(): MealProviderJSON {
         return Object.assign({}, this);

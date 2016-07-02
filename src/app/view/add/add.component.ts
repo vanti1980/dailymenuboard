@@ -49,7 +49,7 @@ export class AddComponent {
     }
 
     ngOnInit() {
-        this.wizard = new Wizard(this.provider.mealSets.length);
+        this.wizard = new Wizard(this.provider.mealSetXPaths.length);
         if (this.stepMainComponent) {
           // force changing provider on sub-component because otherwise changes from dummy will not be tracked
           this.stepMainComponent.provider = this.provider;
@@ -123,9 +123,14 @@ export class AddComponent {
     }
 
     onSubmit() {
-        this.mealProviderService.addMealProvider(this.provider);
+      this.mealProviderService.addMealProvider(this.provider);
+        if (this.provider.isNew) {
+          this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
+        }
+        else {
+          this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).emit(this.provider);
+        }
         this.modalComponent.close();
-        this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
     }
 
     public open(mealProvider: MealProvider): void {

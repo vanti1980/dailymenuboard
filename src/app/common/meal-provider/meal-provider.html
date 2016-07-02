@@ -22,6 +22,13 @@
             </a>
             <button
                type="button"
+               (click)="openEditDialog(mealProvider)"
+               class="btn btn-xs btn-default"
+               >
+               <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
+            </button>
+            <button
+               type="button"
                (click)="openRemoveDialog(mealProvider)"
                class="btn btn-xs btn-default"
                >

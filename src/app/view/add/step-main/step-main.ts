@@ -41,11 +41,11 @@ export class StepMainComponent {
 
     buildForm(): ControlGroup {
         return this.builder.group({
-            name: ['', Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService)])],
+            name: ['', Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService, this.provider)])],
             homePage: new Control(),
             phone: new Control(),
             address: new Control('', Validators.required, addressValidatorFactory(this.mapService, this.provider)),
-            dailyMealUrl: ['', Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService)])],
+            dailyMealUrl: ['', Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService, this.provider)])],
             color: ['', Validators.compose([Validators.required, colorValidator])]
         });
     }
@@ -67,20 +67,22 @@ function colorValidator(control: Control) {
     return null;
 }
 
-function duplicatedNameValidatorFactory(mealProviderService: MealProviderService) {
+function duplicatedNameValidatorFactory(mealProviderService: MealProviderService, provider: MealProvider) {
     return (control: Control) => {
+      if (provider.isNew) {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.name == control.value) {
                 return { 'duplicated': true };
             }
         }
+      }
     };
 }
 
-function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService) {
+function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService, provider: MealProvider) {
     return (control: Control) => {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
-            if (mealProvider.dailyMealUrl == control.value) {
+            if (mealProvider.dailyMealUrl == control.value && (provider.isNew || mealProvider.name !== provider.name)) {
                 return { 'duplicated': true };
             }
         }
