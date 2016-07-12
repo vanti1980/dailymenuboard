@@ -36,6 +36,7 @@ export class MealProviderService {
                 'Bonnie',
                 'http://www.bonnierestro.hu',
                 {
+                    address: 'Budapest, Ferenciek tere 5',
                     phone: '+36307443555'
                 },
                 'http://www.bonnierestro.hu/hu/napimenu/',
@@ -64,17 +65,19 @@ export class MealProviderService {
                 'http://www.chictochic.hu/?nav=daily',
                 [
                     new MealSetXPath(
-                        '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[1]/td[2]/b',
-                        '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[1]/td[3]',
+                        '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[1]/td[2]/b',
+                        '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[1]/td[3]',
                         [
-                            '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[1]/td[2]/div'
+                            '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[1]/td[2]/div/text()[1]',
+                            '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[1]/td[2]/div/text()[2]'
                         ]
                     ),
                     new MealSetXPath(
-                        '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[2]/td[2]/b',
-                        '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[2]/td[3]',
+                        '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[2]/td[2]/b',
+                        '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[2]/td[3]',
                         [
-                            '//*[@id="content-text"]/table[2]//td[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"$dayOfWeek")]/../following-sibling::tr[2]/td[2]/div'
+                            '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[2]/td[2]/div/text()[1]',
+                            '//*[@id="content-text"]/table[2]//td[contains(text(), "$dayOfWeekCapFirst")]/../following-sibling::tr[2]/td[2]/div/text()[2]'
                         ]
                     )
                 ],
@@ -159,7 +162,6 @@ export class MealProviderService {
                 if (provider.location) {
                     provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);
                 }
-                console.log("$$$$$mealProvider=" + JSON.stringify(provider));
                 return provider;
             });
     }

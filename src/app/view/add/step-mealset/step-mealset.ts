@@ -1,5 +1,5 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
@@ -22,7 +22,8 @@ import {XpathFragmentComponent} from '../xpath-fragment/xpath-fragment';
     selector: 'dmb-add-step-mealset',
     providers: [MealProviderService, MapService],
     directives: [NgClass, TOOLTIP_DIRECTIVES, XpathFragmentComponent, DebounceInputControlValueAccessor],
-    template: require('./step-mealset.html')
+    template: require('./step-mealset.html'),
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StepMealSetComponent {
     @Input() provider: MealProvider;
@@ -41,6 +42,15 @@ export class StepMealSetComponent {
 
     ngOnInit() {
       this.group = this.createMealSetControlGroup();
+      this.group.updateValueAndValidity();
+    }
+
+    init(provider: MealProvider, wizard: Wizard) {
+      this.provider = provider;
+      this.wizard = wizard;
+
+      // Mark as pending to prevent devmode check fail that isValid() changed while rendering
+      this.group.markAsPending();
     }
 
     public createMealSetControlGroup(): ControlGroup {

@@ -1,5 +1,5 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChange, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
@@ -12,20 +12,23 @@ import {EmitterService, Events} from '../../../common/event';
 import {MapService} from '../../../common/map';
 import {MealProvider, MealProviderService} from '../../../common/meal-provider';
 import {MealSetXPath} from '../../../common/meal-set';
-import {DebounceInputControlValueAccessor} from '../../../common/util';
+import {DebounceInputControlValueAccessor, Holder} from '../../../common/util';
 import {XpathTokens, XpathService} from '../../../common/xpath';
 
 @Component({
     selector: 'dmb-add-step-main',
     providers: [MealProviderService, MapService],
     directives: [NgClass, MODAL_DIRECTIVES, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES, DebounceInputControlValueAccessor],
-    template: require('./step-main.html')
+    template: require('./step-main.html'),
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StepMainComponent {
+export class StepMainComponent implements OnChanges {
+
     @Input() provider: MealProvider;
     @Input() wizard: Wizard;
 
     group: ControlGroup;
+    providerHolder: Holder<MealProvider>;
 
     constructor(
         private emitterService: EmitterService,
@@ -36,17 +39,32 @@ export class StepMainComponent {
     }
 
     ngOnInit() {
+      this.providerHolder = { data: this.provider };
       this.group = this.buildForm();
+    }
+
+    init(provider: MealProvider, wizard: Wizard) {
+      this.provider = provider;
+      this.wizard = wizard;
+
+      // Mark as pending to prevent devmode check fail that isValid() changed while rendering - caused by async validator
+      this.group.markAsPending();
+    }
+
+    ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+      if (this.providerHolder && changes['provider']) {
+        this.providerHolder.data = changes['provider'].currentValue;
+      }
     }
 
     buildForm(): ControlGroup {
         return this.builder.group({
-            name: ['', Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService, this.provider)])],
-            homePage: new Control(),
-            phone: new Control(),
-            address: new Control('', Validators.required, addressValidatorFactory(this.mapService, this.provider)),
-            dailyMealUrl: ['', Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService, this.provider)])],
-            color: ['', Validators.compose([Validators.required, colorValidator])]
+            name: [this.providerHolder.data.name, Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService, this.providerHolder)])],
+            homePage: [this.providerHolder.data.homePage],
+            phone: [this.providerHolder.data.contacts['phone']],
+            address: [this.providerHolder.data.contacts['address'], Validators.required, addressValidatorFactory(this.mapService, this.providerHolder)],
+            dailyMealUrl: [this.providerHolder.data.dailyMealUrl, Validators.compose([Validators.required, duplicatedDailyMealUrlValidatorFactory(this.mealProviderService, this.providerHolder)])],
+            color: [this.providerHolder.data.color, Validators.compose([Validators.required, colorValidator])]
         });
     }
 
@@ -67,9 +85,9 @@ function colorValidator(control: Control) {
     return null;
 }
 
-function duplicatedNameValidatorFactory(mealProviderService: MealProviderService, provider: MealProvider) {
+function duplicatedNameValidatorFactory(mealProviderService: MealProviderService, providerHolder: Holder<MealProvider>) {
     return (control: Control) => {
-      if (provider.isNew) {
+      if (providerHolder.data.isNew) {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.name == control.value) {
                 return { 'duplicated': true };
@@ -79,8 +97,9 @@ function duplicatedNameValidatorFactory(mealProviderService: MealProviderService
     };
 }
 
-function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService, provider: MealProvider) {
+function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService, providerHolder: Holder<MealProvider>) {
     return (control: Control) => {
+      let provider:MealProvider = providerHolder.data;
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.dailyMealUrl == control.value && (provider.isNew || mealProvider.name !== provider.name)) {
                 return { 'duplicated': true };
@@ -89,15 +108,14 @@ function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProvide
     };
 }
 
-function addressValidatorFactory(mapService: MapService, mealProvider: MealProvider) {
+function addressValidatorFactory(mapService: MapService, providerHolder: Holder<MealProvider>) {
     return (control: Control) => {
         return new Promise((resolve, reject) => {
             mapService.getLocation(control.value)
                 .subscribe(
                 location => {
                     if (location) {
-                        mealProvider.location = location;
-                        console.log("Meal provider location:" + JSON.stringify(location));
+                        providerHolder.data.location = location;
                         resolve(null);
                     } else {
                         resolve({ address: true });

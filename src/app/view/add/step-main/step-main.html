@@ -17,7 +17,7 @@
   </div>
   <div class="form-group">
       <label for="address" class="required">{{'dialog.address' | translate}}:</label>
-      <input type="text" class="form-control" id="address" [ngFormControl]="group.find('address')" [ngModel]="provider.contacts['address']" [debounceTime]="1000" required>
+      <input type="text" class="form-control" id="address" [ngFormControl]="group.find('address')" [(ngModel)]="provider.contacts['address']" [debounceTime]="1000" required>
       <div *ngIf="group.find('address').dirty">
         <div *ngIf="group.find('address').pending">{{'message.validation.pending' | translate}}</div>
         <div *ngIf="group.find('address').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>

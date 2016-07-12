@@ -8,6 +8,7 @@
   "button.submit": "Elküld",
   "button.yes": "Igen",
   "dialog.addNewRestaurant": "Új étterem hozzáadása",
+  "dialog.editExistingRestaurant": "Étterem szerkesztése",
   "dialog.button.menu.add": "Új fogás",
   "dialog.button.menu.remove": "Fogás eltávolítása",
   "dialog.button.menuSet.add": "Új menü",

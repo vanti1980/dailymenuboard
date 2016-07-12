@@ -49,19 +49,31 @@ export class AddComponent {
     }
 
     ngOnInit() {
-        this.wizard = new Wizard(this.provider.mealSetXPaths.length);
         if (this.stepMainComponent) {
-          // force changing provider on sub-component because otherwise changes from dummy will not be tracked
-          this.stepMainComponent.provider = this.provider;
           this.stepMainComponent.ngOnInit();
         }
         if (this.stepMealSetComponents) {
           this.stepMealSetComponents.forEach((c)=>{
-            // force changing provider on sub-component because otherwise changes from dummy will not be tracked
-            c.provider = this.provider;
             c.ngOnInit();
           });
         }
+        this.init(this.provider);
+    }
+
+    init(provider: MealProvider) {
+      this.wizard = new Wizard(provider.mealSetXPaths.length);
+
+      if (this.stepMainComponent) {
+        // force changing provider on sub-component because otherwise changes from dummy will not be tracked
+        this.stepMainComponent.init(provider, this.wizard);
+      }
+      if (this.stepMealSetComponents) {
+        this.stepMealSetComponents.forEach((c)=>{
+          // force changing provider on sub-component because otherwise changes from dummy will not be tracked
+          c.init(provider, this.wizard);
+        });
+      }
+
     }
 
     public getCurrentStepMealSet(): StepMealSetComponent {
@@ -119,6 +131,10 @@ export class AddComponent {
     }
 
     onClose() {
+        this.modalComponent.close()
+    }
+
+    onDismiss() {
         this.modalComponent.close();
     }
 
@@ -135,7 +151,7 @@ export class AddComponent {
 
     public open(mealProvider: MealProvider): void {
         this.provider = mealProvider;
-        this.ngOnInit();
+        this.init(mealProvider);
         this.modalComponent.open();
     }
 }
