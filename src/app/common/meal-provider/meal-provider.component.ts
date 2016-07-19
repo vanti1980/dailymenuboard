@@ -33,6 +33,10 @@ export class MealProviderComponent {
      public mealProviderService: MealProviderService){
    }
 
+   openEditDialog(mealProvider: MealProvider) {
+     this.emitterService.get(Events.MEAL_PROVIDER_EDITED).emit(mealProvider);
+   }
+
    openRemoveDialog(mealProvider: MealProvider) {
      this.confirmDialog.open(mealProvider);
    }

@@ -8,6 +8,7 @@
   "button.submit": "Speichern",
   "button.yes": "Ja",
   "dialog.addNewRestaurant": "Neues Restaurant",
+  "dialog.editExistingRestaurant": "Editieren des Restaurants",
   "dialog.button.menu.add": "Neues Gericht",
   "dialog.button.menu.remove": "Gericht entfernen",
   "dialog.button.menuSet.add": "Neues Menü",

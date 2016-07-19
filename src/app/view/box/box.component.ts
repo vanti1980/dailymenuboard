@@ -49,14 +49,22 @@ export class BoxView {
       this.eventSubscriptions[Events.MEAL_PROVIDER_ADDED] = this.emitterService.get(Events.MEAL_PROVIDER_ADDED).subscribe(msg =>{
         this.initMealProviders();
       });
+      this.eventSubscriptions[Events.MEAL_PROVIDER_EDITED] = this.emitterService.get(Events.MEAL_PROVIDER_EDITED).subscribe(provider =>{
+        this.openEditDialog(provider);
+      });
       this.eventSubscriptions[Events.MEAL_PROVIDER_REMOVED] = this.emitterService.get(Events.MEAL_PROVIDER_REMOVED).subscribe(msg =>{
+        this.initMealProviders();
+      });
+      this.eventSubscriptions[Events.MEAL_PROVIDER_UPDATED] = this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).subscribe(msg =>{
         this.initMealProviders();
       });
     }
 
     ngOnDestroy() {
       this.eventSubscriptions[Events.MEAL_PROVIDER_ADDED].unsubscribe();
+      this.eventSubscriptions[Events.MEAL_PROVIDER_EDITED].unsubscribe();
       this.eventSubscriptions[Events.MEAL_PROVIDER_REMOVED].unsubscribe();
+      this.eventSubscriptions[Events.MEAL_PROVIDER_UPDATED].unsubscribe();
     }
 
     private initMealProviders():void {
@@ -85,10 +93,15 @@ export class BoxView {
 
     ngOnChanges(changeRecord) {
         //Called after every change to input properties and before processing content or child views.
-        console.log('ngOnChanges');
+        // console.log('ngOnChanges');
     }
 
     openAddDialog() {
       this.addComponent.open(new MealProvider(null, null, {}, null, [StepMealSetComponent.createMealSetXPath()], null, null));
     }
+
+    openEditDialog(mealProvider: MealProvider) {
+      this.addComponent.open(mealProvider);
+    }
+
 }

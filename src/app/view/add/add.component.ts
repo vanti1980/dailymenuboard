@@ -49,19 +49,31 @@ export class AddComponent {
     }
 
     ngOnInit() {
-        this.wizard = new Wizard(this.provider.mealSets.length);
         if (this.stepMainComponent) {
-          // force changing provider on sub-component because otherwise changes from dummy will not be tracked
-          this.stepMainComponent.provider = this.provider;
           this.stepMainComponent.ngOnInit();
         }
         if (this.stepMealSetComponents) {
           this.stepMealSetComponents.forEach((c)=>{
-            // force changing provider on sub-component because otherwise changes from dummy will not be tracked
-            c.provider = this.provider;
             c.ngOnInit();
           });
         }
+        this.init(this.provider);
+    }
+
+    init(provider: MealProvider) {
+      this.wizard = new Wizard(provider.mealSetXPaths.length);
+
+      if (this.stepMainComponent) {
+        // force changing provider on sub-component because otherwise changes from dummy will not be tracked
+        this.stepMainComponent.init(provider, this.wizard);
+      }
+      if (this.stepMealSetComponents) {
+        this.stepMealSetComponents.forEach((c)=>{
+          // force changing provider on sub-component because otherwise changes from dummy will not be tracked
+          c.init(provider, this.wizard);
+        });
+      }
+
     }
 
     public getCurrentStepMealSet(): StepMealSetComponent {
@@ -119,18 +131,27 @@ export class AddComponent {
     }
 
     onClose() {
+        this.modalComponent.close()
+    }
+
+    onDismiss() {
         this.modalComponent.close();
     }
 
     onSubmit() {
-        this.mealProviderService.addMealProvider(this.provider);
+      this.mealProviderService.addMealProvider(this.provider);
+        if (this.provider.isNew) {
+          this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
+        }
+        else {
+          this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).emit(this.provider);
+        }
         this.modalComponent.close();
-        this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
     }
 
     public open(mealProvider: MealProvider): void {
         this.provider = mealProvider;
-        this.ngOnInit();
+        this.init(mealProvider);
         this.modalComponent.open();
     }
 }
