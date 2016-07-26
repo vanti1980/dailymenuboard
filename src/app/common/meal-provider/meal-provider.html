@@ -38,7 +38,12 @@
    </div>
 
    <div class="container-fluid" *ngIf="showMealSet===true">
-        <meal-set [mealSet]="mealSet" *ngFor="let mealSet of mealProvider.mealSets"></meal-set>
+        <div *ngIf="mealProvider.isLoaded()">
+          <div *ngFor="let mealSet of mealProvider.mealSets">
+            <meal-set [mealSet]="mealSet"></meal-set>
+          </div>
+        </div>
+        <img src="../../../assets/img/hungry.png" *ngIf="mealProvider.hasErrors()"/>
    </div>
 </div>
 <confirm msg="{{'message.confirm.deleteMealProvider' | translate}}" (onClose)="confirmRemoveMealProvider($event)"></confirm>

@@ -66,6 +66,7 @@
     "angular2-google-maps": "^0.10.0",
     "angular2-grid": "^0.7.0",
     "bootstrap-sass": "^3.3.5",
+    "cerialize": "^0.1.7",
     "core-js": "^2.2.2",
     "font-awesome": "^4.6.1",
     "jquery": "^2.2.3",

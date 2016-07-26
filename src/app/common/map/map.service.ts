@@ -3,15 +3,21 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
-import {GeoCodeResponse, Location, Marker, IconType} from './map.model.ts';
+import {GeoCodeResponseJSON, Location, LocationJSON, Marker, IconType} from './map.model.ts';
 
 const KEY_HOME = 'home';
 
 @Injectable()
 export class MapService {
     constructor(private http: Http) {
-       if(this.getCachedHome()===null || this.getCachedHome()===undefined){
-            this.cacheHome({ name:'home', address:'Budapest, Ferenciek tere 1', location: {lat: 47.4933, lng: 19.0578}, color: '55ee55' });
+       if (!this.getCachedHome()){
+            this.cacheHome(
+              new Marker(
+                'home',
+                'Budapest, Ferenciek tere 1',
+                new Location(47.4933, 19.0578),
+                '55ee55')
+            );
        }
     }
 
@@ -48,11 +54,11 @@ export class MapService {
 
     public getLocation(address: string): Observable<Location> {
         return this.http.get(`${process.env.GEOCODE_SERVICE}?address=${encodeURI(address)}&sensor=false`)
-            .map((res) => <GeoCodeResponse>res.json())
+            .map((res) => <GeoCodeResponseJSON>res.json())
             .map((geoResp) => geoResp.results.length > 0 ? geoResp.results[0].geometry.location : null);
     }
 
-    public calculateDistance(providerLocation: Location, homeLocation: Location):number {
+    public calculateDistance(providerLocation: LocationJSON, homeLocation: LocationJSON):number {
       // haversine formula, see http://www.movable-type.co.uk/scripts/latlong.html for details
       var R = 6371000, // metres
       fi1 = toRadians(providerLocation.lat),

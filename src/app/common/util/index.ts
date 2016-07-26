@@ -1,2 +1,3 @@
-export * from './debounce-input-control-value-accessor.directive.ts';
-export * from './holder.ts';
+export * from './debounce-input-control-value-accessor.directive';
+export * from './holder';
+export * from './load-info';
