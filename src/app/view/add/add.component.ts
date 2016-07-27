@@ -140,7 +140,7 @@ export class AddComponent {
 
     onSubmit() {
       this.mealProviderService.addMealProvider(this.provider);
-        if (this.provider.isNew) {
+        if (this.provider.isUninitialized()) {
           this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
         }
         else {

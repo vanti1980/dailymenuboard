@@ -113,7 +113,8 @@ export class MealProviderService {
         var mealProviderString = localStorage.getItem(KEY_MEAL_PROVIDERS);
         if (mealProviderString) {
             try {
-                return Deserialize(JSON.parse(mealProviderString), MealProvider);
+                let mealProviders: MealProvider[] = Deserialize(JSON.parse(mealProviderString), MealProvider);
+                return mealProviders;
             }
             catch (e) {
                 console.error(e);

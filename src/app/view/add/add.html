@@ -1,8 +1,8 @@
 <!-- Modal -->
 <modal id="addDialog" [backdrop]="false" (onDismiss)="onDismiss()" #modal>
     <modal-header [show-close]="true">
-      <h4 class="modal-title" *ngIf="provider.isNew">{{'dialog.addNewRestaurant' | translate}}</h4>
-      <h4 class="modal-title" *ngIf="!provider.isNew">{{'dialog.editExistingRestaurant' | translate}}</h4>
+      <h4 class="modal-title" *ngIf="provider.isUninitialized()">{{'dialog.addNewRestaurant' | translate}}</h4>
+      <h4 class="modal-title" *ngIf="!provider.isUninitialized()">{{'dialog.editExistingRestaurant' | translate}}</h4>
       <h6>{{wizardStep}}</h6>
     </modal-header>
     <modal-body>

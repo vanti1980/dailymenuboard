@@ -50,10 +50,6 @@ export class MealProvider implements MealProviderJSON {
     @serialize @deserialize
     public color: string;
 
-    private key: number = Math.random();
-
-    private _isNew: boolean = false;
-
     /**
      * Distance from current location in meters.
      */
@@ -85,10 +81,6 @@ export class MealProvider implements MealProviderJSON {
         this.mealSetXPaths = mealSetXPaths;
         this.color = color;
         this.location = location;
-
-        if (!name) {
-            this._isNew = true;
-        }
     }
 
     toJSON(): MealProviderJSON {
@@ -103,8 +95,8 @@ export class MealProvider implements MealProviderJSON {
       };
     }
 
-    public get isNew(): boolean {
-        return this._isNew;
+    public isUninitialized(): boolean {
+        return this._info.status == LoadStatus.NOT_LOADED;
     }
 
     public isLoaded(): boolean {
