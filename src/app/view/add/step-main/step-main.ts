@@ -87,7 +87,7 @@ function colorValidator(control: Control) {
 
 function duplicatedNameValidatorFactory(mealProviderService: MealProviderService, providerHolder: Holder<MealProvider>) {
     return (control: Control) => {
-      if (providerHolder.data.isNew) {
+      if (providerHolder.data.isUninitialized()) {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.name == control.value) {
                 return { 'duplicated': true };
@@ -101,7 +101,7 @@ function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProvide
     return (control: Control) => {
       let provider:MealProvider = providerHolder.data;
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
-            if (mealProvider.dailyMealUrl == control.value && (provider.isNew || mealProvider.name !== provider.name)) {
+            if (mealProvider.dailyMealUrl == control.value && (provider.isUninitialized() || mealProvider.name !== provider.name)) {
                 return { 'duplicated': true };
             }
         }

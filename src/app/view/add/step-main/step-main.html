@@ -1,7 +1,7 @@
 <form role="form" [ngFormModel]="group" (ngSubmit)="onSubmit()" novalidate>
   <div class="form-group" [ngClass]="{'has-error': group.find('name').dirty && !group.find('name').valid}">
       <label for="name" class="required">{{'dialog.name' | translate}}:</label>
-      <input type="text" class="form-control" id="name" [ngFormControl]="group.find('name')" [(ngModel)]="provider.name" [disabled]="!provider.isNew" required="true">
+      <input type="text" class="form-control" id="name" [ngFormControl]="group.find('name')" [(ngModel)]="provider.name" [disabled]="!provider.isUninitialized()" required="true">
       <div *ngIf="group.find('name').dirty">
         <div *ngIf="group.find('name').hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
         <div *ngIf="group.find('name').hasError('duplicated')" class="help-block">{{'message.validation.duplicated' | translate}}</div>

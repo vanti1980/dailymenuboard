@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation, ViewChild} from '@angular/core';
+import {Component, Input, ViewEncapsulation, ViewChild} from '@angular/core';
 import {ConfirmComponent} from '../../common/confirm';
 import {EmitterService, Events} from '../../common/event';
 
@@ -14,15 +14,14 @@ import {MealProviderService} from './meal-provider.service';
   selector: 'meal-provider',
   template: require('./meal-provider.html'),
   providers: [MealProviderService],
-  directives: [Popover, MealSetComponent, ConfirmComponent],
-  inputs: [
-      'mealProvider',
-      'showMealSet'
-  ]
+  directives: [Popover, MealSetComponent, ConfirmComponent]
 })
 export class MealProviderComponent {
-   public mealProvider: MealProvider;
-   public showMealSet: boolean;
+  @Input()
+  public mealProvider: MealProvider;
+
+  @Input()
+  public showMealSet: boolean;
 
    @ViewChild(ConfirmComponent)
    private confirmDialog: ConfirmComponent;

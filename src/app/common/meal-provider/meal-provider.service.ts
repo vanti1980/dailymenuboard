@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 
+import { Serialize, Deserialize } from 'cerialize';
+
 import {Meal} from '../meal';
 
 import {Price} from '../meal/price.model';
@@ -13,6 +15,8 @@ import {MealProvider} from './meal-provider.model';
 import {XpathService, XpathResolutionResult} from '../xpath/xpath.service';
 
 import {MapService} from '../map/map.service';
+
+import {LoadInfo, LoadStatus} from '../util';
 
 const KEY_MEAL_PROVIDERS = 'mealProviders';
 
@@ -93,23 +97,24 @@ export class MealProviderService {
     public addMealProvider(mealProvider: MealProvider) {
         let mealProviders: Array<MealProvider> = this.getCachedMealProviders().filter((existingProvider) => existingProvider.name != mealProvider.name);
         mealProviders.push(mealProvider);
-        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(Serialize(mealProviders)));
     }
 
     public removeMealProvider(mealProvider: MealProvider) {
         let mealProviders: Array<MealProvider> = this.getCachedMealProviders().filter((existingProvider) => existingProvider.name != mealProvider.name);
-        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(Serialize(mealProviders)));
     }
 
     public cacheMealProviders(mealProviders: MealProvider[]) {
-        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(mealProviders));
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(Serialize(mealProviders)));
     }
 
     public getCachedMealProviders(): MealProvider[] {
         var mealProviderString = localStorage.getItem(KEY_MEAL_PROVIDERS);
         if (mealProviderString) {
             try {
-                return JSON.parse(mealProviderString);
+                let mealProviders: MealProvider[] = Deserialize(JSON.parse(mealProviderString), MealProvider);
+                return mealProviders;
             }
             catch (e) {
                 console.error(e);
@@ -132,7 +137,10 @@ export class MealProviderService {
                 }
                 providerXPaths.push(
                     this.xpathService.loadAndResolveXPaths(provider.dailyMealUrl, ...xpaths)
-                        .catch(() => Observable.of(<XpathResolutionResult>{ url: provider.dailyMealUrl, xpathResult: {} }))
+                        .catch((err) => {
+                          provider.setStatus(LoadStatus.ERROR, err);
+                          return Observable.of(<XpathResolutionResult>{ url: provider.dailyMealUrl, xpathResult: {}})
+                        })
                 );
             });
 
@@ -159,11 +167,15 @@ export class MealProviderService {
                     mealSets.push(mealSet);
                 }
                 provider.mealSets = mealSets;
+                if (!provider.hasErrors()) {
+                  provider.setStatus(provider.mealSets.length == 0 ? LoadStatus.EMPTY : LoadStatus.LOADED);
+                }
                 if (provider.location) {
                     provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);
                 }
                 return provider;
-            });
+            })
+            ;
     }
 
     public getDailyMealsByMealProviders(): Observable<Array<MealProvider>> {

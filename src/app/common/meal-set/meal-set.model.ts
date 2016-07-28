@@ -1,3 +1,5 @@
+import { deserialize, deserializeAs, serialize, serializeAs } from 'cerialize';
+
 import {Meal} from '../meal/meal.model';
 import {Price} from '../meal/price.model';
 import {MealProvider} from '../meal-provider';
@@ -12,43 +14,31 @@ export class MealSet {
         public price: Price,
         public mealProvider : MealProvider) {
         }
-  toJSON() {
-      return {
-        name: this.name,
-        meals: this.meals,
-        price: this.price
-      };
-  }
-
 }
 
 /**
  * The class describes a structure to define XPaths for a meal set.
  */
 export class MealSetXPath {
+
+  @serialize @deserialize
+  name: string;
+
+  @serialize @deserialize
+  price: string;
+
+  @serialize @deserialize
+  meals: string[];
+
   constructor(
-      public name: string,
-      public price: string,
-      public meals: string[]) {
+      name: string,
+      price: string,
+      meals: string[])
+    {
+      this.name = name;
+      this.price = price;
+      this.meals = meals;
     }
-
-    toJSON(): MealSetXPathJSON {
-        return Object.assign({}, this);
-    }
-
-    static fromJSON(json: MealSetXPathJSON | string): MealSetXPath {
-        if (typeof json === 'string') {
-            return JSON.parse(json, MealSetXPath.reviver);
-        } else {
-            let mealSetXPath = Object.create(MealSetXPath.prototype);
-            return Object.assign(mealSetXPath, json);
-        }
-    }
-
-    static reviver(key: string, value: any): any {
-        return key === "" ? MealSetXPath.fromJSON(value) : value;
-    }
-
 }
 
 /**

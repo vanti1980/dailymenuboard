@@ -3,7 +3,7 @@ import {Component} from '@angular/core';
 
 import {MapService, MapComponent} from '../../common/map';
 
-import {GeoCodeResponse, Location, Marker, IconType} from '../../common/map/map.model.ts';
+import {GeoCodeResponseJSON, Location, Marker, IconType} from '../../common/map/map.model.ts';
 
 @Component({
     selector: 'settings',
