@@ -23,6 +23,7 @@ export class BoxView {
 
     public boxes: Box[];
     public mealProviders: MealProvider[] = [];
+    public editedProvider: MealProvider;
     public maxNumberOfColumn: number;
 
     private eventSubscriptions: {[key: number]:any} = {};
@@ -42,6 +43,7 @@ export class BoxView {
             new Box(new BoxConfig(4, 1)),
             new Box(new BoxConfig(4, 2))
         ];
+        this.resetEditedProvider();
     }
 
     ngOnInit() {
@@ -58,6 +60,9 @@ export class BoxView {
       this.eventSubscriptions[Events.MEAL_PROVIDER_UPDATED] = this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).subscribe(msg =>{
         this.initMealProviders();
       });
+      this.eventSubscriptions[Events.MEAL_PROVIDER_DISCARDED] = this.emitterService.get(Events.MEAL_PROVIDER_DISCARDED).subscribe(msg =>{
+        // this.resetEditedProvider();
+      });
     }
 
     ngOnDestroy() {
@@ -65,6 +70,7 @@ export class BoxView {
       this.eventSubscriptions[Events.MEAL_PROVIDER_EDITED].unsubscribe();
       this.eventSubscriptions[Events.MEAL_PROVIDER_REMOVED].unsubscribe();
       this.eventSubscriptions[Events.MEAL_PROVIDER_UPDATED].unsubscribe();
+      this.eventSubscriptions[Events.MEAL_PROVIDER_DISCARDED].unsubscribe();
     }
 
     private initMealProviders():void {
@@ -91,6 +97,7 @@ export class BoxView {
           console.log("Error:" + err);
         }
       );
+      // this.resetEditedProvider();
     }
 
     ngOnChanges(changeRecord) {
@@ -99,11 +106,16 @@ export class BoxView {
     }
 
     openAddDialog() {
-      this.addComponent.open(new MealProvider(null, null, {}, null, [StepMealSetComponent.createMealSetXPath()], null, null));
+      this.resetEditedProvider();
+      this.addComponent.open();
     }
 
     openEditDialog(mealProvider: MealProvider) {
-      this.addComponent.open(mealProvider);
+      this.editedProvider = mealProvider;
+      this.addComponent.open();
     }
 
+    resetEditedProvider(): void {
+      this.editedProvider = new MealProvider(null, null, {}, null, [StepMealSetComponent.createMealSetXPath()], null, null);
+    }
 }

@@ -47,6 +47,10 @@ export class StepMainComponent implements OnChanges {
       this.provider = provider;
       this.wizard = wizard;
 
+      // Update validity state so that Next button is available
+      // don't mix the order of markAsPending and updateValueAndValidity
+      // otherwise ExpressionChangedAfterItHasBeenCheckedException is thrown
+      // this.group.updateValueAndValidity();
       // Mark as pending to prevent devmode check fail that isValid() changed while rendering - caused by async validator
       this.group.markAsPending();
     }
@@ -54,6 +58,7 @@ export class StepMainComponent implements OnChanges {
     ngOnChanges(changes: {[propName: string]: SimpleChange}) {
       if (this.providerHolder && changes['provider']) {
         this.providerHolder.data = changes['provider'].currentValue;
+        this.group.markAsPending();
       }
     }
 

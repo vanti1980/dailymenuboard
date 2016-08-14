@@ -8,7 +8,7 @@
     <modal-body>
       <!-- TODO: summary page is currently out-of-scope -->
       <dmb-add-step-main [hidden]="wizard.step != BASE_DATA_STEP" [wizard]="wizard" [provider]="provider"></dmb-add-step-main>
-      <dmb-add-step-mealset *ngFor="let mealSet of provider.mealSetXPaths; let index = index" [hidden]="wizard.step != index + 2" [wizard]="wizard" [provider]="provider"></dmb-add-step-mealset>
+      <dmb-add-step-mealset *ngFor="let mealSet of provider.mealSetXPaths; let index = index" [hidden]="wizard.step != index + 2" [wizard]="wizard" [provider]="provider" [mealSetIndex]="index"></dmb-add-step-mealset>
     </modal-body>
     <modal-footer>
       <button type="button" class="btn btn-default" [disabled]="wizard.step == BASE_DATA_STEP" (click)="onPreviousStep()">

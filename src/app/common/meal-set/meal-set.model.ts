@@ -31,13 +31,13 @@ export class MealSetXPath {
   meals: string[];
 
   constructor(
-      name: string,
-      price: string,
-      meals: string[])
+      name?: string,
+      price?: string,
+      meals?: string[])
     {
       this.name = name;
       this.price = price;
-      this.meals = meals;
+      this.meals = meals || [];
     }
 }
 

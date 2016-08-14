@@ -60,6 +60,8 @@ export class MealProvider implements MealProviderJSON {
      */
     public mealSets: MealSet[] = [];
 
+    mealSetXPathAssists: MealSetXPath[];
+
     /**
      * Status about the meal provider being loaded or not loaded.
      */
@@ -79,6 +81,10 @@ export class MealProvider implements MealProviderJSON {
         this.contacts = contacts;
         this.dailyMealUrl = dailyMealUrl;
         this.mealSetXPaths = mealSetXPaths;
+        if (mealSetXPaths) {
+          this.mealSetXPathAssists = new Array(mealSetXPaths.length);
+          this.mealSetXPathAssists.fill(new MealSetXPath());
+        }
         this.color = color;
         this.location = location;
     }
@@ -115,6 +121,15 @@ export class MealProvider implements MealProviderJSON {
         this._info = new LoadInfo(status);
       }
     }
+
+    public static OnDeserialized(instance : MealProvider, json : any) : void {
+        if (instance.constructor.name === "MealProvider") {
+          instance.mealSetXPathAssists = new Array(instance.mealSetXPaths.length);
+          if (instance.mealSetXPaths) {
+            instance.mealSetXPathAssists.fill(new MealSetXPath());
+          }
+        }
+      }
 }
 
 export interface MealProviderJSON {

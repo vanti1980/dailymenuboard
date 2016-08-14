@@ -1,5 +1,5 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {Component, Input, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChange, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
@@ -25,10 +25,11 @@ import {XpathFragmentComponent} from '../xpath-fragment/xpath-fragment';
     template: require('./step-mealset.html'),
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StepMealSetComponent {
+export class StepMealSetComponent implements OnChanges {
     @Input() provider: MealProvider;
     @Input() wizard: Wizard;
-    dailyMealContents: Holder<string> = { data: undefined };
+    @Input() mealSetIndex: number;
+    dailyMealContents: string;
 
     group: ControlGroup;
 
@@ -37,20 +38,34 @@ export class StepMealSetComponent {
         private builder: FormBuilder,
         private mealProviderService: MealProviderService,
         private mapService: MapService,
-        private xpathService: XpathService) {
+        private xpathService: XpathService,
+        private changeDetectorRef: ChangeDetectorRef) {
     }
 
     ngOnInit() {
       this.group = this.createMealSetControlGroup();
-      this.group.updateValueAndValidity();
+      this.initControls();
     }
 
-    init(provider: MealProvider, wizard: Wizard) {
-      this.provider = provider;
-      this.wizard = wizard;
 
-      // Mark as pending to prevent devmode check fail that isValid() changed while rendering
-      this.group.markAsPending();
+    ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+      if (changes['provider']) {
+        this.initControls();
+        console.log("****provider" + JSON.stringify(this.provider));
+      }
+    }
+
+    initControls(): void {
+      // to skip control adjustment when dummy provider is set
+      if (this.group && this.provider.mealSetXPaths.length > 0) {
+        let mealControls = (<ControlArray>this.group.find('meals'));
+        while (mealControls.length < this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length) {
+          mealControls.push(this.createMealControl());
+        }
+        while (mealControls.length > this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length) {
+          mealControls.removeAt(mealControls.length - 1);
+        }
+      }
     }
 
     public createMealSetControlGroup(): ControlGroup {
@@ -86,9 +101,9 @@ export class StepMealSetComponent {
     }
 
     xpathAssist(xpath: string) {
-      if (this.dailyMealContents.data) {
+      if (this.dailyMealContents) {
           try {
-              let xpathMap = this.xpathService.resolveXPaths(this.dailyMealContents.data, xpath);
+              let xpathMap = this.xpathService.resolveXPaths(this.dailyMealContents, xpath);
               return xpathMap[xpath];
           }
           catch (err) {
@@ -100,9 +115,17 @@ export class StepMealSetComponent {
     onEnterStep() {
       this.xpathService.getXDomainContent(this.provider.dailyMealUrl).subscribe(
           (data) => {
-              this.dailyMealContents.data = data;
+              this.dailyMealContents = data;
+              this.provider.mealSetXPathAssists[this.wizard.mealSetIndex].name = this.xpathAssist(this.provider.mealSetXPaths[this.wizard.mealSetIndex].name);
+              this.provider.mealSetXPathAssists[this.wizard.mealSetIndex].price = this.xpathAssist(this.provider.mealSetXPaths[this.wizard.mealSetIndex].price);
+              for (let ix = 0; ix < this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length; ix++) {
+                this.provider.mealSetXPathAssists[this.wizard.mealSetIndex].meals[ix] = this.xpathAssist(this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals[ix]);
+              }
+              this.changeDetectorRef.markForCheck();
           },
-          (err) => { console.log("***** Error:" + err); }
+          (err) => {
+            console.log(err);
+          }
       );
     }
 
