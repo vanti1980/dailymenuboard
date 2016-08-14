@@ -1,5 +1,5 @@
 import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {AfterViewInit, Component, Input, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, Input, QueryList, SimpleChange, ViewChild, ViewChildren} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
@@ -28,9 +28,11 @@ export const BASE_DATA_STEP = 1;
     template: require('./add.html')
 })
 export class AddComponent {
-    provider: MealProvider = new MealProvider(null, null, {}, null, [], null, null);
-    wizard: Wizard;
+    wizard: Wizard = new Wizard(0);
     BASE_DATA_STEP = BASE_DATA_STEP;
+
+    @Input()
+    provider: MealProvider;
 
     @ViewChild(ModalComponent)
     private modalComponent: ModalComponent;
@@ -50,30 +52,13 @@ export class AddComponent {
 
     ngOnInit() {
         if (this.stepMainComponent) {
-          this.stepMainComponent.ngOnInit();
+            this.stepMainComponent.ngOnInit();
         }
         if (this.stepMealSetComponents) {
-          this.stepMealSetComponents.forEach((c)=>{
-            c.ngOnInit();
-          });
+            this.stepMealSetComponents.forEach((c) => {
+                c.ngOnInit();
+            });
         }
-        this.init(this.provider);
-    }
-
-    init(provider: MealProvider) {
-      this.wizard = new Wizard(provider.mealSetXPaths.length);
-
-      if (this.stepMainComponent) {
-        // force changing provider on sub-component because otherwise changes from dummy will not be tracked
-        this.stepMainComponent.init(provider, this.wizard);
-      }
-      if (this.stepMealSetComponents) {
-        this.stepMealSetComponents.forEach((c)=>{
-          // force changing provider on sub-component because otherwise changes from dummy will not be tracked
-          c.init(provider, this.wizard);
-        });
-      }
-
     }
 
     public getCurrentStepMealSet(): StepMealSetComponent {
@@ -83,27 +68,27 @@ export class AddComponent {
     public onAddMealSet() {
         this.wizard.addStep();
         this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex + 1, 0, StepMealSetComponent.createMealSetXPath());
-        this.stepMealSetComponents.changes.subscribe((components)=>{
-          this.onNextStep();
+        this.stepMealSetComponents.changes.subscribe((components) => {
+            this.onNextStep();
         });
     }
 
     public onRemoveMealSet() {
-      if (this.provider.mealSetXPaths.length > 1) {
-        this.wizard.removeCurrentStep();
-        this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex, 1);
-        this.onPreviousStep();
-      }
+        if (this.provider.mealSetXPaths.length > 1) {
+            this.wizard.removeCurrentStep();
+            this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex, 1);
+            this.onPreviousStep();
+        }
     }
 
     onNextStep() {
         if (this.isCurrentStepValid() && this.wizard.step < this.wizard.lastStep) {
             this.wizard.step++;
             if (this.wizard.step == BASE_DATA_STEP) {
-              this.stepMainComponent.onEnterStep();
+                this.stepMainComponent.onEnterStep();
             }
             else {
-              this.getCurrentStepMealSet().onEnterStep();
+                this.getCurrentStepMealSet().onEnterStep();
             }
         }
     }
@@ -112,7 +97,7 @@ export class AddComponent {
         if (this.wizard.step > BASE_DATA_STEP) {
             this.wizard.step--;
             if (this.wizard.step == BASE_DATA_STEP) {
-              this.stepMainComponent.onEnterStep();
+                this.stepMainComponent.onEnterStep();
             }
             else {
                 this.getCurrentStepMealSet().onEnterStep();
@@ -132,26 +117,32 @@ export class AddComponent {
 
     onClose() {
         this.modalComponent.close()
+        this.emitterService.get(Events.MEAL_PROVIDER_DISCARDED).emit(this.provider);
     }
 
     onDismiss() {
         this.modalComponent.close();
+        this.emitterService.get(Events.MEAL_PROVIDER_DISCARDED).emit(this.provider);
     }
 
     onSubmit() {
-      this.mealProviderService.addMealProvider(this.provider);
+        this.mealProviderService.addMealProvider(this.provider);
         if (this.provider.isUninitialized()) {
-          this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
+            this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
         }
         else {
-          this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).emit(this.provider);
+            this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).emit(this.provider);
         }
         this.modalComponent.close();
     }
 
-    public open(mealProvider: MealProvider): void {
-        this.provider = mealProvider;
-        this.init(mealProvider);
+    ngOnChanges(changes: {[propName: string]: SimpleChange}) {
+      if (changes['provider']) {
+        this.wizard = new Wizard(changes['provider'].currentValue.mealSetXPaths.length);
+      }
+    }
+
+    public open(): void {
         this.modalComponent.open();
     }
 }

@@ -58,4 +58,8 @@ export class MapComponent implements OnChanges {
       return this.mapService.getIconUrl(IconType.PROVIDER, mealProvider.color);
     }
   }
+
+  mapClicked($event: Event) {
+    
+  }
 }

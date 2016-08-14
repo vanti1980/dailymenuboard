@@ -151,6 +151,7 @@ export class MealProviderService {
                 let provider = providersByUrl[providerXPath.url];
                 let xpaths = providerXPath.xpathResult;
                 let mealSets: MealSet[] = [];
+                provider.mealSetXPathAssists = [];
 
                 for (let mealSetXPath of provider.mealSetXPaths) {
                     let meals: Meal[] = [];
@@ -165,6 +166,7 @@ export class MealProviderService {
                     }
                     let mealSet: MealSet = new MealSet(xpaths[mealSetXPath.name], meals, price, provider);
                     mealSets.push(mealSet);
+                    provider.mealSetXPathAssists.push(new MealSetXPath());
                 }
                 provider.mealSets = mealSets;
                 if (!provider.hasErrors()) {
