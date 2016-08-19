@@ -11,6 +11,9 @@
  * @info http://james.padolsey.com/javascript/cross-domain-requests-with-jquery/
  */
 
+ //TODO actually it should not be necessary as it is provided using WebPack ProvidePlugin
+ var jquery = require('jquery');
+
 jquery.ajax = (function(_ajax){
 
     var protocol = location.protocol,
