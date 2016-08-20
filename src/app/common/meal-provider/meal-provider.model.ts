@@ -1,6 +1,8 @@
 import {Location} from '../map';
 import {MealSet,MealSetXPath,MealSetXPathJSON} from '../meal-set/meal-set.model';
 
+import {Color} from '../color';
+
 /**
  * Restaurant or something else that offers the meal.
  */
@@ -23,7 +25,7 @@ export class MealProvider {
         public dailyMealUrl: string,
         public mealSetXPaths: MealSetXPath[],
         public location: Location,
-        public color: string
+        public color: Color
     ) { }
 
     toJSON(): MealProviderJSON {
@@ -81,6 +83,6 @@ export interface MealProviderJSON {
     /**
      * Color used to display meal provider.
      */
-    color: string;
+    color: Color;
 
 }

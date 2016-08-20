@@ -3,7 +3,12 @@ import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
-import {GeoCodeResponse, Location, Marker, IconType} from './map.model.ts';
+import {GeoCodeResponse, IconType} from './map.model.ts';
+
+import {Marker} from './marker.model.ts';
+
+import {Location} from './location.model';
+import {Color} from '../color';
 
 const KEY_HOME = 'home';
 
@@ -11,7 +16,7 @@ const KEY_HOME = 'home';
 export class MapService {
     constructor(private http: Http) {
        if(this.getCachedHome()===null || this.getCachedHome()===undefined){
-            this.cacheHome({ name:'home', address:'Budapest, Ferenciek tere 1', location: {lat: 47.4933, lng: 19.0578}, color: '55ee55' });
+            this.cacheHome(new Marker('home', 'Budapest, Ferenciek tere 1', new Location(47.4933, 19.0578),new Color('#5e5')));
        }
     }
 
@@ -23,7 +28,9 @@ export class MapService {
         var homeString = localStorage.getItem(KEY_HOME);
         if (homeString) {
             try {
-                return <Marker>JSON.parse(homeString);
+              let m = new Marker(null, null, null, null);
+                m.fillFromJSON(homeString);
+                return m;
             }
             catch (e) {
                 console.error(e);

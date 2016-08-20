@@ -3,21 +3,26 @@ import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
 import {MapService} from './map.service';
-import {IconType,Location, Marker} from './map.model';
+import {IconType} from './map.model';
 import {MealProvider} from '../meal-provider';
+
+import {Marker} from './marker.model.ts';
+
+import {Location} from './location.model';
+import {Color} from '../color';
 
 import {
   MapsAPILoader,
   NoOpMapsAPILoader,
   MouseEvent,
-  ANGULAR2_GOOGLE_MAPS_PROVIDERS,
-  ANGULAR2_GOOGLE_MAPS_DIRECTIVES
+  GOOGLE_MAPS_PROVIDERS,
+  GOOGLE_MAPS_DIRECTIVES
 } from 'angular2-google-maps/core';
 
 @Component({
   selector: 'map',
-  providers: [ANGULAR2_GOOGLE_MAPS_PROVIDERS, MapService],
-  directives: [ANGULAR2_GOOGLE_MAPS_DIRECTIVES],
+  providers: [GOOGLE_MAPS_PROVIDERS, MapService],
+  directives: [GOOGLE_MAPS_DIRECTIVES],
   inputs: ['mealProviders'],
   pipes: [],
   styles: [/*require('./map.component.scss')*/],
@@ -53,10 +58,10 @@ export class MapComponent implements OnChanges {
 
   public getIconUrl(mealProvider: MealProvider) : string {
     if (mealProvider.name === 'home') {
-      return this.mapService.getIconUrl(IconType.HOME, this.hq.color);
+      return this.mapService.getIconUrl(IconType.HOME, this.hq.color.getValueWithoutHash());
     }
     else {
-      return this.mapService.getIconUrl(IconType.PROVIDER, mealProvider.color);
+      return this.mapService.getIconUrl(IconType.PROVIDER, mealProvider.color.getValueWithoutHash());
     }
   }
 }

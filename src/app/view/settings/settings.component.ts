@@ -3,12 +3,19 @@ import {Component} from '@angular/core';
 
 import {MapService, MapComponent} from '../../common/map';
 
-import {GeoCodeResponse, Location, Marker, IconType} from '../../common/map/map.model.ts';
+import {GeoCodeResponse, IconType} from '../../common/map';
+
+import {Marker} from '../../common/map';
+
+import {Location} from '../../common/map';
+import {Color} from '../../common/color';
+
+import {ColorPickerDirective} from 'angular2-color-picker';
 
 @Component({
     selector: 'settings',
     providers: [MapService],
-    directives: [MapComponent],
+    directives: [MapComponent, ColorPickerDirective],
     template: require('./settings.html')
 })
 export class SettingsComponent {

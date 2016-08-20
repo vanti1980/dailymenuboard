@@ -24,8 +24,10 @@
                             <input type="text" class="form-control" id="address" required [(ngModel)]="marker.address">
                         </div>
                         <div class="form-group">
-                            <label for="color">{{'dialog.color' | translate}}:</label>
-                            <input type="text" class="form-control" id="color" required [(ngModel)]="marker.color">
+                            <label for="color">{{'dialog.color' | translate}}</label>
+                            <input [(colorPicker)]="marker.color.value"
+                                 [style.background]="marker.color.value"
+                                 [value]="marker.color.value"/>
                         </div>
                     </div>
                     <div class="modal-footer">

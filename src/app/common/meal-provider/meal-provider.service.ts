@@ -14,6 +14,8 @@ import {XpathService, XpathResolutionResult} from '../xpath/xpath.service';
 
 import {MapService} from '../map/map.service';
 
+import {Color} from '../color';
+
 const KEY_MEAL_PROVIDERS = 'mealProviders';
 
 @Injectable()
@@ -52,7 +54,7 @@ export class MealProviderService {
                     lat: 47.4921,
                     lng: 19.0560
                 },
-                '55e5e5'
+                new Color('#55e5e5')
             ),
             new MealProvider(
                 'Chic-to-Chic',
@@ -82,7 +84,7 @@ export class MealProviderService {
                     lat: 47.4918,
                     lng: 19.0541
                 },
-                'ff5b9c'
+                new Color('#ff5b9c')
             )
         ]);
     }
