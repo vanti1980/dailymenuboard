@@ -5,10 +5,11 @@ import {Observable} from 'rxjs/Rx';
 
 import {MealProvider} from './meal-provider.model.ts';
 import {MealProviderService} from './meal-provider.service.ts';
+import {MealSetXPath} from '../meal-set';
 
-import {XpathService} from '../xpath/xpath.service';
+import {XpathResolutionResult, XpathService} from '../xpath';
 
-import {MapService} from '../map/map.service';
+import {Location, LocationJSON, Marker, MapService} from '../map';
 
 describe('Test MealProviderService', () => {
 
@@ -190,4 +191,100 @@ describe('Test MealProviderService', () => {
         expect(mealProviders.length).toEqual(0);
     })));
 
+    it(' returns daily meals grouped by meal providers with meal sets if they can be loaded',
+      async(inject([MealProviderService, XpathService, MapService], (testService: MealProviderService, xpathService: XpathService, mapService: MapService) => {
+        let existingProvider1 = createMealProvider1();
+        let existingProvider2 = createMealProvider2();
+        let cachedMealProvidersSpy = spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
+          return [existingProvider1, existingProvider2];
+        });
+        let loadAndResolveXPathsSpy = spyOn(xpathService, 'loadAndResolveXPaths').and.callFake(generateFakeXpathResult);
+        let calculateDistanceSpy = spyOn(mapService, 'calculateDistance').and.callFake(generateFakeDistance);
+        let mealProviderObservables = testService.getDailyMealsByMealProviders();
+        expect(cachedMealProvidersSpy).toHaveBeenCalled();
+        expect(loadAndResolveXPathsSpy.calls.count()).toEqual(2);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(0)).toEqual(['http://existingpage1.com/daily-meal',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]', '//a[6]',
+          '//b[1]', '//b[2]', '//b[3]', '//b[4]', '//b[5]']);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(1)).toEqual(['http://existingpage2.com/menu',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]']);
+        expect(calculateDistanceSpy.calls.count()).toEqual(2);
+        expect(calculateDistanceSpy.calls.argsFor(0)[0].lat).toEqual(19);
+        expect(calculateDistanceSpy.calls.argsFor(0)[1].lat).toEqual(15);
+        expect(calculateDistanceSpy.calls.argsFor(1)[0].lat).toEqual(20);
+        expect(calculateDistanceSpy.calls.argsFor(1)[1].lat).toEqual(15);
+        mealProviderObservables.subscribe(data => {
+          expect(data.length).toEqual(2);
+          expect(data[0]).not.toBeNull();
+          expect(data[0].name).toEqual(existingProvider1.name);
+          expect(data[0].distance)
+        });
+    })));
+
 });
+
+function createMealProvider1(): MealProvider {
+  return new MealProvider(
+    'existing1',
+    'http://existingpage1.com',
+    {'address':'10 Downing St., London'},
+    'http://existingpage1.com/daily-meal',
+    [
+      new MealSetXPath('//a[1]', '//a[2]', ['//a[3]', '//a[4]', '//a[5]', '//a[6]']),
+      new MealSetXPath('//b[1]', '//b[2]', ['//b[3]', '//b[4]', '//b[5]'])
+    ],
+    new Location(19, 49),
+    '999900'
+  );
+}
+
+function createMealProvider2(): MealProvider {
+  return new MealProvider(
+    'existing2',
+    'http://existingpage2.com',
+    {'phone':'+155555555'},
+    'http://existingpage2.com/menu',
+    [
+      new MealSetXPath('//a[1]', '//a[2]', ['//a[3]', '//a[4]', '//a[5]'])
+    ],
+    new Location(20, 40),
+    '00cccc'
+  );
+}
+
+function generateFakeXpathResult(url, ...xpaths):Observable<XpathResolutionResult> {
+    let xpathResult:{[key:string]:string} = {};
+    if (url.indexOf('page1') >= 0) {
+      xpathResult['//a[1]'] = 'menu1';
+      xpathResult['//a[2]'] = '1500 HUF';
+      xpathResult['//a[3]'] = 'antipasto';
+      xpathResult['//a[4]'] = 'primo piatto';
+      xpathResult['//a[5]'] = 'secondo piatto';
+      xpathResult['//a[6]'] = 'panna cotta';
+
+      xpathResult['//b[1]'] = 'menu2';
+      xpathResult['//b[2]'] = '2000 HUF';
+      xpathResult['//b[3]'] = 'soup';
+      xpathResult['//b[4]'] = 'fish';
+      xpathResult['//b[5]'] = 'dessert';
+    }
+    else if (url.indexOf('page2') >= 0) {
+      xpathResult['//a[1]'] = 'menu3';
+      xpathResult['//a[2]'] = '1200 HUF';
+      xpathResult['//a[3]'] = 'Suppe';
+      xpathResult['//a[4]'] = 'Wiener Schnitzel';
+      xpathResult['//a[5]'] = 'Schokopuding';
+    }
+    return Observable.of({
+      url: url,
+      xpathResult: xpathResult
+    });
+}
+
+function generateFakeHome(): Marker {
+  return new Marker('home', 'address', new Location(15,15), '555555');
+}
+
+function generateFakeDistance(providerLocation: LocationJSON, homeLocation: LocationJSON): number {
+    return providerLocation.lat - homeLocation.lat;
+}
