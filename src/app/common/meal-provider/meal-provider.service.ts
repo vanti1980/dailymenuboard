@@ -160,13 +160,16 @@ export class MealProviderService {
                             meals.push(new Meal(xpaths[mealXPath].trim()));
                         }
                     }
-                    let price: Price = null;
+                    let price: Price = undefined;
                     if (mealSetXPath.price) {
                         price = Price.fromString(xpaths[mealSetXPath.price]);
                     }
-                    let mealSet: MealSet = new MealSet(xpaths[mealSetXPath.name], meals, price, provider);
-                    mealSets.push(mealSet);
-                    provider.mealSetXPathAssists.push(new MealSetXPath());
+                    let name: string = xpaths[mealSetXPath.name];
+                    if (name) {
+                      let mealSet: MealSet = new MealSet(name, meals, price, provider);
+                      mealSets.push(mealSet);
+                      provider.mealSetXPathAssists.push(new MealSetXPath());
+                    }
                 }
                 provider.mealSets = mealSets;
                 if (!provider.hasErrors()) {

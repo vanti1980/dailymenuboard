@@ -199,6 +199,7 @@ describe('Test MealProviderService', () => {
           return [existingProvider1, existingProvider2];
         });
         let loadAndResolveXPathsSpy = spyOn(xpathService, 'loadAndResolveXPaths').and.callFake(generateFakeXpathResult);
+        let getCachedHomeSpy = spyOn(mapService, 'getCachedHome').and.callFake(generateFakeHome);
         let calculateDistanceSpy = spyOn(mapService, 'calculateDistance').and.callFake(generateFakeDistance);
         let mealProviderObservables = testService.getDailyMealsByMealProviders();
         expect(cachedMealProvidersSpy).toHaveBeenCalled();
@@ -208,20 +209,226 @@ describe('Test MealProviderService', () => {
           '//b[1]', '//b[2]', '//b[3]', '//b[4]', '//b[5]']);
         expect(loadAndResolveXPathsSpy.calls.argsFor(1)).toEqual(['http://existingpage2.com/menu',
           '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]']);
-        expect(calculateDistanceSpy.calls.count()).toEqual(2);
-        expect(calculateDistanceSpy.calls.argsFor(0)[0].lat).toEqual(19);
-        expect(calculateDistanceSpy.calls.argsFor(0)[1].lat).toEqual(15);
-        expect(calculateDistanceSpy.calls.argsFor(1)[0].lat).toEqual(20);
-        expect(calculateDistanceSpy.calls.argsFor(1)[1].lat).toEqual(15);
         mealProviderObservables.subscribe(data => {
+          expect(calculateDistanceSpy.calls.count()).toEqual(2);
+          expect(calculateDistanceSpy.calls.argsFor(0)[0].lat).toEqual(19);
+          expect(calculateDistanceSpy.calls.argsFor(0)[1].lat).toEqual(15);
+          expect(calculateDistanceSpy.calls.argsFor(1)[0].lat).toEqual(20);
+          expect(calculateDistanceSpy.calls.argsFor(1)[1].lat).toEqual(15);
+
           expect(data.length).toEqual(2);
-          expect(data[0]).not.toBeNull();
+
+          expect(data[0]).toBeTruthy();
+          expect(data[0].hasErrors()).toBe(false);
           expect(data[0].name).toEqual(existingProvider1.name);
-          expect(data[0].distance)
+          expect(data[0].distance).toEqual(4);
+          expect(data[0].mealSets.length).toEqual(2);
+          expect(data[0].mealSets[0].name).toEqual('menu1');
+          expect(data[0].mealSets[0].price).toBeTruthy();
+          expect(data[0].mealSets[0].price.value).toEqual(1500);
+          expect(data[0].mealSets[0].price.currency).toEqual('Ft');
+          expect(data[0].mealSets[0].meals.length).toEqual(4);
+          expect(data[0].mealSets[0].meals[0].name).toEqual('antipasto');
+          expect(data[0].mealSets[0].meals[1].name).toEqual('primo piatto');
+          expect(data[0].mealSets[0].meals[2].name).toEqual('secondo piatto');
+          expect(data[0].mealSets[0].meals[3].name).toEqual('panna cotta');
+          expect(data[0].mealSets[1].name).toEqual('menu2');
+          expect(data[0].mealSets[1].price).toBeTruthy();
+          expect(data[0].mealSets[1].price.value).toEqual(2000);
+          expect(data[0].mealSets[1].price.currency).toEqual('HUF');
+          expect(data[0].mealSets[1].meals.length).toEqual(3);
+          expect(data[0].mealSets[1].meals[0].name).toEqual('soup');
+          expect(data[0].mealSets[1].meals[1].name).toEqual('fish');
+          expect(data[0].mealSets[1].meals[2].name).toEqual('dessert');
+
+          expect(data[1]).toBeTruthy();
+          expect(data[1].hasErrors()).toBe(false);
+          expect(data[1].name).toEqual(existingProvider2.name);
+          expect(data[1].distance).toEqual(5);
+          expect(data[1].mealSets.length).toEqual(1);
+          expect(data[1].mealSets[0].name).toEqual('menu3');
+          expect(data[1].mealSets[0].price).toBeTruthy();
+          expect(data[1].mealSets[0].price.value).toEqual(4);
+          expect(data[1].mealSets[0].price.currency).toEqual('EUR');
+          expect(data[1].mealSets[0].meals.length).toEqual(3);
+          expect(data[1].mealSets[0].meals[0].name).toEqual('Suppe');
+          expect(data[1].mealSets[0].meals[1].name).toEqual('Wiener Schnitzel');
+          expect(data[1].mealSets[0].meals[2].name).toEqual('Schokopuding');
+        });
+    })));
+
+    it(' returns daily meals grouped by meal providers with meal sets if XPath resolution fails for one provider',
+      async(inject([MealProviderService, XpathService, MapService], (testService: MealProviderService, xpathService: XpathService, mapService: MapService) => {
+        let existingProvider1 = createMealProvider1();
+        let existingProvider2 = createMealProvider2();
+        let cachedMealProvidersSpy = spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
+          return [existingProvider1, existingProvider2];
+        });
+        let loadAndResolveXPathsSpy = spyOn(xpathService, 'loadAndResolveXPaths').and.callFake(generateFakeErrorXpathResult);
+        let getCachedHomeSpy = spyOn(mapService, 'getCachedHome').and.callFake(generateFakeHome);
+        let calculateDistanceSpy = spyOn(mapService, 'calculateDistance').and.callFake(generateFakeDistance);
+        let mealProviderObservables = testService.getDailyMealsByMealProviders();
+        expect(cachedMealProvidersSpy).toHaveBeenCalled();
+        expect(loadAndResolveXPathsSpy.calls.count()).toEqual(2);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(0)).toEqual(['http://existingpage1.com/daily-meal',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]', '//a[6]',
+          '//b[1]', '//b[2]', '//b[3]', '//b[4]', '//b[5]']);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(1)).toEqual(['http://existingpage2.com/menu',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]']);
+        mealProviderObservables.subscribe(data => {
+          expect(calculateDistanceSpy.calls.count()).toEqual(2);
+          expect(calculateDistanceSpy.calls.argsFor(0)[0].lat).toEqual(19);
+          expect(calculateDistanceSpy.calls.argsFor(0)[1].lat).toEqual(15);
+          expect(calculateDistanceSpy.calls.argsFor(1)[0].lat).toEqual(20);
+          expect(calculateDistanceSpy.calls.argsFor(1)[1].lat).toEqual(15);
+
+          expect(data.length).toEqual(2);
+
+          expect(data[0]).toBeTruthy();
+          expect(data[0].hasErrors()).toBe(true);
+          expect(data[0].name).toEqual(existingProvider1.name);
+          expect(data[0].distance).toEqual(4);
+          expect(data[0].mealSets.length).toEqual(0);
+
+          expect(data[1]).toBeTruthy();
+          expect(data[1].hasErrors()).toBe(false);
+          expect(data[1].name).toEqual(existingProvider2.name);
+          expect(data[1].distance).toEqual(5);
+          expect(data[1].mealSets.length).toEqual(1);
+          expect(data[1].mealSets[0].name).toEqual('menu3');
+          expect(data[1].mealSets[0].price).toBeTruthy();
+          expect(data[1].mealSets[0].price.value).toEqual(4);
+          expect(data[1].mealSets[0].price.currency).toEqual('EUR');
+          expect(data[1].mealSets[0].meals.length).toEqual(3);
+          expect(data[1].mealSets[0].meals[0].name).toEqual('Suppe');
+          expect(data[1].mealSets[0].meals[1].name).toEqual('Wiener Schnitzel');
+          expect(data[1].mealSets[0].meals[2].name).toEqual('Schokopuding');
+        });
+
+    })));
+
+    it(' returns daily meals grouped by meal providers with meal sets if no data were found for one provider',
+      async(inject([MealProviderService, XpathService, MapService], (testService: MealProviderService, xpathService: XpathService, mapService: MapService) => {
+        let existingProvider1 = createMealProvider1();
+        let existingProvider2 = createMealProvider2();
+        let cachedMealProvidersSpy = spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
+          return [existingProvider1, existingProvider2];
+        });
+        let loadAndResolveXPathsSpy = spyOn(xpathService, 'loadAndResolveXPaths').and.callFake(generateFakeEmptyXpathResult);
+        let getCachedHomeSpy = spyOn(mapService, 'getCachedHome').and.callFake(generateFakeHome);
+        let calculateDistanceSpy = spyOn(mapService, 'calculateDistance').and.callFake(generateFakeDistance);
+        let mealProviderObservables = testService.getDailyMealsByMealProviders();
+        expect(cachedMealProvidersSpy).toHaveBeenCalled();
+        expect(loadAndResolveXPathsSpy.calls.count()).toEqual(2);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(0)).toEqual(['http://existingpage1.com/daily-meal',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]', '//a[6]',
+          '//b[1]', '//b[2]', '//b[3]', '//b[4]', '//b[5]']);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(1)).toEqual(['http://existingpage2.com/menu',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]']);
+        mealProviderObservables.subscribe(data => {
+          expect(calculateDistanceSpy.calls.count()).toEqual(2);
+          expect(calculateDistanceSpy.calls.argsFor(0)[0].lat).toEqual(19);
+          expect(calculateDistanceSpy.calls.argsFor(0)[1].lat).toEqual(15);
+          expect(calculateDistanceSpy.calls.argsFor(1)[0].lat).toEqual(20);
+          expect(calculateDistanceSpy.calls.argsFor(1)[1].lat).toEqual(15);
+
+          expect(data.length).toEqual(2);
+
+          expect(data[0]).toBeTruthy();
+          expect(data[0].isEmpty()).toBe(true);
+          expect(data[0].name).toEqual(existingProvider1.name);
+          expect(data[0].distance).toEqual(4);
+          expect(data[0].mealSets.length).toEqual(0);
+
+          expect(data[1]).toBeTruthy();
+          expect(data[1].hasErrors()).toBe(false);
+          expect(data[1].name).toEqual(existingProvider2.name);
+          expect(data[1].distance).toEqual(5);
+          expect(data[1].mealSets.length).toEqual(1);
+          expect(data[1].mealSets[0].name).toEqual('menu3');
+          expect(data[1].mealSets[0].price).toBeTruthy();
+          expect(data[1].mealSets[0].price.value).toEqual(4);
+          expect(data[1].mealSets[0].price.currency).toEqual('EUR');
+          expect(data[1].mealSets[0].meals.length).toEqual(3);
+          expect(data[1].mealSets[0].meals[0].name).toEqual('Suppe');
+          expect(data[1].mealSets[0].meals[1].name).toEqual('Wiener Schnitzel');
+          expect(data[1].mealSets[0].meals[2].name).toEqual('Schokopuding');
+        });
+
+    })));
+
+    it(' returns daily meals grouped by meal sets if they can be loaded',
+      async(inject([MealProviderService, XpathService, MapService], (testService: MealProviderService, xpathService: XpathService, mapService: MapService) => {
+        let existingProvider1 = createMealProvider1();
+        let existingProvider2 = createMealProvider2();
+        let cachedMealProvidersSpy = spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
+          return [existingProvider1, existingProvider2];
+        });
+        let loadAndResolveXPathsSpy = spyOn(xpathService, 'loadAndResolveXPaths').and.callFake(generateFakeXpathResult);
+        let getCachedHomeSpy = spyOn(mapService, 'getCachedHome').and.callFake(generateFakeHome);
+        let calculateDistanceSpy = spyOn(mapService, 'calculateDistance').and.callFake(generateFakeDistance);
+        let mealSetObservables = testService.getDailyMealsByMealSets();
+        expect(cachedMealProvidersSpy).toHaveBeenCalled();
+        expect(loadAndResolveXPathsSpy.calls.count()).toEqual(2);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(0)).toEqual(['http://existingpage1.com/daily-meal',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]', '//a[6]',
+          '//b[1]', '//b[2]', '//b[3]', '//b[4]', '//b[5]']);
+        expect(loadAndResolveXPathsSpy.calls.argsFor(1)).toEqual(['http://existingpage2.com/menu',
+          '//a[1]', '//a[2]', '//a[3]', '//a[4]', '//a[5]']);
+        mealSetObservables.subscribe(data => {
+          expect(calculateDistanceSpy.calls.count()).toEqual(2);
+          expect(calculateDistanceSpy.calls.argsFor(0)[0].lat).toEqual(19);
+          expect(calculateDistanceSpy.calls.argsFor(0)[1].lat).toEqual(15);
+          expect(calculateDistanceSpy.calls.argsFor(1)[0].lat).toEqual(20);
+          expect(calculateDistanceSpy.calls.argsFor(1)[1].lat).toEqual(15);
+
+          expect(data.length).toEqual(3);
+
+          expect(data[0]).toBeTruthy();
+          expect(data[0].mealProvider).toBeTruthy();
+          expect(data[0].mealProvider.name).toEqual(existingProvider1.name);
+          expect(data[0].mealProvider.hasErrors()).toBe(false);
+          expect(data[0].name).toEqual('menu1');
+          expect(data[0].price).toBeTruthy();
+          expect(data[0].price.value).toEqual(1500);
+          expect(data[0].price.currency).toEqual('Ft');
+          expect(data[0].meals.length).toEqual(4);
+          expect(data[0].meals[0].name).toEqual('antipasto');
+          expect(data[0].meals[1].name).toEqual('primo piatto');
+          expect(data[0].meals[2].name).toEqual('secondo piatto');
+          expect(data[0].meals[3].name).toEqual('panna cotta');
+
+          expect(data[1]).toBeTruthy();
+          expect(data[1].name).toEqual('menu2');
+          expect(data[1].mealProvider).toBeTruthy();
+          expect(data[1].mealProvider.name).toEqual(existingProvider1.name);
+          expect(data[1].mealProvider.hasErrors()).toBe(false);
+          expect(data[1].price).toBeTruthy();
+          expect(data[1].price.value).toEqual(2000);
+          expect(data[1].price.currency).toEqual('HUF');
+          expect(data[1].meals.length).toEqual(3);
+          expect(data[1].meals[0].name).toEqual('soup');
+          expect(data[1].meals[1].name).toEqual('fish');
+          expect(data[1].meals[2].name).toEqual('dessert');
+
+          expect(data[2]).toBeTruthy();
+          expect(data[2].mealProvider).toBeTruthy();
+          expect(data[2].mealProvider.hasErrors()).toBe(false);
+          expect(data[2].mealProvider.name).toEqual(existingProvider2.name);
+          expect(data[2].mealProvider.distance).toEqual(5);
+          expect(data[2].name).toEqual('menu3');
+          expect(data[2].price).toBeTruthy();
+          expect(data[2].price.value).toEqual(4);
+          expect(data[2].price.currency).toEqual('EUR');
+          expect(data[2].meals.length).toEqual(3);
+          expect(data[2].meals[0].name).toEqual('Suppe');
+          expect(data[2].meals[1].name).toEqual('Wiener Schnitzel');
+          expect(data[2].meals[2].name).toEqual('Schokopuding');
         });
     })));
 
 });
+
 
 function createMealProvider1(): MealProvider {
   return new MealProvider(
@@ -256,7 +463,7 @@ function generateFakeXpathResult(url, ...xpaths):Observable<XpathResolutionResul
     let xpathResult:{[key:string]:string} = {};
     if (url.indexOf('page1') >= 0) {
       xpathResult['//a[1]'] = 'menu1';
-      xpathResult['//a[2]'] = '1500 HUF';
+      xpathResult['//a[2]'] = '1500 Ft';
       xpathResult['//a[3]'] = 'antipasto';
       xpathResult['//a[4]'] = 'primo piatto';
       xpathResult['//a[5]'] = 'secondo piatto';
@@ -270,7 +477,7 @@ function generateFakeXpathResult(url, ...xpaths):Observable<XpathResolutionResul
     }
     else if (url.indexOf('page2') >= 0) {
       xpathResult['//a[1]'] = 'menu3';
-      xpathResult['//a[2]'] = '1200 HUF';
+      xpathResult['//a[2]'] = '4 EUR';
       xpathResult['//a[3]'] = 'Suppe';
       xpathResult['//a[4]'] = 'Wiener Schnitzel';
       xpathResult['//a[5]'] = 'Schokopuding';
@@ -279,6 +486,29 @@ function generateFakeXpathResult(url, ...xpaths):Observable<XpathResolutionResul
       url: url,
       xpathResult: xpathResult
     });
+}
+
+function generateFakeErrorXpathResult(url, ...xpaths):Observable<XpathResolutionResult> {
+  if (url.indexOf('page1') >= 0) {
+    return Observable.throw(new Error('Cannot resolve XPaths'));
+  } else if (url.indexOf('page2') >= 0) {
+    return generateFakeXpathResult(url, xpaths);
+  }
+}
+
+function generateFakeEmptyXpathResult(url, ...xpaths):Observable<XpathResolutionResult> {
+  if (url.indexOf('page1') >= 0) {
+    let xpathResult: {[key: string]: string} = {};
+    for (let xpath of xpaths) {
+      xpathResult[xpath] = undefined;
+    }
+    return Observable.of({
+      url: url,
+      xpathResult: xpathResult
+    });
+  } else if (url.indexOf('page2') >= 0) {
+    return generateFakeXpathResult(url, xpaths);
+  }
 }
 
 function generateFakeHome(): Marker {
