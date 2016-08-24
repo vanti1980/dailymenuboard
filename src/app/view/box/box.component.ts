@@ -105,8 +105,9 @@ export class BoxView {
         // console.log('ngOnChanges');
     }
 
-    openAddDialog() {
+    openAddDialog(index: number) {
       this.resetEditedProvider();
+      this.editedProvider.position = index;
       this.addComponent.open();
     }
 
@@ -116,6 +117,6 @@ export class BoxView {
     }
 
     resetEditedProvider(): void {
-      this.editedProvider = new MealProvider(null, null, {}, null, [StepMealSetComponent.createMealSetXPath()], null, null);
+      this.editedProvider = new MealProvider(undefined, undefined, {}, undefined, [StepMealSetComponent.createMealSetXPath()], undefined, undefined, 0);
     }
 }

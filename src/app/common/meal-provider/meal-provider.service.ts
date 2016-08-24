@@ -57,7 +57,8 @@ export class MealProviderService {
                     lat: 47.4921,
                     lng: 19.0560
                 },
-                '55e5e5'
+                '55e5e5',
+                0
             ),
             new MealProvider(
                 'Chic-to-Chic',
@@ -89,7 +90,8 @@ export class MealProviderService {
                     lat: 47.4918,
                     lng: 19.0541
                 },
-                'ff5b9c'
+                'ff5b9c',
+                1
             )
         ]);
     }
@@ -186,7 +188,8 @@ export class MealProviderService {
     public getDailyMealsByMealProviders(): Observable<Array<MealProvider>> {
         return this.getDailyMealProviders()
             .reduce((ar: MealProvider[], provider: MealProvider) => {
-                ar.push(provider);
+                ar.splice(provider.position, 0, provider);
+                provider.position = ar.indexOf(provider);
                 return ar;
             }, new Array<MealProvider>());
     }
