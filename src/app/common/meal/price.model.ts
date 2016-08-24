@@ -5,7 +5,7 @@ export class Price {
 
   public static fromString(value:string):Price {
     if (!value) {
-      return null;
+      return undefined;
     }
     let tokens = value.trim().split(" ");
     if (tokens.length == 1) {

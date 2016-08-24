@@ -1,43 +1,29 @@
 import {provide, Injector} from '@angular/core';
-import {describe, expect, it, xit, inject, fakeAsync, beforeEachProviders} from '@angular/core/testing';
-import {
-    BaseRequestOptions,
-    Response,
-    ResponseOptions,
-    ConnectionBackend,
-    Http
-} from '@angular/http';
-import {MockBackend} from '@angular/http/testing';
+import {describe, expect, it, xit, inject, async, fakeAsync, beforeEachProviders} from '@angular/core/testing';
+
+import {Observable} from 'rxjs/Rx';
 
 import {XpathService} from './xpath.service.ts';
 
 describe('Test XpathService', () => {
 
-    beforeEachProviders(() => {
-        return [
-            BaseRequestOptions,
-            MockBackend,
-            provide(Http, {
-                useFactory:
-                function(backend, defaultOptions) {
-                    return new Http(backend, defaultOptions);
-                },
-                deps: [MockBackend, BaseRequestOptions]
-            }),
-            XpathService
-        ];
+  beforeEachProviders(() => {
+      return [
+          XpathService
+      ];
     });
 
-    it(' should correctly resolve XPath', inject([XpathService, MockBackend], (testService, mockBackend) => {
-        mockBackend.connections.subscribe((conn) => {
-            expect(conn.request.url).toBe('http://somedomain.com');
-            let response = new ResponseOptions({ body: "<html><body><div id='header'>header</div><div id='content'>content</div></body></html>" });
-            conn.mockRespond(new Response(response));
+    it(' should correctly resolve XPath', async(inject([XpathService], (testService: XpathService) => {
+        spyOn(testService, 'getXDomainContent').and.callFake(url => {
+          expect(url).toEqual('http://somedomain.com');
+          return Observable.of("<html><body><div id='header'>header</div><div id='content'>content</div></body></html>");
         });
+
         var obs = testService.loadAndResolveXPaths('http://somedomain.com', '//div[@id="header"]/following-sibling::div');
-        obs.subscribe((data) => {
-            expect(data).toEqual({'//div[@id="header"]/following-sibling::div':'content'});
+        obs.subscribe(data => {
+            expect(data.url).toEqual('http://somedomain.com');
+            expect(data.xpathResult).toEqual({'//div[@id="header"]/following-sibling::div':'content'});
         });
-    }));
+    })));
 
 });

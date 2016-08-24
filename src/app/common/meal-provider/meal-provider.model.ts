@@ -109,6 +109,10 @@ export class MealProvider implements MealProviderJSON {
         return this._info.status == LoadStatus.LOADED;
     }
 
+    public isEmpty(): boolean {
+        return this._info.status == LoadStatus.EMPTY;
+    }
+
     public hasErrors(): boolean {
         return this._info.status == LoadStatus.ERROR;
     }

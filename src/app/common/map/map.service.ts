@@ -35,7 +35,7 @@ export class MapService {
                 console.error(e);
             }
         }
-        return null;
+        return undefined;
     }
 
     public getIconUrl(type: IconType, color: string): string {
@@ -55,7 +55,7 @@ export class MapService {
     public getLocation(address: string): Observable<Location> {
         return this.http.get(`${process.env.GEOCODE_SERVICE}?address=${encodeURI(address)}&sensor=false`)
             .map((res) => <GeoCodeResponseJSON>res.json())
-            .map((geoResp) => geoResp.results.length > 0 ? geoResp.results[0].geometry.location : null);
+            .map((geoResp) => geoResp.results.length > 0 ? geoResp.results[0].geometry.location : undefined);
     }
 
     public calculateDistance(providerLocation: LocationJSON, homeLocation: LocationJSON):number {

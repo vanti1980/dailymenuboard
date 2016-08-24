@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 
 import {XpathTokens} from './xpath-tokens.enum';
@@ -7,7 +6,7 @@ import {XpathTokens} from './xpath-tokens.enum';
 
 var wgxpath = require('wgxpath');
 
-
+//TODO actually it should not be necessary as it is provided using WebPack ProvidePlugin
 var jquery = require('jquery');
 var jqueryXDomainAjax = require('./jquery.xdomainajax.js');
 
@@ -16,7 +15,7 @@ var jqueryXDomainAjax = require('./jquery.xdomainajax.js');
 export class XpathService {
     public name: string = 'XpathService';
 
-    constructor(private http: Http) {
+    constructor() {
     }
 
     public getXDomainContent(url: string): Observable<any> {
