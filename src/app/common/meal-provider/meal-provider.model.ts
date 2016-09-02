@@ -51,6 +51,12 @@ export class MealProvider implements MealProviderJSON {
     public color: string;
 
     /**
+     * Position used to display meal provider.
+     */
+    @serialize @deserialize
+    public position: number;
+
+    /**
      * Distance from current location in meters.
      */
     public distance: number = 0;
@@ -74,7 +80,8 @@ export class MealProvider implements MealProviderJSON {
         dailyMealUrl: string,
         mealSetXPaths: MealSetXPath[],
         location: Location,
-        color: string
+        color: string,
+        position: number
     ) {
         this.name = name;
         this.homePage = homePage;
@@ -86,6 +93,7 @@ export class MealProvider implements MealProviderJSON {
           this.mealSetXPathAssists.fill(new MealSetXPath());
         }
         this.color = color;
+        this.position = position;
         this.location = location;
     }
 
@@ -97,6 +105,7 @@ export class MealProvider implements MealProviderJSON {
         dailyMealUrl : this.dailyMealUrl,
         mealSetXPaths : this.mealSetXPaths,
         color : this.color,
+        position: this.position,
         location : this.location
       };
     }
@@ -168,4 +177,10 @@ export interface MealProviderJSON {
    * Color used to display meal provider.
    */
   color: string;
+
+  /**
+   * Position used to display meal provider.
+   */
+  position: number;
+
 }

@@ -68,6 +68,7 @@ export class AddComponent {
     public onAddMealSet() {
         this.wizard.addStep();
         this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex + 1, 0, StepMealSetComponent.createMealSetXPath());
+        this.provider.mealSetXPathAssists.splice(this.wizard.mealSetIndex + 1, 0, StepMealSetComponent.createMealSetXPath());
         this.stepMealSetComponents.changes.subscribe((components) => {
             this.onNextStep();
         });
@@ -77,6 +78,7 @@ export class AddComponent {
         if (this.provider.mealSetXPaths.length > 1) {
             this.wizard.removeCurrentStep();
             this.provider.mealSetXPaths.splice(this.wizard.mealSetIndex, 1);
+            this.provider.mealSetXPathAssists.splice(this.wizard.mealSetIndex, 1);
             this.onPreviousStep();
         }
     }

@@ -51,7 +51,6 @@ export class StepMealSetComponent implements OnChanges {
     ngOnChanges(changes: {[propName: string]: SimpleChange}) {
       if (changes['provider']) {
         this.initControls();
-        console.log("****provider" + JSON.stringify(this.provider));
       }
     }
 

@@ -29,7 +29,7 @@ export class MealProviderService {
 
     init() {
         // create mock data
-        if (this.getCachedMealProviders().length == 0) {
+        if (this.getCachedMealProviders().length === 0) {
             this.prepareMockData();
         }
     }
@@ -50,14 +50,15 @@ export class MealProviderService {
                         'substring(normalize-space(//div[@id="content"]//h2/text()), 12, 7)',
                     [
                         '//div[@id="content"]//h4[text()[contains(.,"$firstDayOfWeek")]]/following-sibling::table[$numberOfWeekDay]//tr[2]/td[3]',
-                        '//div[@id="content"]//h4[text()[contains(.,"$firstDayOfWeek")]]/following-sibling::table[$numberOfWeekDay]//tr[3]/td[3]',
+                        '//div[@id="content"]//h4[text()[contains(.,"$firstDayOfWeek")]]/following-sibling::table[$numberOfWeekDay]//tr[3]/td[3]'
                     ])
                 ],
                 {
                     lat: 47.4921,
                     lng: 19.0560
                 },
-                '55e5e5'
+                '55e5e5',
+                0
             ),
             new MealProvider(
                 'Chic-to-Chic',
@@ -89,7 +90,8 @@ export class MealProviderService {
                     lat: 47.4918,
                     lng: 19.0541
                 },
-                'ff5b9c'
+                'ff5b9c',
+                1
             )
         ]);
     }
@@ -101,22 +103,23 @@ export class MealProviderService {
     }
 
     public removeMealProvider(mealProvider: MealProvider) {
-        let mealProviders: Array<MealProvider> = this.getCachedMealProviders().filter((existingProvider) => existingProvider.name != mealProvider.name);
+        let mealProviders: Array<MealProvider> =
+          this.getCachedMealProviders().filter((existingProvider) => existingProvider.name !== mealProvider.name);
         localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(Serialize(mealProviders)));
     }
 
     public cacheMealProviders(mealProviders: MealProvider[]) {
-        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(Serialize(mealProviders)));
+        let storedMealProviders: MealProvider[] = [];
+        localStorage.setItem(KEY_MEAL_PROVIDERS, JSON.stringify(Serialize(mealProviders.filter((mealProvider)=>(mealProvider !== null && mealProvider !== undefined)))));
     }
 
     public getCachedMealProviders(): MealProvider[] {
-        var mealProviderString = localStorage.getItem(KEY_MEAL_PROVIDERS);
+        let mealProviderString = localStorage.getItem(KEY_MEAL_PROVIDERS);
         if (mealProviderString) {
             try {
                 let mealProviders: MealProvider[] = Deserialize(JSON.parse(mealProviderString), MealProvider);
                 return mealProviders;
-            }
-            catch (e) {
+            } catch (e) {
                 console.error(e);
             }
         }
@@ -124,13 +127,13 @@ export class MealProviderService {
     }
 
     private getDailyMealProviders(): Observable<MealProvider> {
-        var providersByUrl: { [key: string]: MealProvider } = {};
-        var providerXPaths: Observable<XpathResolutionResult>[] = new Array<Observable<XpathResolutionResult>>();
+        let providersByUrl: { [key: string]: MealProvider } = {};
+        let providerXPaths: Observable<XpathResolutionResult>[] = new Array<Observable<XpathResolutionResult>>();
 
         this.getCachedMealProviders()
             .forEach((provider: MealProvider) => {
                 providersByUrl[provider.dailyMealUrl] = provider;
-                var xpaths: string[] = [];
+                let xpaths: string[] = [];
                 for (let mealSetXPath of provider.mealSetXPaths) {
                     xpaths.push(mealSetXPath.name);
                     xpaths = [...xpaths, mealSetXPath.price, ...mealSetXPath.meals];
@@ -139,7 +142,7 @@ export class MealProviderService {
                     this.xpathService.loadAndResolveXPaths(provider.dailyMealUrl, ...xpaths)
                         .catch((err) => {
                           provider.setStatus(LoadStatus.ERROR, err);
-                          return Observable.of(<XpathResolutionResult>{ url: provider.dailyMealUrl, xpathResult: {}})
+                          return Observable.of(<XpathResolutionResult>{ url: provider.dailyMealUrl, xpathResult: {}});
                         })
                 );
             });
@@ -173,7 +176,7 @@ export class MealProviderService {
                 }
                 provider.mealSets = mealSets;
                 if (!provider.hasErrors()) {
-                  provider.setStatus(provider.mealSets.length == 0 ? LoadStatus.EMPTY : LoadStatus.LOADED);
+                  provider.setStatus(provider.mealSets.length === 0 ? LoadStatus.EMPTY : LoadStatus.LOADED);
                 }
                 if (provider.location) {
                     provider.distance = this.mapService.calculateDistance(provider.location, this.mapService.getCachedHome().location);

@@ -16,7 +16,7 @@ describe('Test MealProviderService', () => {
   beforeEachProviders(() => {
       return [
           // I don't want to mock everything till the end of the world
-          provide(MapService, {useValue: new MapService(null)}),
+          provide(MapService, {useValue: new MapService(undefined)}),
           MealProviderService,
           XpathService
       ];
@@ -36,9 +36,9 @@ describe('Test MealProviderService', () => {
     })));
 
     it(' don\'t prepare mock data if there are cached provider(s) available', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let mealProviders = [new MealProvider('test', null, {}, null, [], null, null)];
+        let mealProviders = [new MealProvider('test', undefined, {}, undefined, [], undefined, undefined, 0)];
         spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
-          return [new MealProvider('test', null, {}, null, [], null, null)];
+          return [new MealProvider('test', undefined, {}, undefined, [], undefined, undefined, 0)];
         });
         spyOn(testService, 'cacheMealProviders').and.callFake((providers) => {
           return mealProviders = providers;
@@ -49,8 +49,8 @@ describe('Test MealProviderService', () => {
     })));
 
     it(' adds new meal provider', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let existingProvider = new MealProvider('test', null, {}, null, [], null, null);
-        let newProvider = new MealProvider('new', null, {}, null, [], null, null);
+        let existingProvider = new MealProvider('test', undefined, {}, undefined, [], undefined, undefined, 0);
+        let newProvider = new MealProvider('new', undefined, {}, undefined, [], undefined, undefined, 0);
         let cachedKey, cachedValue;
         spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
           return [existingProvider];
@@ -69,8 +69,8 @@ describe('Test MealProviderService', () => {
     })));
 
     it(' edits existing meal provider', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let existingProvider = new MealProvider('test', 'http://originalpage.com', {'address':'10 Downing St., London'}, null, [], null, null);
-        let updatedProvider = new MealProvider('test', 'http://somepage.com', {'phone':'+155555555'}, null, [], null, null);
+        let existingProvider = new MealProvider('test', 'http://originalpage.com', {'address':'10 Downing St., London'}, undefined, [], undefined, '555555', 0);
+        let updatedProvider = new MealProvider('test', 'http://somepage.com', {'phone':'+155555555'}, undefined, [], undefined, '666666', 1);
         let cachedKey, cachedValue;
         spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
           return [existingProvider];
@@ -87,12 +87,14 @@ describe('Test MealProviderService', () => {
         expect(cachedValueObj[0].name).toEqual('test');
         expect(cachedValueObj[0].homePage).toEqual('http://somepage.com');
         expect(cachedValueObj[0].contacts).toEqual({'phone':'+155555555'});
+        expect(cachedValueObj[0].color).toEqual('666666');
+        expect(cachedValueObj[0].position).toEqual(1);
     })));
 
     it(' removes existing meal provider', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let existingProvider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, null, [], null, null);
-        let existingProvider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, null, [], null, null);
-        let providerToDelete = new MealProvider('existing2', 'http://somepage.com', {'email':'existing2@somepage.com'}, null, [], null, null);
+        let existingProvider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, undefined, [], undefined, '555555', 0);
+        let existingProvider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, undefined, [], undefined, '666666', 1);
+        let providerToDelete = new MealProvider('existing2', 'http://somepage.com', {'email':'existing2@somepage.com'}, undefined, [], undefined, '777777', 2);
         let cachedKey, cachedValue;
         spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
           return [existingProvider1, existingProvider2];
@@ -109,12 +111,14 @@ describe('Test MealProviderService', () => {
         expect(cachedValueObj[0].name).toEqual('existing1');
         expect(cachedValueObj[0].homePage).toEqual('http://existingpage1.com');
         expect(cachedValueObj[0].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(cachedValueObj[0].color).toEqual('555555');
+        expect(cachedValueObj[0].position).toEqual(0);
     })));
 
     it(' removes non-existing meal provider', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let existingProvider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, null, [], null, null);
-        let existingProvider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, null, [], null, null);
-        let providerToDelete = new MealProvider('nonexisting', 'http://somepage.com', {'email':'existing2@somepage.com'}, null, [], null, null);
+        let existingProvider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, undefined, [], undefined, '555555', 0);
+        let existingProvider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, undefined, [], undefined, '666666', 1);
+        let providerToDelete = new MealProvider('nonexisting', 'http://somepage.com', {'email':'existing2@somepage.com'}, undefined, [], undefined, '777777', 2);
         let cachedKey, cachedValue;
         spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
           return [existingProvider1, existingProvider2];
@@ -131,14 +135,18 @@ describe('Test MealProviderService', () => {
         expect(cachedValueObj[0].name).toEqual('existing1');
         expect(cachedValueObj[0].homePage).toEqual('http://existingpage1.com');
         expect(cachedValueObj[0].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(cachedValueObj[0].color).toEqual('555555');
+        expect(cachedValueObj[0].position).toEqual(0);
         expect(cachedValueObj[1].name).toEqual('existing2');
         expect(cachedValueObj[1].homePage).toEqual('http://existingpage2.com');
         expect(cachedValueObj[1].contacts).toEqual({'phone':'+155555555'});
+        expect(cachedValueObj[1].color).toEqual('666666');
+        expect(cachedValueObj[1].position).toEqual(1);
     })));
 
     it(' caches meal providers', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let provider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, null, [], null, null);
-        let provider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, null, [], null, null);
+        let provider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, undefined, [], undefined, '555555', 0);
+        let provider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, undefined, [], undefined, '666666', 1);
         let cachedKey, cachedValue;
         spyOn(localStorage, 'setItem').and.callFake((key,value) => {
           cachedKey = key;
@@ -152,30 +160,41 @@ describe('Test MealProviderService', () => {
         expect(cachedValueObj[0].name).toEqual('existing1');
         expect(cachedValueObj[0].homePage).toEqual('http://existingpage1.com');
         expect(cachedValueObj[0].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(cachedValueObj[0].color).toEqual('555555');
+        expect(cachedValueObj[0].position).toEqual(0);
         expect(cachedValueObj[1].name).toEqual('existing2');
         expect(cachedValueObj[1].homePage).toEqual('http://existingpage2.com');
         expect(cachedValueObj[1].contacts).toEqual({'phone':'+155555555'});
+        expect(cachedValueObj[1].color).toEqual('666666');
+        expect(cachedValueObj[1].position).toEqual(1);
     })));
 
     it(' returns cached meal providers', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let provider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, null, [], null, null);
-        let provider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, null, [], null, null);
+        let provider1 = new MealProvider('existing3', 'http://existingpage3.com', {'phone':'+255555555'}, undefined, [], undefined, undefined, 0);
+        let provider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, undefined, [], undefined, undefined, 1);
+        let provider3 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, undefined, [], undefined, undefined, 2);
         let cachedKey;
         spyOn(localStorage, 'getItem').and.callFake((key) => {
           cachedKey = key;
-          return JSON.stringify([provider1, provider2]);
+          return JSON.stringify([provider1, provider2, provider3]);
         });
         let mealProviders = testService.getCachedMealProviders();
         expect(cachedKey).toEqual('mealProviders');
 
         expect(mealProviders instanceof Array).toBe(true);
-        expect(mealProviders.length).toEqual(2);
-        expect(mealProviders[0].name).toEqual('existing1');
-        expect(mealProviders[0].homePage).toEqual('http://existingpage1.com');
-        expect(mealProviders[0].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(mealProviders.length).toEqual(3);
+        expect(mealProviders[0].name).toEqual('existing3');
+        expect(mealProviders[0].homePage).toEqual('http://existingpage3.com');
+        expect(mealProviders[0].contacts).toEqual({'phone':'+255555555'});
+        expect(mealProviders[0].position).toEqual(0);
         expect(mealProviders[1].name).toEqual('existing2');
         expect(mealProviders[1].homePage).toEqual('http://existingpage2.com');
         expect(mealProviders[1].contacts).toEqual({'phone':'+155555555'});
+        expect(mealProviders[1].position).toEqual(1);
+        expect(mealProviders[2].name).toEqual('existing1');
+        expect(mealProviders[2].homePage).toEqual('http://existingpage1.com');
+        expect(mealProviders[2].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(mealProviders[2].position).toEqual(2);
     })));
 
     it(' returns no meal providers if no cached entries are present', async(inject([MealProviderService], (testService: MealProviderService) => {
@@ -441,7 +460,8 @@ function createMealProvider1(): MealProvider {
       new MealSetXPath('//b[1]', '//b[2]', ['//b[3]', '//b[4]', '//b[5]'])
     ],
     new Location(19, 49),
-    '999900'
+    '999900',
+    0
   );
 }
 
@@ -455,7 +475,8 @@ function createMealProvider2(): MealProvider {
       new MealSetXPath('//a[1]', '//a[2]', ['//a[3]', '//a[4]', '//a[5]'])
     ],
     new Location(20, 40),
-    '00cccc'
+    '00cccc',
+    1
   );
 }
 
