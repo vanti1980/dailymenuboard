@@ -41,12 +41,15 @@ export class MapComponent implements OnChanges {
       this.markers = [];
       this.markers.push(this.hq, ...changes['mealProviders'].currentValue
         .filter((provider)=>provider && provider.location != null)
-        .map((provider)=> {return {
-        name: provider.name,
-        address: provider.contacts['address'],
-        location: provider.location,
-        color: provider.color
-      }}));
+        .map((provider)=> {
+          return {
+            name: provider.name,
+            address: provider.contacts['address'],
+            location: provider.location,
+            color: provider.color
+          }
+        })
+      );
     }
   }
 
@@ -60,6 +63,6 @@ export class MapComponent implements OnChanges {
   }
 
   mapClicked($event: Event) {
-    
+
   }
 }
