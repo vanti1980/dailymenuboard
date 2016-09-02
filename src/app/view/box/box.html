@@ -1,4 +1,4 @@
-<div class="grid" [ngGrid]="{'max_cols': maxNumberOfColumn, 'auto_resize': true}">
+<div class="grid" [ngGrid]="{'max_cols': maxNumberOfColumn, 'auto_resize': true}" (onItemChange)="onItemsChanged($event)">
 
     <div *ngFor="let box of boxes; let index = index" [(ngGridItem)]="box.config" [ngClass]="{'empty-grid-item' : !box.mealProvider}">
         <meal-provider
@@ -8,7 +8,7 @@
          ></meal-provider>
 
         <div class="vcenter">
-            <button *ngIf="!box.mealProvider" class="btn btn-default pull-right box-button-top-right" (click)="openAddDialog(index)">
+            <button *ngIf="!box.mealProvider" class="btn btn-default pull-right box-button-top-right" (click)="openAddDialog(box.config.row, box.config.col)">
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 <label>{{'button.add' | translate}}</label>
             </button>

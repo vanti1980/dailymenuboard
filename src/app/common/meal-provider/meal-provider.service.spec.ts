@@ -170,26 +170,31 @@ describe('Test MealProviderService', () => {
     })));
 
     it(' returns cached meal providers', async(inject([MealProviderService], (testService: MealProviderService) => {
-        let provider1 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, undefined, [], undefined, undefined, 0);
+        let provider1 = new MealProvider('existing3', 'http://existingpage3.com', {'phone':'+255555555'}, undefined, [], undefined, undefined, 0);
         let provider2 = new MealProvider('existing2', 'http://existingpage2.com', {'phone':'+155555555'}, undefined, [], undefined, undefined, 1);
+        let provider3 = new MealProvider('existing1', 'http://existingpage1.com', {'address':'10 Downing St., London'}, undefined, [], undefined, undefined, 2);
         let cachedKey;
         spyOn(localStorage, 'getItem').and.callFake((key) => {
           cachedKey = key;
-          return JSON.stringify([provider1, provider2]);
+          return JSON.stringify([provider1, provider2, provider3]);
         });
         let mealProviders = testService.getCachedMealProviders();
         expect(cachedKey).toEqual('mealProviders');
 
         expect(mealProviders instanceof Array).toBe(true);
-        expect(mealProviders.length).toEqual(2);
-        expect(mealProviders[0].name).toEqual('existing1');
-        expect(mealProviders[0].homePage).toEqual('http://existingpage1.com');
-        expect(mealProviders[0].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(mealProviders.length).toEqual(3);
+        expect(mealProviders[0].name).toEqual('existing3');
+        expect(mealProviders[0].homePage).toEqual('http://existingpage3.com');
+        expect(mealProviders[0].contacts).toEqual({'phone':'+255555555'});
         expect(mealProviders[0].position).toEqual(0);
         expect(mealProviders[1].name).toEqual('existing2');
         expect(mealProviders[1].homePage).toEqual('http://existingpage2.com');
         expect(mealProviders[1].contacts).toEqual({'phone':'+155555555'});
         expect(mealProviders[1].position).toEqual(1);
+        expect(mealProviders[2].name).toEqual('existing1');
+        expect(mealProviders[2].homePage).toEqual('http://existingpage1.com');
+        expect(mealProviders[2].contacts).toEqual({'address':'10 Downing St., London'});
+        expect(mealProviders[2].position).toEqual(2);
     })));
 
     it(' returns no meal providers if no cached entries are present', async(inject([MealProviderService], (testService: MealProviderService) => {
@@ -268,53 +273,6 @@ describe('Test MealProviderService', () => {
           expect(data[1].mealSets[0].meals[0].name).toEqual('Suppe');
           expect(data[1].mealSets[0].meals[1].name).toEqual('Wiener Schnitzel');
           expect(data[1].mealSets[0].meals[2].name).toEqual('Schokopuding');
-        });
-    })));
-
-    it(' returns daily meals grouped by meal providers in order',
-      async(inject([MealProviderService, XpathService, MapService], (testService: MealProviderService, xpathService: XpathService, mapService: MapService) => {
-        let existingProviders = [createMealProvider1(), createMealProvider1(), createMealProvider1(), createMealProvider1()];
-        existingProviders[0].name = 'prov1';
-        existingProviders[0].position = 0;
-        existingProviders[0].dailyMealUrl = 'http://prov1';
-        existingProviders[1].name = 'prov2';
-        existingProviders[1].position = 3;
-        existingProviders[1].dailyMealUrl = 'http://prov2';
-        existingProviders[2].name = 'prov3';
-        existingProviders[2].position = 1;
-        existingProviders[2].dailyMealUrl = 'http://prov3';
-        existingProviders[3].name = 'prov4';
-        existingProviders[3].position = 0;
-        existingProviders[3].dailyMealUrl = 'http://prov4';
-        let cachedMealProvidersSpy = spyOn(testService, 'getCachedMealProviders').and.callFake(() => {
-          return existingProviders;
-        });
-        let loadAndResolveXPathsSpy = spyOn(xpathService, 'loadAndResolveXPaths').and.callFake(generateFakeXpathResult);
-        let getCachedHomeSpy = spyOn(mapService, 'getCachedHome').and.callFake(generateFakeHome);
-        let calculateDistanceSpy = spyOn(mapService, 'calculateDistance').and.callFake(generateFakeDistance);
-        let mealProviderObservables = testService.getDailyMealsByMealProviders();
-        mealProviderObservables.subscribe(data => {
-          expect(data.length).toEqual(4);
-
-          expect(data[0]).toBeTruthy();
-          expect(data[0].hasErrors()).toBe(false);
-          expect(data[0].name).toEqual(existingProviders[3].name);
-          expect(data[0].position).toEqual(existingProviders[3].position);
-
-          expect(data[1]).toBeTruthy();
-          expect(data[1].hasErrors()).toBe(false);
-          expect(data[1].name).toEqual(existingProviders[0].name);
-          expect(data[1].position).toEqual(existingProviders[0].position);
-
-          expect(data[2]).toBeTruthy();
-          expect(data[2].hasErrors()).toBe(false);
-          expect(data[2].name).toEqual(existingProviders[2].name);
-          expect(data[2].position).toEqual(existingProviders[2].position);
-
-          expect(data[3]).toBeTruthy();
-          expect(data[3].hasErrors()).toBe(false);
-          expect(data[3].name).toEqual(existingProviders[1].name);
-          expect(data[3].position).toEqual(existingProviders[1].position);
         });
     })));
 

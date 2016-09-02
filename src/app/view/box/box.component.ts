@@ -1,6 +1,6 @@
 import {NgForm} from '@angular/common';
 import {Component, ViewEncapsulation, ViewChild} from '@angular/core';
-import { NgGrid, NgGridItem, NgGridConfig } from 'angular2-grid';
+import { NgGrid, NgGridItem, NgGridItemEvent, NgGridConfig } from 'angular2-grid';
 
 import {Observable} from 'rxjs/Rx';
 
@@ -76,22 +76,9 @@ export class BoxView {
     private initMealProviders():void {
         var mealProviders: Observable<MealProvider[]> = this.mealProviderService.getDailyMealsByMealProviders();
         mealProviders.subscribe((array) => {
-          this.mealProviders = [];
-          let mealProviderIx = 0;
-          for (let boxIx = 0; boxIx < this.boxes.length; boxIx++,mealProviderIx++) {
-            let provider: MealProvider = array[mealProviderIx];
-            this.mealProviders.push(provider);
-            if (array.length > boxIx) {
-              this.boxes[boxIx].mealProvider = array[mealProviderIx];
-            }
-            else {
-              this.boxes[boxIx].mealProvider = undefined;
-            }
-          }
-
-          if (this.boxes.length < array.length) {
-              console.error('You have reached the maximal number of boxes! We can show in this version of the application only ' + this.boxes.length + ' boxes');
-          }
+          this.assignProvidersToBoxes(array);
+          // save meal providers with re-aligned positions
+          this.mealProviderService.cacheMealProviders(this.mealProviders);
         },
         (err)=>{
           console.log("Error:" + err);
@@ -100,14 +87,61 @@ export class BoxView {
       // this.resetEditedProvider();
     }
 
+    assignProvidersToBoxes(array: MealProvider[]): void {
+      this.mealProviders = [];
+
+      // auto-positions are given from an incredibly big value to avoid collision with existing values
+      let generatedPosition = this.getPosition(256, 256);
+      array.forEach((p)=>p.position !== undefined ? p.position : generatedPosition++);
+      array.sort((p1, p2) => p1.position - p2.position);
+
+      // prepare box position map to be matched to that set for meal providers
+      let boxPositionMap:{[key:number]:Box} = {};
+      let availableBoxPositions:number[] = [];
+      let notAssignedMealProviders:MealProvider[] = [];
+      this.boxes.forEach((box) => {
+        box.mealProvider = undefined;
+        const pos = this.getPosition(box.config.row, box.config.col);
+        boxPositionMap[pos] = box;
+        availableBoxPositions.push(pos);
+      });
+
+      // match boxes with meal providers using position...at first try to do full match
+      for (let mealProvider of array) {
+        let box = boxPositionMap[mealProvider.position];
+        if (box) {
+          box.mealProvider = mealProvider;
+          this.mealProviders.push(mealProvider);
+          delete(boxPositionMap[mealProvider.position]);
+          availableBoxPositions.splice(availableBoxPositions.indexOf(mealProvider.position), 1);
+        }
+        else {
+          notAssignedMealProviders.push(mealProvider);
+        }
+      }
+
+      // ...then simply assign the next available value for the ones without matching position
+      for (let mealProvider of notAssignedMealProviders) {
+        this.mealProviders.push(mealProvider);
+        if (availableBoxPositions.length > 0) {
+          const position = availableBoxPositions.shift();
+          mealProvider.position = position;
+          boxPositionMap[position].mealProvider = mealProvider;
+        }
+        else {
+          console.info(`You have reached the maximal number of boxes! Meal provider '${mealProvider.name}' could not be placed.`);
+        }
+      }
+    }
+
     ngOnChanges(changeRecord) {
         //Called after every change to input properties and before processing content or child views.
         // console.log('ngOnChanges');
     }
 
-    openAddDialog(index: number) {
+    openAddDialog(row: number, col: number) {
       this.resetEditedProvider();
-      this.editedProvider.position = index;
+      this.editedProvider.position = this.getPosition(row, col);
       this.addComponent.open();
     }
 
@@ -118,5 +152,23 @@ export class BoxView {
 
     resetEditedProvider(): void {
       this.editedProvider = new MealProvider(undefined, undefined, {}, undefined, [StepMealSetComponent.createMealSetXPath()], undefined, undefined, 0);
+    }
+
+    onItemsChanged(items: Array<NgGridItemEvent>) {
+      let posChanged = false;
+      for (let ix = 0; ix < this.boxes.length; ix++) {
+        const box = this.boxes[ix];
+        if (box.mealProvider) {
+          box.mealProvider.position = this.getPosition((<BoxConfig>box.config).row, (<BoxConfig>box.config).col);
+          posChanged = true;
+        }
+      }
+      if (posChanged) {
+        this.mealProviderService.cacheMealProviders(this.mealProviders);
+      }
+    }
+
+    private getPosition(row: number, col: number): number {
+        return (col - 1) * 256 + (row - 1);
     }
 }
