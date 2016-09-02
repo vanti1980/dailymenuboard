@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, SimpleChange} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
+import {EmitterService, Events} from '../../common/event';
 import {MapService} from './map.service';
 import {IconType,Location, Marker} from './map.model';
 import {MealProvider} from '../meal-provider';
@@ -27,13 +28,34 @@ export class MapComponent implements OnChanges {
   hq: Marker;
   markers: Marker[] = [];
 
-  constructor(private mapService: MapService) {
+  private eventSubscriptions: {[key: number]:any} = {};
+
+  constructor(
+    private emitterService: EmitterService,
+    private mapService: MapService) {
 
   }
 
   ngOnInit() {
+    this.eventSubscriptions[Events.HOME_CHANGED] = this.emitterService.get(Events.HOME_CHANGED).subscribe(msg =>{
+      this.initHq();
+    });
+
+    this.initHq();
+  }
+
+  ngOnDestroy() {
+    this.eventSubscriptions[Events.HOME_CHANGED].unsubscribe();
+  }
+
+  private initHq():void {
     this.hq = this.mapService.getCachedHome();
-    this.markers = [this.hq];
+    if (this.markers.length === 0) {
+      this.markers = [this.hq];
+    }
+    else {
+      this.markers[0] = this.hq;
+    }
   }
 
   ngOnChanges(changes: {[propName: string]: SimpleChange}) {
