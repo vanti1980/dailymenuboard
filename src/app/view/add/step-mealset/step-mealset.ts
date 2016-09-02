@@ -99,7 +99,7 @@ export class StepMealSetComponent implements OnChanges {
         return XpathTokens.values();
     }
 
-    xpathAssist(xpath: string) {
+    private resolveXpath(xpath: string) {
       if (this.dailyMealContents) {
           try {
               let xpathMap = this.xpathService.resolveXPaths(this.dailyMealContents, xpath);
@@ -111,14 +111,33 @@ export class StepMealSetComponent implements OnChanges {
       }
     }
 
+    xpathAssist(property: string, mealIx?: number): string {
+      let propValue:string|string[] = this.provider.mealSetXPaths[this.wizard.mealSetIndex][property];
+      let value:string = undefined;
+      if (mealIx !== undefined) {
+        value = propValue[mealIx];
+      }
+      else {
+        value = <string>propValue;
+      }
+      let resolvedValue = this.resolveXpath(value);
+      if (mealIx !== undefined) {
+        this.provider.mealSetXPathAssists[this.wizard.mealSetIndex][property][mealIx] = resolvedValue;
+      }
+      else {
+        this.provider.mealSetXPathAssists[this.wizard.mealSetIndex][property] = resolvedValue;
+      }
+      return resolvedValue;
+    }
+
     onEnterStep() {
       this.xpathService.getXDomainContent(this.provider.dailyMealUrl).subscribe(
           (data) => {
               this.dailyMealContents = data;
-              this.provider.mealSetXPathAssists[this.wizard.mealSetIndex].name = this.xpathAssist(this.provider.mealSetXPaths[this.wizard.mealSetIndex].name);
-              this.provider.mealSetXPathAssists[this.wizard.mealSetIndex].price = this.xpathAssist(this.provider.mealSetXPaths[this.wizard.mealSetIndex].price);
+              this.xpathAssist("name");
+              this.xpathAssist("price");
               for (let ix = 0; ix < this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length; ix++) {
-                this.provider.mealSetXPathAssists[this.wizard.mealSetIndex].meals[ix] = this.xpathAssist(this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals[ix]);
+                this.xpathAssist("meals", ix);
               }
               this.changeDetectorRef.markForCheck();
           },

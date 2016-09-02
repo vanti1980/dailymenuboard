@@ -4,14 +4,14 @@
       <input type="text" class="form-control" id="{{mealSetIndex}}_mealSetXpath" [ngFormControl]="group.find('mealSetXpath')" [(ngModel)]="provider.mealSetXPaths[mealSetIndex].name" [debounceTime]="1000">
       <dmb-xpath-fragment (callback)="addMealSetFragment($event)"></dmb-xpath-fragment>
       <div *ngIf="group.find('mealSetXpath').dirty && group.find('mealSetXpath').hasError('xpath')" class="help-block">{{group.find('mealSetXpath').getError('xpath')}}</div>
-      <div *ngIf="provider.mealSetXPaths[mealSetIndex].name && provider.mealSetXPathAssists[mealSetIndex].name" class="help-block">{{provider.mealSetXPathAssists[mealSetIndex].name}}</div>
+      <div *ngIf="provider.mealSetXPaths[mealSetIndex].name" class="help-block">{{xpathAssist('name')}}</div>
   </div>
   <div class="form-group">
       <label attr.for="{{mealSetIndex}}_mealSetPriceXpath">{{'dialog.mealSetPriceXpath' | translate}}:</label>
       <input type="text" class="form-control" id="{{mealSetIndex}}_mealSetPriceXpath" [ngFormControl]="group.find('mealSetPriceXpath')" [(ngModel)]="provider.mealSetXPaths[mealSetIndex].price" [debounceTime]="1000">
       <dmb-xpath-fragment (callback)="addMealSetPriceFragment($event)"></dmb-xpath-fragment>
       <div *ngIf="group.find('mealSetPriceXpath').dirty && group.find('mealSetPriceXpath').hasError('xpath')" class="help-block">{{group.find('mealSetPriceXpath').getError('xpath')}}</div>
-      <div *ngIf="provider.mealSetXPaths[mealSetIndex].price && provider.mealSetXPathAssists[mealSetIndex].price" class="help-block">{{provider.mealSetXPathAssists[mealSetIndex].price}}</div>
+      <div *ngIf="provider.mealSetXPaths[mealSetIndex].price" class="help-block">{{xpathAssist('price')}}</div>
   </div>
   <div class="form-group">
       <label attr.for="{{mealSetIndex}}_0_mealXpath">{{'dialog.mealXpath' | translate}}:</label>
@@ -23,7 +23,7 @@
               <i class="fa fa-minus" aria-hidden="true"></i>
           </button>
           <div *ngIf="meal.dirty && meal.hasError('required')" class="help-block">{{'message.validation.required' | translate}}</div>
-          <div *ngIf="provider.mealSetXPaths[mealSetIndex].meals[mealIndex] && provider.mealSetXPathAssists[mealSetIndex].meals[mealIndex]" class="help-block">{{provider.mealSetXPathAssists[mealSetIndex].meals[mealIndex]}}</div>
+          <div *ngIf="provider.mealSetXPaths[mealSetIndex].meals[mealIndex]" class="help-block">{{xpathAssist('meals', mealIndex)}}</div>
       </div>
   </div>
   <div class="align-right">

@@ -99,6 +99,7 @@ export class XpathTokens {
 }
 
 function getNow(): moment.Moment {
+//  let now = moment().subtract(1, 'days');
   let now = moment();
   moment.locale(navigator.language);
   return now;
