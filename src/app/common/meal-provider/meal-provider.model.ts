@@ -135,6 +135,11 @@ export class MealProvider implements MealProviderJSON {
       }
     }
 
+    public resetXPathAssists() {
+      this.mealSetXPathAssists = [];
+      this.mealSetXPaths.forEach((mealSetXPath) => this.mealSetXPathAssists.push(new MealSetXPath()));
+    }
+
     public static OnDeserialized(instance : MealProvider, json : any) : void {
         if (instance.constructor.name === "MealProvider") {
           instance.mealSetXPathAssists = new Array(instance.mealSetXPaths.length);
