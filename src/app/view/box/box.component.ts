@@ -6,6 +6,7 @@ import {Observable} from 'rxjs/Rx';
 
 import {EmitterService, Events} from '../../common/event';
 import {MealProviderComponent, MealProvider, MealProviderService} from '../../common/meal-provider';
+
 import {MapComponent} from '../../common/map';
 import {Box}        from './box.model';
 import {BoxConfig} from './box.config';
@@ -61,7 +62,7 @@ export class BoxView {
         this.initMealProviders();
       });
       this.eventSubscriptions[Events.MEAL_PROVIDER_DISCARDED] = this.emitterService.get(Events.MEAL_PROVIDER_DISCARDED).subscribe(msg =>{
-        // this.resetEditedProvider();
+        this.resetEditedProvider();
       });
     }
 
@@ -79,12 +80,15 @@ export class BoxView {
           this.assignProvidersToBoxes(array);
           // save meal providers with re-aligned positions
           this.mealProviderService.cacheMealProviders(this.mealProviders);
+          this.addComponent.onSubmitComplete();
+          this.resetEditedProvider();
         },
         (err)=>{
           console.log("Error:" + err);
+          this.addComponent.onSubmitComplete();
+          this.resetEditedProvider();
         }
       );
-      // this.resetEditedProvider();
     }
 
     assignProvidersToBoxes(array: MealProvider[]): void {
@@ -147,6 +151,7 @@ export class BoxView {
 
     openEditDialog(mealProvider: MealProvider) {
       this.editedProvider = mealProvider;
+      this.editedProvider.resetXPathAssists();
       this.addComponent.open();
     }
 

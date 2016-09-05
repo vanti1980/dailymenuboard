@@ -30,6 +30,7 @@ export const BASE_DATA_STEP = 1;
 export class AddComponent {
     wizard: Wizard = new Wizard(0);
     BASE_DATA_STEP = BASE_DATA_STEP;
+    submitInProgress = false;
 
     @Input()
     provider: MealProvider;
@@ -128,6 +129,7 @@ export class AddComponent {
     }
 
     onSubmit() {
+        this.submitInProgress = true;
         this.mealProviderService.addMealProvider(this.provider);
         if (this.provider.isUninitialized()) {
             this.emitterService.get(Events.MEAL_PROVIDER_ADDED).emit(this.provider);
@@ -135,13 +137,17 @@ export class AddComponent {
         else {
             this.emitterService.get(Events.MEAL_PROVIDER_UPDATED).emit(this.provider);
         }
-        this.modalComponent.close();
     }
 
     ngOnChanges(changes: {[propName: string]: SimpleChange}) {
       if (changes['provider']) {
         this.wizard = new Wizard(changes['provider'].currentValue.mealSetXPaths.length);
       }
+    }
+
+    public onSubmitComplete(): void {
+        this.submitInProgress = false;
+        this.modalComponent.close();
     }
 
     public open(): void {
