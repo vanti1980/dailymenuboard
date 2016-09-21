@@ -1,22 +1,33 @@
-import {provide, Injector} from '@angular/core';
-import {describe, expect, it, xit, inject, async, fakeAsync, beforeEachProviders} from '@angular/core/testing';
+import {
+  inject,
+  TestBed,
+  async,
+  fakeAsync
+} from '@angular/core/testing';
+
+import {Injector} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 
 import {MealSetXPath} from '../meal-set';
 
-import {XpathResolutionResult, XpathService} from '../xpath';
+import {EmitterService} from '../../core/event';
+import {XpathResolutionResult, XpathService} from '../../core/xpath';
 
 import {Location, LocationJSON, Marker, MapComponent, MapService} from './index';
 
 describe('Test MapComponent', () => {
 
-  beforeEachProviders(() => {
-      return [
-        provide(MapService, {useValue: new MapService(undefined)}),
+  beforeEach(() => TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: MapService,
+          useValue: new MapService(void 0)
+        },
+        EmitterService,
         MapComponent
-      ];
-    });
+      ]})
+    );
 
     it(' should initialize home marker', inject([MapComponent, MapService], (testComponent: MapComponent, mapService: MapService) => {
         spyOn(mapService, 'getCachedHome').and.callFake(generateFakeHome);
