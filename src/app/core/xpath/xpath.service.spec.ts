@@ -1,5 +1,9 @@
-import {provide, Injector} from '@angular/core';
-import {describe, expect, it, xit, inject, async, fakeAsync, beforeEachProviders} from '@angular/core/testing';
+import {
+  inject,
+  TestBed,
+  async,
+  fakeAsync
+} from '@angular/core/testing';
 
 import {Observable} from 'rxjs/Rx';
 
@@ -7,11 +11,11 @@ import {XpathService} from './xpath.service.ts';
 
 describe('Test XpathService', () => {
 
-  beforeEachProviders(() => {
-      return [
-          XpathService
-      ];
-    });
+  beforeEach(() => TestBed.configureTestingModule({
+      providers: [
+        XpathService
+      ]
+    }));
 
     it(' should correctly resolve XPath', async(inject([XpathService], (testService: XpathService) => {
         spyOn(testService, 'getXDomainContent').and.callFake(url => {

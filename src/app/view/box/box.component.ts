@@ -1,23 +1,19 @@
-import {NgForm} from '@angular/common';
 import {Component, ViewEncapsulation, ViewChild} from '@angular/core';
 import { NgGrid, NgGridItem, NgGridItemEvent, NgGridConfig } from 'angular2-grid';
 
 import {Observable} from 'rxjs/Rx';
 
-import {EmitterService, Events} from '../../common/event';
 import {MealProviderComponent, MealProvider, MealProviderService} from '../../common/meal-provider';
-
 import {MapComponent} from '../../common/map';
-import {Box}        from './box.model';
-import {BoxConfig} from './box.config';
+
+import {EmitterService, Events} from '../../core/event';
+
+import {Box, BoxConfig}        from './index';
 
 import {AddComponent} from '../add/add.component';
-import {StepMealSetComponent} from '../add/step-mealset';
 
 @Component({
     selector: 'box-view',
-    providers: [MealProviderService],
-    directives: [NgGrid, NgGridItem, MealProviderComponent, MapComponent, AddComponent],
     template: require('./box.html')
 })
 export class BoxView {
@@ -156,7 +152,7 @@ export class BoxView {
     }
 
     resetEditedProvider(): void {
-      this.editedProvider = new MealProvider(undefined, undefined, {}, undefined, [StepMealSetComponent.createMealSetXPath()], undefined, undefined, 0);
+      this.editedProvider = AddComponent.createEmptyProvider();
     }
 
     onItemsChanged(items: Array<NgGridItemEvent>) {

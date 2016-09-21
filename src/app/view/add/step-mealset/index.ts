@@ -1,1 +1,1 @@
-export * from './step-mealset.ts';
+export * from './step-mealset.component';

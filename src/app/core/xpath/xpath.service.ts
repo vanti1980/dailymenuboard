@@ -4,11 +4,11 @@ import {Observable} from 'rxjs/Rx';
 import {XpathTokens} from './xpath-tokens.enum';
 
 
-var wgxpath = require('wgxpath');
+const wgxpath = require('wgxpath');
 
 //TODO actually it should not be necessary as it is provided using WebPack ProvidePlugin
-var jquery = require('jquery');
-var jqueryXDomainAjax = require('./jquery.xdomainajax.js');
+const jquery = require('jquery');
+const jqueryXDomainAjax = require('./jquery.xdomainajax.js');
 
 
 @Injectable()

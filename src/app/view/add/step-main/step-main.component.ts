@@ -1,24 +1,23 @@
-import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
 import {Component, Input, OnChanges, SimpleChange, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import {FormArray, FormGroup, FormControl, FormBuilder, Validators} from '@angular/forms';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
 
-import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {Wizard} from '../wizard';
-import {EmitterService, Events} from '../../../common/event';
 import {MapService} from '../../../common/map';
 import {MealProvider, MealProviderService} from '../../../common/meal-provider';
 import {MealSetXPath} from '../../../common/meal-set';
 import {DebounceInputControlValueAccessor, Holder} from '../../../common/util';
-import {XpathTokens, XpathService} from '../../../common/xpath';
+
+import {EmitterService, Events} from '../../../core/event';
+import {XpathTokens, XpathService} from '../../../core/xpath';
 
 @Component({
     selector: 'dmb-add-step-main',
     providers: [MealProviderService, MapService],
-    directives: [NgClass, MODAL_DIRECTIVES, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES, DebounceInputControlValueAccessor],
     template: require('./step-main.html'),
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -27,7 +26,7 @@ export class StepMainComponent implements OnChanges {
     @Input() provider: MealProvider;
     @Input() wizard: Wizard;
 
-    group: ControlGroup;
+    group: FormGroup;
     providerHolder: Holder<MealProvider>;
 
     constructor(
@@ -62,9 +61,9 @@ export class StepMainComponent implements OnChanges {
       }
     }
 
-    buildForm(): ControlGroup {
+    buildForm(): FormGroup {
         return this.builder.group({
-            name: [this.providerHolder.data.name, Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService, this.providerHolder)])],
+            name: new FormControl({value: this.providerHolder.data.name, disabled: !this.providerHolder.data.isUninitialized()}, Validators.compose([Validators.required, duplicatedNameValidatorFactory(this.mealProviderService, this.providerHolder)])),
             homePage: [this.providerHolder.data.homePage],
             phone: [this.providerHolder.data.contacts['phone']],
             address: [this.providerHolder.data.contacts['address'], Validators.required, addressValidatorFactory(this.mapService, this.providerHolder)],
@@ -83,7 +82,7 @@ export class StepMainComponent implements OnChanges {
 }
 
 
-function colorValidator(control: Control) {
+function colorValidator(control: FormControl) {
     if (control.value && !control.value.match(/([0-9]|[a-f]|[A-F]){6}/)) {
         return { 'color': true };
     }
@@ -91,7 +90,7 @@ function colorValidator(control: Control) {
 }
 
 function duplicatedNameValidatorFactory(mealProviderService: MealProviderService, providerHolder: Holder<MealProvider>) {
-    return (control: Control) => {
+    return (control: FormControl) => {
       if (providerHolder.data.isUninitialized()) {
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.name == control.value) {
@@ -103,7 +102,7 @@ function duplicatedNameValidatorFactory(mealProviderService: MealProviderService
 }
 
 function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProviderService, providerHolder: Holder<MealProvider>) {
-    return (control: Control) => {
+    return (control: FormControl) => {
       let provider:MealProvider = providerHolder.data;
         for (let mealProvider of mealProviderService.getCachedMealProviders()) {
             if (mealProvider.dailyMealUrl == control.value && (provider.isUninitialized() || mealProvider.name !== provider.name)) {
@@ -114,7 +113,7 @@ function duplicatedDailyMealUrlValidatorFactory(mealProviderService: MealProvide
 }
 
 function addressValidatorFactory(mapService: MapService, providerHolder: Holder<MealProvider>) {
-    return (control: Control) => {
+    return (control: FormControl) => {
         return new Promise((resolve, reject) => {
             mapService.getLocation(control.value)
                 .subscribe(

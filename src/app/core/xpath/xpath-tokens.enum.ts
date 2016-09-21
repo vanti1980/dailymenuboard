@@ -1,5 +1,8 @@
 
 import moment = require('moment');
+import 'moment/locale/de';
+import 'moment/locale/en-gb';
+import 'moment/locale/hu';
 
 export class XpathTokens {
     static dayAbbrOfWeek = function(): string {
@@ -99,8 +102,12 @@ export class XpathTokens {
 }
 
 function getNow(): moment.Moment {
-//  let now = moment().subtract(2, 'days');
+  const locale = navigator.language;
+//  require('bundle!moment/locale/' + locale + '.js')(function () {
+    moment.locale(locale);
+//  });
+
+  //  let now = moment().subtract(2, 'days');
   let now = moment();
-  moment.locale(navigator.language);
   return now;
 }

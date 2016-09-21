@@ -1,5 +1,9 @@
-import {provide, Injector} from '@angular/core';
-import {describe, expect, it, xit, inject, async, fakeAsync, beforeEachProviders} from '@angular/core/testing';
+import {
+  inject,
+  TestBed,
+  async,
+  fakeAsync
+} from '@angular/core/testing';
 
 import {Observable} from 'rxjs/Rx';
 
@@ -7,20 +11,23 @@ import {MealProvider} from './meal-provider.model.ts';
 import {MealProviderService} from './meal-provider.service.ts';
 import {MealSetXPath} from '../meal-set';
 
-import {XpathResolutionResult, XpathService} from '../xpath';
+import {XpathResolutionResult, XpathService} from '../../core/xpath';
 
 import {Location, LocationJSON, Marker, MapService} from '../map';
 
 describe('Test MealProviderService', () => {
 
-  beforeEachProviders(() => {
-      return [
-          // I don't want to mock everything till the end of the world
-          provide(MapService, {useValue: new MapService(undefined)}),
-          MealProviderService,
-          XpathService
-      ];
-    });
+  beforeEach(() => TestBed.configureTestingModule({
+      providers: [
+        MealProviderService,
+        XpathService,
+        // I don't want to mock everything till the end of the world
+        {
+          provide: MapService,
+          useValue: new MapService(void 0)
+        }
+      ]
+    }));
 
     it(' should prepare mock data if no cached providers available', async(inject([MealProviderService], (testService: MealProviderService) => {
         let mealProviders = [];

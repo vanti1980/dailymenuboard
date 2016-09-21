@@ -19,12 +19,12 @@
             </div>
 
             <ul class="nav navbar-nav">
-                <li [class.active]="isActive(['Box'])">
+                <li routerLinkActive="active">
                     <a [routerLink]="['Box']">
                        <label>{{'view.box' | translate}}</label>
                      </a>
                 </li>
-                <li [class.active]="isActive(['List'])">
+                <li routerLinkActive="active">
                     <a [routerLink]="['List']">
                        <label>{{'view.list' | translate}}</label>
                     </a>

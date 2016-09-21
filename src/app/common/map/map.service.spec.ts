@@ -1,5 +1,9 @@
-import {provide, Injector} from '@angular/core';
-import {describe, expect, it, xit, inject, async, fakeAsync, beforeEachProviders} from '@angular/core/testing';
+import {
+  inject,
+  TestBed,
+  async,
+  fakeAsync
+} from '@angular/core/testing';
 
 import {
   ResponseOptions,
@@ -15,11 +19,12 @@ import {Observable} from 'rxjs/Rx';
 
 import {MealSetXPath} from '../meal-set';
 
-import {XpathResolutionResult, XpathService} from '../xpath';
+import {XpathResolutionResult, XpathService} from '../../core/xpath';
 
 import {Location, LocationJSON, Marker, MapService} from './index';
 
 const mockHttpProvider = {
+  provide: Http,
   deps: [ MockBackend, BaseRequestOptions ],
   useFactory: (backend: MockBackend, defaultOptions: BaseRequestOptions) => {
     return new Http(backend, defaultOptions);
@@ -28,14 +33,14 @@ const mockHttpProvider = {
 
 describe('Test MapService', () => {
 
-  beforeEachProviders(() => {
-      return [
+  beforeEach(() => TestBed.configureTestingModule({
+      providers: [
         MockBackend,
         BaseRequestOptions,
-        provide(Http, mockHttpProvider),
+        mockHttpProvider,
         MapService
-      ];
-    });
+      ]
+    }));
 
     it(' should cache home marker', async(inject([MapService], (testService: MapService) => {
         let setItemSpy = spyOn(localStorage, 'setItem');

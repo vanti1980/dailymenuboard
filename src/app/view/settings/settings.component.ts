@@ -1,15 +1,12 @@
-import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators} from '@angular/common';
 import {Component} from '@angular/core';
+import {FormArray, FormGroup, FormControl, FormBuilder, Validators} from '@angular/forms';
 
-import {EmitterService, Events} from '../../common/event';
-import {MapService, MapComponent} from '../../common/map';
+import {GeoCodeResponseJSON, IconType, Location, MapService, Marker, MapComponent} from '../../common/map';
 
-import {GeoCodeResponseJSON, Location, Marker, IconType} from '../../common/map/map.model.ts';
+import {EmitterService, Events} from '../../core/event';
 
 @Component({
     selector: 'settings',
-    providers: [MapService],
-    directives: [MapComponent],
     template: require('./settings.html')
 })
 export class SettingsComponent {

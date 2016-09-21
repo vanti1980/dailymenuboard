@@ -2,24 +2,14 @@ import {Component, Input, OnChanges, SimpleChange} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 
-import {EmitterService, Events} from '../../common/event';
 import {MapService} from './map.service';
 import {IconType,Location, Marker} from './map.model';
 import {MealProvider} from '../meal-provider';
 
-import {
-  MapsAPILoader,
-  NoOpMapsAPILoader,
-  MouseEvent,
-  ANGULAR2_GOOGLE_MAPS_PROVIDERS,
-  ANGULAR2_GOOGLE_MAPS_DIRECTIVES
-} from 'angular2-google-maps/core';
+import {EmitterService, Events} from '../../core/event';
 
 @Component({
   selector: 'map',
-  providers: [ANGULAR2_GOOGLE_MAPS_PROVIDERS, MapService],
-  directives: [ANGULAR2_GOOGLE_MAPS_DIRECTIVES],
-  pipes: [],
   styles: [/*require('./map.component.scss')*/],
   template: require('./map.component.html')
 })
