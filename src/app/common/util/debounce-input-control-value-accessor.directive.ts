@@ -3,11 +3,14 @@
  */
 import {Directive, Provider, forwardRef, Input, ElementRef, Renderer} from '@angular/core';
 import {isBlank} from '@angular/common/src/facade/lang';
-import {FormBuilder, Control, FORM_PROVIDERS, NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/common';
+import {FormBuilder, FormControl, NG_VALUE_ACCESSOR, ControlValueAccessor} from '@angular/forms';
 import {Observable} from 'rxjs/Rx';
 
-const DEBOUNCE_INPUT_VALUE_ACCESSOR = new Provider(
-    NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => DebounceInputControlValueAccessor), multi: true });
+const DEBOUNCE_INPUT_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => DebounceInputControlValueAccessor),
+    multi: true
+};
 
 @Directive({
     selector: '[debounceTime]',

@@ -1,27 +1,26 @@
-import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
 import {Component, Input, OnChanges, SimpleChange, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy} from '@angular/core';
+
+import {FormBuilder, FormControl, FormGroup, FormArray} from '@angular/forms';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
 
-import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
-
 import {Wizard} from '../wizard';
 import {DebounceInputControlValueAccessor} from '../../../common/util';
-import {EmitterService, Events} from '../../../common/event';
 import {MapService} from '../../../common/map';
 import {MealProvider, MealProviderService} from '../../../common/meal-provider';
 import {MealSetXPath} from '../../../common/meal-set';
 import {Holder} from '../../../common/util';
-import {XpathTokens, XpathService} from '../../../common/xpath';
+
+import {EmitterService, Events} from '../../../core/event';
+import {XpathTokens, XpathService} from '../../../core/xpath';
+
 import {XpathFragmentComponent} from '../xpath-fragment/xpath-fragment';
 
 
 @Component({
     selector: 'dmb-add-step-mealset',
     providers: [MealProviderService, MapService],
-    directives: [NgClass, TOOLTIP_DIRECTIVES, XpathFragmentComponent, DebounceInputControlValueAccessor],
     template: require('./step-mealset.html'),
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -31,7 +30,7 @@ export class StepMealSetComponent implements OnChanges {
     @Input() mealSetIndex: number;
     dailyMealContents: string;
 
-    group: ControlGroup;
+    group: FormGroup;
 
     constructor(
         private emitterService: EmitterService,
@@ -57,7 +56,7 @@ export class StepMealSetComponent implements OnChanges {
     initControls(): void {
       // to skip control adjustment when dummy provider is set
       if (this.group && this.provider.mealSetXPaths.length > 0) {
-        let mealControls = (<ControlArray>this.group.find('meals'));
+        let mealControls = (<FormArray>this.group.controls['meals']);
         while (mealControls.length < this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length) {
           mealControls.push(this.createMealControl());
         }
@@ -67,11 +66,11 @@ export class StepMealSetComponent implements OnChanges {
       }
     }
 
-    public createMealSetControlGroup(): ControlGroup {
+    public createMealSetControlGroup(): FormGroup {
         return this.builder.group({
             mealSetXpath: [''],
             mealSetPriceXpath: [''],
-            meals: new ControlArray([this.createMealControl()])
+            meals: new FormArray([this.createMealControl()])
         });
     }
 
@@ -81,18 +80,18 @@ export class StepMealSetComponent implements OnChanges {
 
     public onAddMeal() {
         this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.push('');
-        (<ControlArray>this.group.find('meals')).push(this.createMealControl());
+        (<FormArray>this.group.controls['meals']).push(this.createMealControl());
     }
 
     public onRemoveMeal(mealIndex: number) {
         if (this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.length > 1) {
             this.provider.mealSetXPaths[this.wizard.mealSetIndex].meals.splice(mealIndex, 1);
-            (<ControlArray>this.group.find('meals')).removeAt(mealIndex);
+            (<FormArray>this.group.controls['meals']).removeAt(mealIndex);
         }
     }
 
-    private createMealControl(): Control {
-        return new Control('');
+    private createMealControl(): FormControl {
+        return new FormControl('');
     }
 
     get xpathFragments(): string[] {
@@ -168,7 +167,7 @@ export class StepMealSetComponent implements OnChanges {
 }
 
 function xpathResolverFactory(xpathService: XpathService, dailyMealContents: Holder<string>, resolvedXPaths: { [key: string]: string }) {
-    return (control: Control) => {
+    return (control: FormControl) => {
         if (dailyMealContents.data) {
             try {
                 let xpathMap = xpathService.resolveXPaths(dailyMealContents.data, control.value);

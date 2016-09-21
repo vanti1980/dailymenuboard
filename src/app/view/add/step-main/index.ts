@@ -1,1 +1,1 @@
-export * from './step-main.ts';
+export * from './step-main.component';

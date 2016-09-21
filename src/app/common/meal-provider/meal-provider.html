@@ -44,6 +44,10 @@
           </div>
         </div>
         <img src="../../../assets/img/hungry.png" *ngIf="mealProvider.hasErrors()"/>
+        <span *ngIf="!mealProvider.isLoaded() && !mealProvider.hasErrors()">
+          <i class="fa fa-spinner fa-pulse fa-fw"></i>
+          <span class="sr-only">Loading...</span>
+        </span>
    </div>
 </div>
 <confirm msg="{{'message.confirm.deleteMealProvider' | translate}}" (onClose)="confirmRemoveMealProvider($event)"></confirm>

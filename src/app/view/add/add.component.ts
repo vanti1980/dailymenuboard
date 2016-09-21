@@ -1,22 +1,21 @@
-import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
-import {AfterViewInit, Component, Input, QueryList, SimpleChange, ViewChild, ViewChildren} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, QueryList, SimpleChange, ViewChild, ViewChildren} from '@angular/core';
 
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
 
-import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 import {Wizard} from './wizard';
 import {StepMainComponent} from './step-main';
 import {StepMealSetComponent} from './step-mealset';
 
-import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
 import {DebounceInputControlValueAccessor} from '../../common/util';
-import {XpathTokens, XpathService} from '../../common/xpath';
+
+import {EmitterService, Events} from '../../core/event';
+import {XpathTokens, XpathService} from '../../core/xpath';
 
 
 export const BASE_DATA_STEP = 1;
@@ -24,7 +23,6 @@ export const BASE_DATA_STEP = 1;
 @Component({
     selector: 'dmb-add-view',
     providers: [MealProviderService, MapService],
-    directives: [NgClass, NgForm, MODAL_DIRECTIVES, StepMainComponent, StepMealSetComponent, DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES, DebounceInputControlValueAccessor],
     template: require('./add.html')
 })
 export class AddComponent {
@@ -48,18 +46,11 @@ export class AddComponent {
         private emitterService: EmitterService,
         private mealProviderService: MealProviderService,
         private mapService: MapService,
-        private xpathService: XpathService) {
+        private xpathService: XpathService,
+        private _changeDetectionRef : ChangeDetectorRef) {
     }
 
     ngOnInit() {
-        if (this.stepMainComponent) {
-            this.stepMainComponent.ngOnInit();
-        }
-        if (this.stepMealSetComponents) {
-            this.stepMealSetComponents.forEach((c) => {
-                c.ngOnInit();
-            });
-        }
     }
 
     public getCurrentStepMealSet(): StepMealSetComponent {
@@ -72,6 +63,10 @@ export class AddComponent {
         this.provider.mealSetXPathAssists.splice(this.wizard.mealSetIndex + 1, 0, StepMealSetComponent.createMealSetXPath());
         this.stepMealSetComponents.changes.subscribe((components) => {
             this.onNextStep();
+            // necessary otherwise we'll get the exception Expression has changed after it was checked
+            // in dev mode because a change was triggered by change detection which would otherwise go unnoticed
+            // and be effective only in the next change detection round
+            this._changeDetectionRef.detectChanges();
         });
     }
 
@@ -152,5 +147,9 @@ export class AddComponent {
 
     public open(): void {
         this.modalComponent.open();
+    }
+
+    static createEmptyProvider(): MealProvider {
+        return new MealProvider(undefined, undefined, {}, undefined, [StepMealSetComponent.createMealSetXPath()], undefined, undefined, 0);
     }
 }

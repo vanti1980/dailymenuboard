@@ -1,11 +1,8 @@
-import {NgForm, ControlArray, ControlGroup, Control, FormBuilder, Validators, NgClass} from '@angular/common';
 import {Component, ViewChild, Input, Output, EventEmitter} from '@angular/core';
-import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
 @Component({
     selector: 'confirm',
-    providers: [],
-    directives: [NgClass, MODAL_DIRECTIVES],
     template: require('./confirm.html')
 })
 export class ConfirmComponent {

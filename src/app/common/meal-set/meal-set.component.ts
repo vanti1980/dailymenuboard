@@ -4,8 +4,7 @@ import {MealSet} from '../meal-set';
 
 @Component({
     selector: 'meal-set',
-    template: require('./meal-set.html'),
-    directives: [MealComponent]
+    template: require('./meal-set.html')
 })
 export class MealSetComponent {
   @Input()

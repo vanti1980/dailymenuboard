@@ -3,15 +3,15 @@ import {Component, Input, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/debounceTime';
 
-import {DROPDOWN_DIRECTIVES, TOOLTIP_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
-import {ModalComponent, MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
+import {ModalComponent} from 'ng2-bs3-modal/ng2-bs3-modal';
 
-import {EmitterService, Events} from '../../common/event';
 import {MapService} from '../../common/map';
 import {MealProvider, MealProviderService} from '../../common/meal-provider';
 import {MealSetXPath} from '../../common/meal-set';
 import {DebounceInputControlValueAccessor} from '../../common/util';
-import {XpathTokens, XpathService} from '../../common/xpath';
+
+import {EmitterService, Events} from '../../core/event';
+import {XpathTokens, XpathService} from '../../core/xpath';
 
 
 const BASE_DATA_STEP = 1;

@@ -1,0 +1,60 @@
+[
+  {
+      "name": "Bonnie",
+      "homePage": "http://www.bonnierestro.hu",
+      "contacts": {
+          "address": "Budapest, Ferenciek tere 5",
+          "phone": "+36307443555"
+      },
+      "dailyMealUrl": "http://www.bonnierestro.hu/hu/napimenu/",
+      "mealSetXPaths": [
+          {
+              "name": "substring(normalize-space(//div[@id=\"content\"]//h2/text()), 1, 10)",
+              "price": "substring(normalize-space(//div[@id=\"content\"]//h2/text()), 12, 7)",
+              "meals": [
+                  "//div[@id=\"content\"]//h4[text()[contains(.,\"$firstDayOfWeek\")]]/following-sibling::table[$numberOfWeekDay]//tr[2]/td[3]",
+                  "//div[@id=\"content\"]//h4[text()[contains(.,\"$firstDayOfWeek\")]]/following-sibling::table[$numberOfWeekDay]//tr[3]/td[3]"
+              ]
+          }
+      ],
+      "location": {
+          "lat": 47.4921,
+          "lng": 19.0560
+      },
+      "color": "55e5e5",
+      "position": 0
+  },
+  {
+      "name": "Chic-to-Chic",
+      "homePage": "http://www.chictochic.hu",
+      "contacts": {
+          "address": "1056 Budapest, Irányi u. 27.",
+          "phone": "+3612670331"
+      },
+      "dailyMealUrl": "http://www.chictochic.hu/?nav=daily",
+      "mealSetXPaths": [
+          {
+              "name": "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[1]/td[2]/b",
+              "price": "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[1]/td[3]",
+              "meals": [
+                  "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[1]/td[2]/div/text()[1]",
+                  "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[1]/td[2]/div/text()[2]"
+              ]
+          },
+          {
+              "name": "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[2]/td[2]/b",
+              "price": "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[2]/td[3]",
+              "meals": [
+                  "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[2]/td[2]/div/text()[1]",
+                  "//*[@id=\"content-text\"]/table[2]//td[contains(text(), \"$dayOfWeekCapFirst\")]/../following-sibling::tr[2]/td[2]/div/text()[2]"
+              ]
+          }
+      ],
+      "location": {
+          "lat": 47.4918,
+          "lng": 19.0541
+      },
+      "color": "ff5b9c",
+      "position": 1
+  }
+]

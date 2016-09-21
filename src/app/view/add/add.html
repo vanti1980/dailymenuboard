@@ -30,7 +30,7 @@
       <button type="button" class="btn btn-primary" [hidden]="wizard.step != wizard.lastStep" [disabled]="!isCurrentStepValid()" (click)='onSubmit()'>
           <i class="fa fa-check" aria-hidden="true"></i>
           <label>{{'button.submit' | translate}}</label>
-          <span *ngIf="submitInProgress">            
+          <span *ngIf="submitInProgress">
             <i class="fa fa-spinner fa-pulse fa-fw"></i>
             <span class="sr-only">Loading...</span>
           </span>

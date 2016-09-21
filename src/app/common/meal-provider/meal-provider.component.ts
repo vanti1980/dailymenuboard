@@ -1,20 +1,16 @@
 import {Component, Input, ViewEncapsulation, ViewChild} from '@angular/core';
-import {ConfirmComponent} from '../../common/confirm';
-import {EmitterService, Events} from '../../common/event';
 
-import {Popover} from '../../common/popover';
+import {ConfirmComponent} from '../../common/confirm';
+
+import {EmitterService, Events} from '../../core/event';
 
 import {MealSetComponent} from '../meal-set';
-import {MealProvider} from './meal-provider.model';
-
-import {MealProviderService} from './meal-provider.service';
+import {MealProvider, MealProviderService} from '../meal-provider';
 
 
 @Component({
   selector: 'meal-provider',
-  template: require('./meal-provider.html'),
-  providers: [MealProviderService],
-  directives: [Popover, MealSetComponent, ConfirmComponent]
+  template: require('./meal-provider.html')
 })
 export class MealProviderComponent {
   @Input()

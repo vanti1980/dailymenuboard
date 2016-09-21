@@ -4,13 +4,10 @@ import {MealSet} from '../../common/meal-set';
 import {MealSetComponent} from '../../common/meal-set';
 import {MealProviderComponent} from '../../common/meal-provider/meal-provider.component';
 import {MealProviderService} from '../../common/meal-provider/meal-provider.service';
-import {Popover} from '../../common/popover';
 
 @Component({
     selector: 'list-view',
-    template: require('./list.html'),
-    providers: [MealProviderService],
-    directives: [Popover, MealSetComponent, MealProviderComponent],
+    template: require('./list.html')
 })
 export class ListView {
     public list: MealSet[] = [];
