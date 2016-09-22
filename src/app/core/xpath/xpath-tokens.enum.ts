@@ -103,9 +103,7 @@ export class XpathTokens {
 
 function getNow(): moment.Moment {
   const locale = navigator.language;
-//  require('bundle!moment/locale/' + locale + '.js')(function () {
-    moment.locale(locale);
-//  });
+  moment.locale(locale);
 
   //  let now = moment().subtract(2, 'days');
   let now = moment();
