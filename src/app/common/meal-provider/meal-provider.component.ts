@@ -20,7 +20,7 @@ export class MealProviderComponent {
   public showMealSet: boolean;
 
    @ViewChild(ConfirmComponent)
-   private confirmDialog: ConfirmComponent;
+   confirmDialog: ConfirmComponent;
 
 
    constructor(

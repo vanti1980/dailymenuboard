@@ -205,6 +205,12 @@ module.exports = function(options) {
 			'GCHARTS_ICON_SERVICE': JSON.stringify(METADATA.GCHARTS_ICON_SERVICE)
 		  }
 		}),
+    new ProvidePlugin({
+		  jQuery: 'jquery',
+		  $: 'jquery',
+		  jquery: 'jquery',
+		  "windows.jQuery": "jquery"
+		}),
 
 
 	  ],
