@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {Http} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 
-import {GeoCodeResponseJSON, Location, LocationJSON, Marker, IconType} from './map.model.ts';
+import { GeoCodeResponseJSON, Location, LocationJSON, Marker, IconType } from './map.model.ts';
 
 const KEY_HOME = 'home';
 
